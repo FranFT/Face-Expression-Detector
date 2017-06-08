@@ -11,6 +11,11 @@ include_directories( "lib/glfw/include" )
 # Packages Required
 find_package( OpenCV REQUIRED )
 find_package( OpenGL REQUIRED )
+find_package( GLEW REQUIRED )
+if (GLEW_FOUND)
+    include_directories(${GLEW_INCLUDE_DIRS})
+    link_libraries(${GLEW_LIBRARIES})
+endif()
 
 # Executables
 add_executable( main src/main.cpp)
