@@ -18,5 +18,6 @@ add_executable( main src/main.cpp)
 # Link Libraries
 target_link_libraries( main
    ${OpenCV_LIBS}
+   ${OPENGL_LIBRARIES}
    glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES}
 )
