@@ -1,5 +1,23 @@
 {
-  "name"    : "Face-Expression-Detector",
-  "version" : "0.1.0",
-  "main"    : "main.js"  
+  "name": "Face-Expression-Detector",
+  "version": "0.1.0",
+  "description": "This app tries to recognise human facial expressions",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron ."
+  },
+  "repository": "https://github.com/FranFT/Face-Expression-Detector",
+  "keywords": [
+    "Electron",
+    "Face",
+    "expression",
+    "recognition",
+    "CNN",
+    "neural",
+    "networks"
+  ],
+  "author": "Francisco José Fajardo Toril",
+  "devDependencies": {
+    "electron": "^1.6.10"
+  }
 }

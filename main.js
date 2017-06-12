@@ -15,7 +15,7 @@ function createWindow () {
   // Loading the index.html of the app.
   main_window.loadURL( url.format({
     pathname: path.join( __dirname, 'index.html' ),
-    protocol: 'file: ',
+    protocol: 'file:',
     slashes: true
   }))
 
