@@ -2,12 +2,19 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Face Expression Detector</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <div>
+      <script type="text/javascript">
+         const {ipcRenderer} = require('electron')
+         ipcRenderer.send('openFile', () => {
+            console.log("Event sent.");
+         })
+         /*ipcRenderer.on('fileData', (event, data) => {
+            document.write(data)
+         })*/
+      </script>
+    </div>
   </body>
 </html>

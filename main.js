@@ -3,6 +3,7 @@
 const { app, BrowserWindow } = require( 'electron' )
 const path = require( 'path' )
 const url = require( 'url' )
+const { ipcMain } = require( 'electron' )
 
 // Window object global reference.
 let main_window
@@ -10,7 +11,7 @@ let main_window
 // Create window.
 function createWindow () {
   // Create the browser window.
-  main_window = new BrowserWindow( { width:800, height: 600 } )
+  main_window = new BrowserWindow( { width : 800, height : 600 } )
 
   // Loading the index.html of the app.
   main_window.loadURL( url.format({
@@ -22,6 +23,7 @@ function createWindow () {
   // Open the DevTools.
   main_window.webContents.openDevTools()
 
+  /*** Main window events ***/
   // Emitted when window is close.
   main_window.on( 'closed', () => {
     // Dereference window object.
@@ -29,6 +31,7 @@ function createWindow () {
   })
 }
 
+/*** App events ***/
 // Method which call 'createWindow' function once 'Electron' has
 // finished its initialization and its ready to create browser windows.
 app.on( 'ready', createWindow )
@@ -52,3 +55,18 @@ app.on( 'activate', () => {
 
 // Rest of app main process.
 // can also put them in separate files and require them here.
+
+// Method called when our Main process receive an openFile message from a
+// renderer process. It displays file path in console.
+ipcMain.on( 'openFile', (event, path) => {
+  const {dialog} = require( 'electron' )
+  const fs = require( 'fs' )
+  dialog.showOpenDialog( function (fileNames) {
+    if ( fileNames === undefined ) {
+      console.log( 'No file selected' );
+    }
+    else {
+      console.log( fileNames[0] );
+    }
+  });
+})
