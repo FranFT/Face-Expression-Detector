@@ -1,6 +1,6 @@
 {
   "name": "Face-Expression-Detector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This app tries to recognise human facial expressions",
   "main": "main.js",
   "scripts": {
