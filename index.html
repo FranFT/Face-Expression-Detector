@@ -3,18 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>Face Expression Detector</title>
+    <script src="renderer.js"></script>
   </head>
   <body>
     <div>
-      <script type="text/javascript">
-         const {ipcRenderer} = require('electron')
-         ipcRenderer.send('openFile', () => {
-            console.log("Event sent.");
-         })
-         /*ipcRenderer.on('fileData', (event, data) => {
-            document.write(data)
-         })*/
-      </script>
+      <button onclick="selectImage()"> Select an image </button>
     </div>
   </body>
 </html>
