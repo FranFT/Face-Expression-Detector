@@ -70,3 +70,7 @@ ipcMain.on( 'openFile', (event, path) => {
     }
   });
 })
+
+ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
+  console.log(args);
+})
