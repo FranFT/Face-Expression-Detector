@@ -1,7 +1,7 @@
 // Useful global variables.
 const { ipcRenderer } = require('electron')
 
-// Element specific properties.
+// Element-specific properties.
 const dropImageArea = document.getElementById('dropImageArea')
 dropImageArea.ondragover = () => {
   return false;
@@ -9,6 +9,8 @@ dropImageArea.ondragover = () => {
 dropImageArea.ondragleave = dropImageArea.ondragend = () => {
   return false;
 }
+
+// Element-specific events.
 dropImageArea.ondrop = (e) => {
   e.preventDefault();
 

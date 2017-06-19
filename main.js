@@ -4,6 +4,7 @@ const { app, BrowserWindow } = require( 'electron' )
 const path = require( 'path' )
 const url = require( 'url' )
 const { ipcMain } = require( 'electron' )
+const execFile = require( 'child_process' ).execFile
 
 // Window object global reference.
 let main_window
@@ -36,21 +37,41 @@ function createWindow () {
   })
 }
 
-//
+// Method that returns true if the filePath passed as argument is an PNG, JPG or
+// JPEG image.
 function isImage( filePath ){
+
+  var is_image;
+
   switch ( path.parse(filePath).ext.toLowerCase() ) {
     case ".png":
-      console.log('PNG Image');
+      is_image = true;
       break;
     case ".jpg":
-      console.log('JPG Image');
+      is_image = true;
       break;
     case ".jpeg":
-      console.log('JPEG Image');
+      is_image = true;
       break;
     default:
-      console.log('Not image');
+      is_image = false;
   }
+
+  return is_image;
+}
+
+// Function that executes C++ module.
+function findFace( filePath ){
+  var findFacePath = path.join( __dirname, 'binaries', 'findFace' );
+  var child = execFile( findFacePath, [ filePath ],
+    function( error, stdout, stderr ) {
+      console.log( "STD-OUT: ");
+      console.log( stdout );
+      console.log( "STD-ERR: ");
+      console.log( stderr );
+      console.log( "Error: ");
+      console.log( error );
+    });
 }
 
 
@@ -96,7 +117,9 @@ ipcMain.on( 'openFile', (event, _path) => {
     else {
       //console.log( fileNames[0] );
       //console.log( path.parse( fileNames[0] ))
-      isImage( fileNames[0] );
+      if( isImage( fileNames[0] ) ){
+        findFace( fileNames[0] );
+      }
     }
   });
 })
@@ -104,5 +127,7 @@ ipcMain.on( 'openFile', (event, _path) => {
 ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
   //console.log(args.length);
   //console.log(event);
-  isImage( args[0] );
+  if( isImage( args[0] ) ){
+    findFace( args[0] );
+  }
 })
