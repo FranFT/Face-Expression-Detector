@@ -10,12 +10,12 @@ dropImageArea.ondragleave = dropImageArea.ondragend = () => {
   return false;
 }
 dropImageArea.ondrop = (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
   ipcRenderer.send(
     'receiveDroppedImagePath', // Channel.
-    [ e.dataTransfer.files[0].path, e.dataTransfer.files[0].type ] // Arguments.
-  )
+    [ e.dataTransfer.files[0].path ] // Arguments.
+  );
 
   return false;
 }

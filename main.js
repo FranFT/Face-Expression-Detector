@@ -8,6 +8,11 @@ const { ipcMain } = require( 'electron' )
 // Window object global reference.
 let main_window
 
+
+/******************************************************************************/
+/*** Functions ***/
+/******************************************************************************/
+
 // Create window.
 function createWindow () {
   // Create the browser window.
@@ -31,7 +36,30 @@ function createWindow () {
   })
 }
 
+//
+function isImage( filePath ){
+  switch ( path.parse(filePath).ext.toLowerCase() ) {
+    case ".png":
+      console.log('PNG Image');
+      break;
+    case ".jpg":
+      console.log('JPG Image');
+      break;
+    case ".jpeg":
+      console.log('JPEG Image');
+      break;
+    default:
+      console.log('Not image');
+  }
+}
+
+
+
+
+/******************************************************************************/
 /*** App events ***/
+/******************************************************************************/
+
 // Method which call 'createWindow' function once 'Electron' has
 // finished its initialization and its ready to create browser windows.
 app.on( 'ready', createWindow )
@@ -58,19 +86,23 @@ app.on( 'activate', () => {
 
 // Method called when our Main process receive an openFile message from a
 // renderer process. It displays file path in console.
-ipcMain.on( 'openFile', (event, path) => {
-  const {dialog} = require( 'electron' )
+ipcMain.on( 'openFile', (event, _path) => {
+  const { dialog } = require( 'electron' )
   const fs = require( 'fs' )
   dialog.showOpenDialog( function (fileNames) {
     if ( fileNames === undefined ) {
       console.log( 'No file selected' );
     }
     else {
-      console.log( fileNames[0] );
+      //console.log( fileNames[0] );
+      //console.log( path.parse( fileNames[0] ))
+      isImage( fileNames[0] );
     }
   });
 })
 
 ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
-  console.log(args);
+  //console.log(args.length);
+  //console.log(event);
+  isImage( args[0] );
 })
