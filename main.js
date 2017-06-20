@@ -37,8 +37,9 @@ function createWindow () {
 }
 
 // Method that returns true if the filePath passed as argument is an PNG, JPG or
-// JPEG image.
-function isImage( filePath ){
+// JPEG image. It executes a callback function if filePath belongs to an image
+// file.
+function isImage( filePath, callback ){
 
   var is_image;
 
@@ -56,7 +57,17 @@ function isImage( filePath ){
       is_image = false;
   }
 
-  return is_image;
+  if ( is_image ){
+    if ( typeof callback === 'function' ){
+      callback( filePath );
+    }
+    else{
+      console.error('"isImage" second parameter must be a function.');
+    }
+  }
+  else{
+    console.error('File: "' + filePath + '" is not an image.');
+  }
 }
 
 // Function that executes C++ module.
@@ -105,22 +116,28 @@ app.on( 'activate', () => {
 // can also put them in separate files and require them here.
 
 // Method called when our Main process receive an openFile message from a
-// renderer process. It displays file path in console.
+// renderer process. It opens an open file dialog window which only let us
+// select a png, jpg, jpeg image extension.
 ipcMain.on( 'openFile', (event, _path) => {
   const { dialog } = require( 'electron' )
   const fs = require( 'fs' )
-  dialog.showOpenDialog( function (fileNames) {
+  dialog.showOpenDialog({ filters: [
+    { name: 'Image (*.png, *.jpg, *.jpeg)', extensions: [ 'png', 'jpg', 'jpeg'] },
+    { name: 'PNG (*.png)', extensions: [ 'png' ] },
+    { name: 'JPG (*.jpg)', extensions: [ 'jpg' ] },
+    { name: 'JPEG (*.jpeg)', extensions: [ 'jpeg' ] }
+  ]}, function (fileNames){
     if ( fileNames === undefined ) {
       console.log( 'No file selected' );
     }
-    else if( isImage( fileNames[0] ) ){
-        findFace( fileNames[0] );
+    else{
+      findFace( fileNames[0] );
     }
   });
 })
 
+// Method called when our Main process receive an receiveDroppedImagePath event
+// from any renderer process. The dropped object file path is received.
 ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
-  if( isImage( args[0] ) ){
-    findFace( args[0] );
-  }
+  isImage( args[0], findFace );
 })
