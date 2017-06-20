@@ -72,16 +72,20 @@ function isImage( filePath, callback ){
 
 // Function that executes C++ module.
 function findFace( filePath ){
-  var findFacePath = path.join( __dirname, 'build', 'findFace' );
-  var child = execFile( findFacePath, [ filePath ],
+  const findFacePath = path.join( __dirname, 'build', 'findFace' );
+  const child = execFile( findFacePath, [ filePath ],
     function( error, stdout, stderr ) {
-      console.log( 'STD-OUT: ');
-      console.log( stdout );
-      console.log( 'STD-ERR: ');
-      console.log( stderr );
-      console.log( 'Error: ');
-      console.log( error );
+      if ( stderr ){
+        console.error( stderr );
+      }
+      else{
+        console.log( stdout );
+      }
     });
+
+  child.on('error', (err) => {
+    console.log( 'Ups, an error occured' );
+  });
 }
 
 
