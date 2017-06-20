@@ -1,10 +1,9 @@
 /* Create windows and handle system events. */
 
-const { app, BrowserWindow } = require( 'electron' )
+const { app, BrowserWindow, ipcMain } = require( 'electron' )
 const path = require( 'path' )
 const url = require( 'url' )
-const { ipcMain } = require( 'electron' )
-const execFile = require( 'child_process' ).execFile
+const execFile = require( 'child_process' ).execFile //https://nodejs.org/api/child_process.html
 
 // Window object global reference.
 let main_window
@@ -114,19 +113,13 @@ ipcMain.on( 'openFile', (event, _path) => {
     if ( fileNames === undefined ) {
       console.log( 'No file selected' );
     }
-    else {
-      //console.log( fileNames[0] );
-      //console.log( path.parse( fileNames[0] ))
-      if( isImage( fileNames[0] ) ){
+    else if( isImage( fileNames[0] ) ){
         findFace( fileNames[0] );
-      }
     }
   });
 })
 
 ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
-  //console.log(args.length);
-  //console.log(event);
   if( isImage( args[0] ) ){
     findFace( args[0] );
   }
