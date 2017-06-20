@@ -26,13 +26,13 @@ dropImageArea.ondrop = (e) => {
 // Method which sends an 'openFile' event to the main process when the select
 // image button is pressed by the user.
 function selectImage () {
-  ipcRenderer.send('openFile', () => {
-     console.log("Select-image event sent.");
+  ipcRenderer.send( 'openFile' , () => {
+     console.log( 'Select-image event sent.' );
   });
 }
 
 // Adding events to elements.
-document.getElementById("selectImageButton").addEventListener( "click", selectImage );
+document.getElementById( 'selectImageButton' ).addEventListener( 'click', selectImage );
 
 
 

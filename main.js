@@ -44,13 +44,13 @@ function isImage( filePath ){
   var is_image;
 
   switch ( path.parse(filePath).ext.toLowerCase() ) {
-    case ".png":
+    case '.png':
       is_image = true;
       break;
-    case ".jpg":
+    case '.jpg':
       is_image = true;
       break;
-    case ".jpeg":
+    case '.jpeg':
       is_image = true;
       break;
     default:
@@ -62,14 +62,14 @@ function isImage( filePath ){
 
 // Function that executes C++ module.
 function findFace( filePath ){
-  var findFacePath = path.join( __dirname, 'binaries', 'findFace' );
+  var findFacePath = path.join( __dirname, 'build', 'findFace' );
   var child = execFile( findFacePath, [ filePath ],
     function( error, stdout, stderr ) {
-      console.log( "STD-OUT: ");
+      console.log( 'STD-OUT: ');
       console.log( stdout );
-      console.log( "STD-ERR: ");
+      console.log( 'STD-ERR: ');
       console.log( stderr );
-      console.log( "Error: ");
+      console.log( 'Error: ');
       console.log( error );
     });
 }
