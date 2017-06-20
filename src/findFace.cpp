@@ -11,10 +11,6 @@ int main(int argc, char **argv) {
   }
 
   // Varibles.
-  /*vector<Rect> faces;
-  Mat temp_image, gray_image;
-  CascadeClassifier face_cascade;
-  String face_cascade_name = "haarcascade_frontalface_alt2.xml";*/
   Mat image;
   vector<Rect> faces;
   CascadeClassifier face_detector;
@@ -40,6 +36,7 @@ int main(int argc, char **argv) {
   face_detector.detectMultiScale(image, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE,
                                  Size(image.cols / 4, image.rows / 4));
 
+  // findFace output.
   if (faces.empty()) {
     cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
     return 0;
