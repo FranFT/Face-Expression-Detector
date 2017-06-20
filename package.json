@@ -3,7 +3,13 @@
   "version": "0.1.1",
   "description": "This app tries to recognise human facial expressions",
   "main": "main.js",
+  "cmake-js":{
+    "runtime": "electron",
+    "runtimeVersion": "1.6.10",
+    "arch": "x64"
+  },
   "scripts": {
+    "install": "cmake-js compile",
     "start": "./node_modules/.bin/electron ."
   },
   "repository": "https://github.com/FranFT/Face-Expression-Detector",
