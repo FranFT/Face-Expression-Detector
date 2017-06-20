@@ -7,3 +7,6 @@ find_package( OpenCV REQUIRED )
 
 # Executables
 add_executable( findFace src/findFace.cpp )
+
+# Link Libraries
+target_link_libraries( findFace ${OpenCV_LIBS} )
