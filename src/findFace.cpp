@@ -6,7 +6,7 @@ using namespace cv;
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    cerr << "Image Path needed." << endl;
+    cerr << "Please, specify an image path." << endl;
     return 0;
   }
 
@@ -41,7 +41,9 @@ int main(int argc, char **argv) {
     cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
     return 0;
   } else {
-    cout << faces.at(0) << endl;
+    // cout << faces.at(0) << endl;
+    cout << faces[0].x << "," << faces[0].y << ";" << faces[0].width << ","
+         << faces[0].height << endl;
   }
 
   return 0;
