@@ -31,10 +31,46 @@ function createWindow () {
   /*** Main window events ***/
   // Emitted when window is close.
   main_window.on( 'closed', () => {
+    // Deleting temp folder.
+    deleteTempFolder();
+
     // Dereference window object.
-    main_window = null
+    main_window = null;
   })
 }
+
+// Create temp folder used for saving temporal images.
+function createTempFolder () {
+  const fs = require( 'fs' );
+  const tempFolderPath = path.join( __dirname, 'temp' );
+  // Create a temp folder if it doesnt exists.
+  fs.access( tempFolderPath, fs.constants.F_OK, ( err ) => {
+    if ( err ) {
+      fs.mkdir( tempFolderPath, (e) => {
+        if ( e ) {
+          console.log( e );
+        }
+      });
+    }
+  });
+}
+
+// Delete the 'temp' folder previously created.
+function deleteTempFolder () {
+  const fs = require( 'fs' );
+  const tempFolderPath = path.join( __dirname, 'temp' );
+  // Create a temp folder if it doesnt exists.
+  fs.access( tempFolderPath, fs.constants.F_OK, ( err ) => {
+    if ( !err ) {
+      fs.rmdir( tempFolderPath, (e) => {
+        if ( e ) {
+          console.log( e );
+        }
+      });
+    }
+  });
+}
+
 
 // Method that returns true if the filePath passed as argument is an PNG, JPG or
 // JPEG image. It executes a callback function if filePath belongs to an image
@@ -82,7 +118,7 @@ function findFace( filePath ){
         console.log( stdout );
 
         // Sending face location to renderer process.
-        main_window.webContents.send('hello', stdout);
+        main_window.webContents.send('hello', [filePath, stdout]);
       }
     });
 
@@ -101,6 +137,9 @@ function findFace( filePath ){
 // Method which call 'createWindow' function once 'Electron' has
 // finished its initialization and its ready to create browser windows.
 app.on( 'ready', createWindow )
+
+// App creates a temporal folder.
+app.on( 'ready', createTempFolder )
 
 // Quit when all windows are closed.
 app.on( 'window-all-closed', () => {
