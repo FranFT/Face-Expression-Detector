@@ -41,7 +41,10 @@ int main(int argc, char **argv) {
     cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
     return 0;
   } else {
-    // cout << faces.at(0) << endl;
+    // Output image used for classification.
+    resize(image(faces.at(0)), image, Size(256, 256));
+    imwrite("temp/output.jpg", image);
+
     cout << faces[0].x << "," << faces[0].y << ";" << faces[0].width << ","
          << faces[0].height << endl;
   }
