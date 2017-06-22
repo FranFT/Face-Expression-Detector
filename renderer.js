@@ -34,6 +34,11 @@ function selectImage () {
 // Adding events to elements.
 document.getElementById( 'selectImageButton' ).addEventListener( 'click', selectImage );
 
+// Renderer process events.
+ipcRenderer.on('hello', (event, message) => {
+  console.log(message);
+});
+
 
 
 

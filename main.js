@@ -80,6 +80,9 @@ function findFace( filePath ){
       }
       else{
         console.log( stdout );
+
+        // Sending face location to renderer process.
+        main_window.webContents.send('hello', stdout);
       }
     });
 
