@@ -59,12 +59,17 @@ function createTempFolder () {
 function deleteTempFolder () {
   const fs = require( 'fs' );
   const tempFolderPath = path.join( __dirname, 'temp' );
-  // Create a temp folder if it doesnt exists.
-  fs.access( tempFolderPath, fs.constants.F_OK, ( err ) => {
-    if ( !err ) {
-      fs.rmdir( tempFolderPath, (e) => {
-        if ( e ) {
-          console.log( e );
+  // Delete an empty or not empty temp folder.
+  fs.access( tempFolderPath, fs.constants.F_OK, ( err0 ) => {
+    if ( !err0 ) {
+      fs.rmdir( tempFolderPath, ( err1 ) => {
+        if ( err1 ) {
+          fs.unlink( path.join( tempFolderPath, 'output.jpg'), ( err2 ) => {
+            if ( err2 ) {
+              console.log( err2 );
+            }
+          });
+          fs.rmdir( tempFolderPath, ( err3 ) => { console.log( err3 );});
         }
       });
     }
