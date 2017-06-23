@@ -76,6 +76,11 @@ function deleteTempFolder () {
   });
 }
 
+// funcion para escribir en el div 'log' del footer
+function showLogMsg ( msg ) {
+    main_window.webContents.send( 'logMsg', msg );
+}
+
 
 // Method that returns true if the filePath passed as argument is an PNG, JPG or
 // JPEG image. It executes a callback function if filePath belongs to an image
@@ -107,7 +112,7 @@ function isImage( filePath, callback ){
     }
   }
   else{
-    console.error('File: "' + filePath + '" is not an image.');
+    showLogMsg( 'File: "' + filePath + '" is not an image.' );
   }
 }
 
@@ -117,13 +122,11 @@ function findFace( filePath ){
   const child = execFile( findFacePath, [ filePath ],
     function( error, stdout, stderr ) {
       if ( stderr ){
-        console.error( stderr );
+        showLogMsg( stderr );
       }
       else{
-        console.log( stdout );
-
         // Sending face location to renderer process.
-        main_window.webContents.send('hello', [filePath, stdout]);
+        main_window.webContents.send('faceInfo', [filePath, stdout]);
       }
     });
 
@@ -179,7 +182,7 @@ ipcMain.on( 'openFile', (event, _path) => {
     { name: 'JPEG (*.jpeg)', extensions: [ 'jpeg' ] }
   ]}, function (fileNames){
     if ( fileNames === undefined ) {
-      console.log( 'No file selected' );
+      showLogMsg( 'No file selected' );
     }
     else{
       findFace( fileNames[0] );

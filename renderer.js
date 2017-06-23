@@ -1,8 +1,8 @@
 // Useful global variables.
-const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron');
 
 // Element-specific properties.
-const dropImageArea = document.getElementById('dropImageArea')
+const dropImageArea = document.getElementById( 'dropImageArea' );
 dropImageArea.ondragover = () => {
   return false;
 }
@@ -25,29 +25,19 @@ dropImageArea.ondrop = (e) => {
 
 // Method which sends an 'openFile' event to the main process when the select
 // image button is pressed by the user.
-function selectImage () {
-  ipcRenderer.send( 'openFile' , () => {
-     console.log( 'Select-image event sent.' );
+document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
+  ipcRenderer.send( 'openFile', () => {
+    console.log( 'Select-image event sent.' );
   });
-}
-
-// Adding events to elements.
-document.getElementById( 'selectImageButton' ).addEventListener( 'click', selectImage );
+});
 
 // Renderer process events.
-ipcRenderer.on('hello', (event, message) => {
+ipcRenderer.on('faceInfo', (event, message) => {
   console.log(message);
 });
 
-
-
-
-/*const {ipcRenderer} = require('electron')
-
-ipcRenderer.send('openFile', () => {
-   console.log("Event sent.");
-})*/
-
-/*ipcRenderer.on('fileData', (event, data) => {
-   document.write(data)
-})*/
+ipcRenderer.on('logMsg', (event, message) =>{
+  const logArea = document.getElementById( 'log' );
+  logArea.innerHTML = message;
+  // TODO: Add div Fade-IN / Fade-OUT animation.
+});
