@@ -47,17 +47,34 @@ ipcRenderer.on('faceInfo', (event, message) => {
   const ctx = document.getElementById( 'imageArea' ).getContext( '2d' );
   var img = new Image();
   img.onload = function(){
-    console.log( img );
+//https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
+// Apply padding if possible.
+// EJ: (coords[0] - 50 > 0 ) ? coords[0] - 50 : coords[0];
+
     ctx.drawImage( img,
-      coords[0] - 50, coords[1] - 50, faceArea[0] + 50, faceArea[1] + 50,
-      0, 0, 500, 500 // Canvas coords.
+      coords[0], coords[1], faceArea[0], faceArea[1],
+      0, 0, 400, 400 // Canvas coords.
     );
     ctx.stroke();
   }
   img.src = message[0];
 });
 
-ipcRenderer.on('logMsg', (event, message) =>{
+ipcRenderer.on('results', (event, results) => {
+  var resultArea = document.getElementById('resultsArea');
+  var results = results.split( '\n' );
+  results.shift();
+  results.pop();
+
+  // Writing results.
+  resultArea.innerHTML = '<ul>';
+  for( i = 0; i < results.length; i++ ) {
+    resultArea.innerHTML += '<li>' + results[i] + '</li>';
+  }
+  resultArea.innerHTML += '</ul>';
+});
+
+ipcRenderer.on('logMsg', (event, message) => {
   const logArea = document.getElementById( 'log' );
   logArea.innerHTML = message;
   // TODO: Add div Fade-IN / Fade-OUT animation.

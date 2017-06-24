@@ -116,6 +116,23 @@ function isImage( filePath, callback ){
   }
 }
 
+function classify () {
+  const classifierPath = path.join( __dirname,
+    'build', 'lib', 'caffe', 'examples', 'cpp_classification', 'classification');
+
+  const child = execFile( classifierPath, [
+      path.join( __dirname, 'data', 'deploy.prototxt'),
+      path.join( __dirname, 'data', 'cnn_face_detector.caffemodel' ),
+      path.join( __dirname, 'data', 'mean.binaryproto' ),
+      path.join( __dirname, 'data', 'labels.txt' ),
+      path.join( __dirname, 'temp', 'output.jpg' )
+    ], function( error, stdout, stderr ) {
+      if ( stdout ) {
+        main_window.webContents.send( 'results', stdout );
+      }
+    });
+}
+
 // Function that executes C++ module.
 function findFace( filePath ){
   const findFacePath = path.join( __dirname, 'build', 'findFace' );
@@ -126,7 +143,8 @@ function findFace( filePath ){
       }
       else{
         // Sending face location to renderer process.
-        main_window.webContents.send('faceInfo', [filePath, stdout]);
+        main_window.webContents.send( 'faceInfo', [filePath, stdout] );
+        classify();
       }
     });
 

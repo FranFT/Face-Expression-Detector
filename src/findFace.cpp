@@ -11,13 +11,13 @@ int main(int argc, char **argv) {
   }
 
   // Varibles.
-  Mat image;
+  Mat image, temp_image;
   vector<Rect> faces;
   CascadeClassifier face_detector;
   const String face_dectector_name = "haarcascade_frontalface_alt2.xml";
 
   // Reading the image.
-  image = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
+  image = imread(argv[1]);
   if (!image.data) {
     cerr << "Could not open the image." << endl;
     return 0;
@@ -30,10 +30,17 @@ int main(int argc, char **argv) {
   }
 
   // Preprocessing.
-  equalizeHist(image, image);
+  // Pre-detect processing
+  if (image.channels() == 3)
+    cvtColor(image, temp_image, CV_BGR2GRAY);
+  else
+    temp_image = image.clone();
+
+  equalizeHist(temp_image, temp_image);
 
   // Detect faces
-  face_detector.detectMultiScale(image, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE,
+  face_detector.detectMultiScale(temp_image, faces, 1.1, 2,
+                                 0 | CV_HAAR_SCALE_IMAGE,
                                  Size(image.cols / 4, image.rows / 4));
 
   // findFace output.
