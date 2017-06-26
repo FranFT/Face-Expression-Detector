@@ -3,5 +3,6 @@ build/
 
 data/*
 !data/haarcascade_frontalface_alt2.xml
+!data/haarcascade_eye_tree_eyeglasses.xml
 
 npm-debug.log
