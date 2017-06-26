@@ -1,6 +1,6 @@
 {
   "name": "Face-Expression-Detector",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "This app tries to recognise human facial expressions",
   "main": "main.js",
   "cmake-js":{
