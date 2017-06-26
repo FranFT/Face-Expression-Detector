@@ -150,5 +150,8 @@ int main(int argc, char **argv) {
 
   generateUImage(image, features);
 
+  cout << features.face.x << "," << features.face.y << ";"
+       << features.face.width << "," << features.face.height << endl;
+
   return 0;
 }

@@ -69,6 +69,11 @@ function deleteTempFolder () {
               console.log( err2 );
             }
           });
+          fs.unlink( path.join( tempFolderPath, 'thumbnail.jpg'), ( err2 ) => {
+            if ( err2 ) {
+              console.log( err2 );
+            }
+          });
           fs.rmdir( tempFolderPath, ( err3 ) => { console.log( err3 );});
         }
       });
@@ -143,7 +148,9 @@ function findFace( filePath ){
       }
       else{
         // Sending face location to renderer process.
-        main_window.webContents.send( 'faceInfo', [filePath, stdout] );
+        const thumbnailPath = path.join( __dirname, 'temp', 'thumbnail.jpg');
+        console.log(thumbnailPath);
+        main_window.webContents.send( 'faceInfo', [thumbnailPath,stdout] );
         classify();
       }
     });
