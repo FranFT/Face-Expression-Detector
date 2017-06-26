@@ -102,6 +102,16 @@ Mat alignEyes(const Mat &_img, const FacialFeatures &_features) {
   }
 }
 
+void generateClassifierImage(const Mat &_image, const Rect &_roi) {
+  Mat output;
+  resize(_image(_roi), output, Size(256, 256));
+  imwrite("temp/output.jpg", output);
+}
+void generateUImage(Mat &_image, const FacialFeatures &_features) {
+  rectangle(_image, _features.face, Scalar(0, 0, 255), 2);
+  imwrite("temp/thumbnail.jpg", _image);
+}
+
 // Main.
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -110,7 +120,7 @@ int main(int argc, char **argv) {
   }
 
   // Varibles.
-  Mat image, output_image;
+  Mat image;
   FacialFeatures features;
   CascadeClassifier face_detector, eye_detector;
 
@@ -129,13 +139,16 @@ int main(int argc, char **argv) {
 
   // If both were found, align eyes.
   if (features.face_found && features.eyes_found) {
-    output_image = alignEyes(image, features);
+    Mat rotated_image = alignEyes(image, features);
+    generateClassifierImage(rotated_image, features.face);
   } else if (features.face_found) {
-    output_image = image.clone();
+    generateClassifierImage(image, features.face);
   } else {
     cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
     return 0;
   }
+
+  generateUImage(image, features);
 
   return 0;
 }
