@@ -61,15 +61,45 @@ FacialFeatures detectFeatures(const Mat &_img, CascadeClassifier &_face,
       output.eyes_found = true;
     } else {
       output.eyes_found = false;
-      cerr << objs_found.size() << " eyes found" << endl;
     }
-
   } else {
     output.face_found = output.eyes_found = false;
-    cerr << "Faces could not be found." << endl;
   }
 
   return output;
+}
+
+// Calculates the angle between the horizontal axis and the eyes.
+double calculateEyeAngle(const FacialFeatures &_features) {
+  double length1 = sqrt(pow(_features.eye2.x - _features.eye1.x, 2) +
+                        pow(_features.eye2.y - _features.eye1.y, 2));
+  double length2 = sqrt(pow(_features.eye2.x - _features.eye1.x, 2));
+
+  double angle = (acos(length2 / length1) * 180.0) / CV_PI;
+
+  return angle;
+}
+
+// Aling eyes with the horizontal axis.
+Mat alignEyes(const Mat &_img, const FacialFeatures &_features) {
+  // Variables.
+  Mat rotated_image;
+
+  // Getting alineation angle between eyes.
+  double angle = calculateEyeAngle(_features);
+
+  // Aligning eyes only if necesary.
+  if (abs(angle) > 4.0) {
+    Mat rot_matrix = getRotationMatrix2D(
+        Point((_features.face.x + _features.face.width) / 2,
+              (_features.face.y + _features.face.height) / 2),
+        angle, 1.0);
+    warpAffine(_img, rotated_image, rot_matrix, _img.size(), CV_INTER_CUBIC,
+               BORDER_REFLECT);
+    return rotated_image;
+  } else {
+    return _img;
+  }
 }
 
 // Main.
@@ -80,13 +110,9 @@ int main(int argc, char **argv) {
   }
 
   // Varibles.
-  Mat image;
+  Mat image, output_image;
   FacialFeatures features;
   CascadeClassifier face_detector, eye_detector;
-  /*  Mat image, temp_image;
-    vector<Rect> faces;
-    CascadeClassifier face_detector;
-    const String face_dectector_name = "haarcascade_frontalface_alt2.xml";*/
 
   // Reading the image
   image = imread(argv[1]);
@@ -94,10 +120,22 @@ int main(int argc, char **argv) {
     cerr << "Could not open the image." << endl;
     return 0;
   }
+  // Loading classifiers.
   if (!loadClassifers(face_detector, eye_detector))
     return 0;
 
+  // Detecting face and eyes.
   features = detectFeatures(image, face_detector, eye_detector);
+
+  // If both were found, align eyes.
+  if (features.face_found && features.eyes_found) {
+    output_image = alignEyes(image, features);
+  } else if (features.face_found) {
+    output_image = image.clone();
+  } else {
+    cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
+    return 0;
+  }
 
   return 0;
 }
