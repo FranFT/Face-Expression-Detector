@@ -1,0 +1,41 @@
+/*
+font-family: 'Montserrat', sans-serif;
+font-family: 'Raleway', sans-serif;
+*/
+
+/*--------- TEMP --*/
+section, footer{
+/*  border: 2px solid white;*/
+}
+
+/*--------- Fonts --*/
+h1,h2,h3{
+  font-family: 'Montserrat', sans-serif;;
+}
+p, button{
+  font-family: 'Raleway', sans-serif;
+}
+
+/*--------- Body --*/
+html{
+  background-color: #262831;
+  color: white;
+}
+/* Start Screen */
+#startScreen{
+  padding: 50px;
+}
+#dropImageArea{
+  text-align: center;
+  border: 2px dashed white;
+  border-radius: 10px;
+  padding: 15% 35%;
+}
+#dropImageArea:drop{
+  background-color: red;
+}
+
+/* Analysis Screen */
+#analysisScreen{
+  /*display: none;*/
+}
