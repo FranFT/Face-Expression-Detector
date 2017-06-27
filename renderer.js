@@ -1,8 +1,21 @@
-// Useful global variables.
+/*---------- Useful global variables. -------*/
 const { ipcRenderer } = require('electron');
 
-// Element-specific properties.
+/*---------- Element-specific properties ----*/
+const windowBody = document.getElementsByTagName('body')[0];
 const dropImageArea = document.getElementById( 'dropImageArea' );
+
+// Body.
+windowBody.ondragover = () => {
+  console.log("Something is being dragged over the window.");
+  return false;
+}
+windowBody.ondragleave = windowBody.ondragend = () => {
+  console.log("Drag stopped.");
+  return false;
+}
+
+// Drop area.
 dropImageArea.ondragover = () => {
   return false;
 }
@@ -10,7 +23,14 @@ dropImageArea.ondragleave = dropImageArea.ondragend = () => {
   return false;
 }
 
-// Element-specific events.
+/*---------- Element-specific events. -----*/
+// Body.
+windowBody.ondrop = (e) => {
+  e.preventDefault();
+  return false;
+}
+
+// Drop area.
 dropImageArea.ondrop = (e) => {
   e.preventDefault();
 
