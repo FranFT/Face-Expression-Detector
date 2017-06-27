@@ -51,7 +51,7 @@ ipcRenderer.on('faceInfo', (event, message) => {
 // Apply padding if possible.
 // EJ: (coords[0] - 50 > 0 ) ? coords[0] - 50 : coords[0];
     ctx.drawImage( img,
-      coords[0] - 50, coords[1] - 50, faceArea[0] + 50, faceArea[1] + 50,
+      coords[0], coords[1], faceArea[0], faceArea[1],
       0, 0, 400, 400 // Canvas coords.
     );
     ctx.stroke();

@@ -46,7 +46,7 @@ FacialFeatures detectFeatures(const Mat &_img, CascadeClassifier &_face,
   equalizeHist(gray_img, gray_img);
 
   _face.detectMultiScale(gray_img, objs_found, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE,
-                         Size(30, 30));
+                         Size(_img.cols / 4, _img.rows / 4));
   if (!objs_found.empty()) {
     output.face = objs_found[0];
     output.face_found = true;
@@ -102,14 +102,43 @@ Mat alignEyes(const Mat &_img, const FacialFeatures &_features) {
   }
 }
 
-void generateClassifierImage(const Mat &_image, const Rect &_roi) {
+// This method generate the output image that will be passed to the CNN.
+// In this case, we receive a rotated face image with eyes aligned. So we
+// try to detect again the face area in order to make the crop more precise.
+// If its not possible we crop the image using roi passed as argument.
+void generateClassifierImage(const Mat &_img, CascadeClassifier _detector,
+                             const Rect &_roi) {
   Mat output;
-  resize(_image(_roi), output, Size(256, 256));
+  vector<Rect> objs_found;
+  Mat gray_img;
+
+  cvtColor(_img, gray_img, CV_BGR2GRAY);
+  equalizeHist(gray_img, gray_img);
+
+  _detector.detectMultiScale(gray_img, objs_found, 1.1, 2,
+                             0 | CV_HAAR_SCALE_IMAGE,
+                             Size(_img.cols / 4, _img.rows / 4));
+  if (!objs_found.empty())
+    resize(_img(objs_found[0]), output, Size(256, 256));
+  else
+    resize(_img(_roi), output, Size(256, 256));
+
   imwrite("temp/output.jpg", output);
 }
-void generateUImage(Mat &_image, const FacialFeatures &_features) {
-  rectangle(_image, _features.face, Scalar(0, 0, 255), 2);
-  imwrite("temp/thumbnail.jpg", _image);
+
+// This method generate the output image that will be passed to the CNN. It
+// generates a 256x256 crop of the face area of the image.
+void generateClassifierImage(const Mat &_img, const Rect &_roi) {
+  Mat output;
+  resize(_img(_roi), output, Size(256, 256));
+  imwrite("temp/output.jpg", output);
+}
+
+// This method generates the image that will be shown in the app. We draw de
+// face area into the final image.
+void generateUImage(Mat &_img, const FacialFeatures &_features) {
+  rectangle(_img, _features.face, Scalar(0, 0, 255), 2);
+  imwrite("temp/thumbnail.jpg", _img);
 }
 
 // Main.
@@ -140,7 +169,7 @@ int main(int argc, char **argv) {
   // If both were found, align eyes.
   if (features.face_found && features.eyes_found) {
     Mat rotated_image = alignEyes(image, features);
-    generateClassifierImage(rotated_image, features.face);
+    generateClassifierImage(rotated_image, face_detector, features.face);
   } else if (features.face_found) {
     generateClassifierImage(image, features.face);
   } else {
