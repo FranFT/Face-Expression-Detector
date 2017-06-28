@@ -2,16 +2,15 @@
 const { ipcRenderer } = require('electron');
 
 /*---------- Element-specific properties ----*/
-const windowBody = document.getElementsByTagName('body')[0];
+const windowBody = document.getElementsByTagName('html')[0];
 const dropImageArea = document.getElementById( 'dropImageArea' );
+dropImageArea.style.webkitAnimationPlayState = "paused";
 
 // Body.
-windowBody.ondragover = () => {
-  console.log("Something is being dragged over the window.");
+document.ondragover = () => {
   return false;
 }
-windowBody.ondragleave = windowBody.ondragend = () => {
-  console.log("Drag stopped.");
+document.ondragleave = document.ondragend = () => {
   return false;
 }
 
@@ -25,7 +24,7 @@ dropImageArea.ondragleave = dropImageArea.ondragend = () => {
 
 /*---------- Element-specific events. -----*/
 // Body.
-windowBody.ondrop = (e) => {
+document.ondrop = (e) => {
   e.preventDefault();
   return false;
 }
@@ -43,6 +42,12 @@ dropImageArea.ondrop = (e) => {
 }
 
 
+document.addEventListener( 'dragenter', () => {
+  dropImageArea.style.webkitAnimationPlayState = "running";
+});
+document.addEventListener( 'dragleave', () => {
+  dropImageArea.style.webkitAnimationPlayState = "pause";
+});
 // Method which sends an 'openFile' event to the main process when the select
 // image button is pressed by the user.
 document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
@@ -77,6 +82,8 @@ ipcRenderer.on('faceInfo', (event, message) => {
     ctx.stroke();
   }
   img.src = message[0];
+
+
 });
 
 ipcRenderer.on('results', (event, results) => {
