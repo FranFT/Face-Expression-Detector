@@ -1,7 +1,15 @@
-/*
-font-family: 'Montserrat', sans-serif;
-font-family: 'Raleway', sans-serif;
-*/
+@keyframes pulse {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #568af2;
+  }
+  100%{
+    background-color: transparent;
+  }
+}
+
 
 /*--------- TEMP --*/
 section, footer{
@@ -12,30 +20,63 @@ section, footer{
 h1,h2,h3{
   font-family: 'Montserrat', sans-serif;;
 }
-p, button{
+p, a{
   font-family: 'Raleway', sans-serif;
+}
+
+.highlighted{
+  animation: pulse 2s infinite;
+}
+.hidden{
+  display: none;
 }
 
 /*--------- Body --*/
 html{
-  background-color: #262831;
+  background-color: #21252b;
   color: white;
+}
+body{
+  margin: 0px;
+}
+.button{
+  display: block;
+  width: 40%;
+  text-align: center;
+  padding: 25px;
+  background-color: rgb(40, 44, 52);
+  transition: 0.5s;
+}
+.button:hover{
+  transition: 0.5s;
+  background-color: #568af2;
 }
 /* Start Screen */
 #startScreen{
-  padding: 50px;
+  margin: 20px 50px;
+}
+#startScreen h1{
+  margin: 40px 0px;
 }
 #dropImageArea{
   text-align: center;
   border: 2px dashed white;
   border-radius: 10px;
   padding: 15% 35%;
+  animation: pulse 3s;
+  animation-iteration-count: 3;
 }
-#dropImageArea:drop{
-  background-color: red;
+#selectImageButton{
+  margin: auto;
+  margin-top: 30px;
 }
 
 /* Analysis Screen */
 #analysisScreen{
   /*display: none;*/
+}
+
+/* Footer */
+footer{
+
 }
