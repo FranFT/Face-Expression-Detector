@@ -1,3 +1,4 @@
+/* Animations */
 @keyframes pulse {
   0%    { background-color: transparent;  }
   50%   { background-color: #568af2;  }
@@ -6,14 +7,17 @@
 
 @keyframes fade {
   0%    { opacity: 0; }
-  50%   { opacity: 1; }
+  25%   { opacity: 1; }
+  75%   { opacity: 1; }
   100%  { opacity: 0; }
 }
 
-
-/*--------- TEMP --*/
-section, footer{
-/*  border: 2px solid white;*/
+.highlighted{
+/*  animation: pulse 2s;*/
+}
+.fadeinout{
+  animation: fade 4s;
+  animation-play-state: paused;
 }
 
 /*--------- Fonts --*/
@@ -24,13 +28,7 @@ p, a{
   font-family: 'Raleway', sans-serif;
 }
 
-.highlighted{
-  animation: pulse 2s infinite;
-}
-.fadeinout{
-  animation: fade 4s;
-  animation-timing-function: ease;
-}
+
 .hidden{
   display: none;
 }
@@ -88,6 +86,6 @@ body{
   left: 25%;
   text-align: center;
   border-radius: 10px;
-  background-color: #568af2;
+  background-color: #e06c75;
   opacity: 0;
 }

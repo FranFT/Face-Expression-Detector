@@ -2,9 +2,9 @@
 const { ipcRenderer } = require('electron');
 
 /*---------- Element-specific properties ----*/
-const windowBody = document.getElementsByTagName('html')[0];
 const dropImageArea = document.getElementById( 'dropImageArea' );
-dropImageArea.style.webkitAnimationPlayState = "paused";
+const logWindow = document.getElementById('logWindow');
+
 
 // Body.
 document.ondragover = () => {
@@ -41,13 +41,12 @@ dropImageArea.ondrop = (e) => {
   return false;
 }
 
+logWindow.addEventListener( 'animationend', () => {
+  console.log("Ventana log cerrada");
+  logWindow.style.webkitAnimationPlayState = 'paused';
+  logWindow.classList.toggle('hidden');
+});
 
-document.addEventListener( 'dragenter', () => {
-  dropImageArea.style.webkitAnimationPlayState = "running";
-});
-document.addEventListener( 'dragleave', () => {
-  dropImageArea.style.webkitAnimationPlayState = "pause";
-});
 // Method which sends an 'openFile' event to the main process when the select
 // image button is pressed by the user.
 document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
@@ -103,5 +102,7 @@ ipcRenderer.on('results', (event, results) => {
 ipcRenderer.on('logMsg', (event, message) => {
   const logArea = document.getElementById( 'log' );
   logArea.innerHTML = message;
-  // TODO: Add div Fade-IN / Fade-OUT animation.
+
+  logWindow.classList.toggle('hidden');
+  logWindow.style.webkitAnimationPlayState = "running";
 });
