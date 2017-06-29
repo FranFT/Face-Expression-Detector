@@ -2,6 +2,8 @@
 const { ipcRenderer } = require('electron');
 
 /*---------- Element-specific properties ----*/
+const startScreen = document.getElementById( 'startScreen' );
+const analysisScreen = document.getElementById( 'analysisScreen' );
 const dropImageArea = document.getElementById( 'dropImageArea' );
 const logWindow = document.getElementById('logWindow');
 
@@ -41,6 +43,24 @@ dropImageArea.ondrop = (e) => {
   return false;
 }
 
+startScreen.addEventListener( 'animationend', () => {
+  console.log('Start screen animation ended');
+  startScreen.style.webkitAnimationPlayState = 'paused';
+  startScreen.classList.toggle('fadeout');
+  startScreen.classList.toggle('hidden');
+
+  analysisScreen.classList.toggle('hidden');
+  analysisScreen.classList.toggle('fadein');
+  analysisScreen.style.webkitAnimationPlayState = 'running';
+});
+
+analysisScreen.addEventListener( 'animationend', () => {
+  analysisScreen.style.webkitAnimationPlayState = 'paused';
+  analysisScreen.classList.toggle('fadein');
+});
+
+
+// Resets Fade-in-out log window animation.
 logWindow.addEventListener( 'animationend', () => {
   console.log("Ventana log cerrada");
   logWindow.style.webkitAnimationPlayState = 'paused';
@@ -82,7 +102,9 @@ ipcRenderer.on('faceInfo', (event, message) => {
   }
   img.src = message[0];
 
-
+  console.log("ocultando start screen");
+  startScreen.classList.toggle('fadeout');
+  startScreen.style.webkitAnimationPlayState = "running";
 });
 
 ipcRenderer.on('results', (event, results) => {
