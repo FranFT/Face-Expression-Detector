@@ -1,13 +1,13 @@
 @keyframes pulse {
-  0% {
-    background-color: transparent;
-  }
-  50% {
-    background-color: #568af2;
-  }
-  100%{
-    background-color: transparent;
-  }
+  0%    { background-color: transparent;  }
+  50%   { background-color: #568af2;  }
+  100%  { background-color: transparent;  }
+}
+
+@keyframes fade {
+  0%    { opacity: 0; }
+  50%   { opacity: 1; }
+  100%  { opacity: 0; }
 }
 
 
@@ -26,6 +26,10 @@ p, a{
 
 .highlighted{
   animation: pulse 2s infinite;
+}
+.fadeinout{
+  animation: fade 4s;
+  animation-timing-function: ease;
 }
 .hidden{
   display: none;
@@ -76,7 +80,14 @@ body{
   /*display: none;*/
 }
 
-/* Footer */
-footer{
-
+/* Log */
+#logWindow{
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  left: 25%;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #568af2;
+  opacity: 0;
 }
