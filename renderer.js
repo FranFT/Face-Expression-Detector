@@ -44,7 +44,6 @@ dropImageArea.ondrop = (e) => {
 }
 
 startScreen.addEventListener( 'animationend', () => {
-  console.log('Start screen animation ended');
   startScreen.style.webkitAnimationPlayState = 'paused';
   startScreen.classList.toggle('fadeout');
   startScreen.classList.toggle('hidden');
@@ -62,7 +61,6 @@ analysisScreen.addEventListener( 'animationend', () => {
 
 // Resets Fade-in-out log window animation.
 logWindow.addEventListener( 'animationend', () => {
-  console.log("Ventana log cerrada");
   logWindow.style.webkitAnimationPlayState = 'paused';
   logWindow.classList.toggle('hidden');
 });
@@ -91,27 +89,38 @@ ipcRenderer.on('faceInfo', (event, message) => {
   const ctx = document.getElementById( 'imageArea' ).getContext( '2d' );
   var img = new Image();
   img.onload = function(){
-//https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
-// Apply padding if possible.
-// EJ: (coords[0] - 50 > 0 ) ? coords[0] - 50 : coords[0];
     ctx.drawImage( img,
-      coords[0], coords[1], faceArea[0], faceArea[1],
-      0, 0, 400, 400 // Canvas coords.
+      coords[0] - 50, coords[1] - 50, faceArea[0] + 100, faceArea[1] + 100,
+      0, 0, 350, 350 // Canvas coords.
     );
     ctx.stroke();
   }
   img.src = message[0];
 
-  console.log("ocultando start screen");
+  // Hiding start screen.
   startScreen.classList.toggle('fadeout');
   startScreen.style.webkitAnimationPlayState = "running";
 });
 
-ipcRenderer.on('results', (event, results) => {
+ipcRenderer.on('results', (event, _results) => {
   var resultArea = document.getElementById('resultsArea');
-  var results = results.split( '\n' );
+
+  var results = _results.split( '\n' ).map( function( item ){
+    return item.split(' - ');
+  }).map( function( pair ){
+    if( pair[1] !== undefined ){
+      var myWord = pair[1].replace(/["]+/g, '');
+      myWord = myWord.charAt(0).toUpperCase() + myWord.slice(1);
+      return [ parseFloat(pair[0]) * 100, myWord ];
+    }
+  });
   results.shift();
   results.pop();
+
+  console.log(results);
+
+  //for( i=0; i<results.length; i++)
+    //console.log( results[i].split(' - '));
 
   // Writing results.
   resultArea.innerHTML = '<ul>';
