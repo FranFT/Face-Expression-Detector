@@ -102,25 +102,27 @@ ipcRenderer.on('faceInfo', (event, message) => {
   startScreen.style.webkitAnimationPlayState = "running";
 });
 
+// Renderer process event that receive main process classification output.
 ipcRenderer.on('results', (event, _results) => {
   var resultArea = document.getElementById('resultsArea');
 
-  var results = _results.split( '\n' ).map( function( item ){
-    return item.split(' - ');
-  }).map( function( pair ){
-    if( pair[1] !== undefined ){
-      var myWord = pair[1].replace(/["]+/g, '');
-      myWord = myWord.charAt(0).toUpperCase() + myWord.slice(1);
-      return [ parseFloat(pair[0]) * 100, myWord ];
-    }
-  });
+  // Result filtering.
+  var results = _results.split( '\n' ) // Gets every line individualy.
+    .map( function( item ){ // Splits every line by the character " - ".
+      return item.split(' - ');
+    }).map( function( pair ){ // Transforms every previously splitted line.
+      if( pair[1] !== undefined ){
+        // Removing quotes.
+        var myWord = pair[1].replace(/["]+/g, '');
+        // Capitalizing the word.
+        myWord = myWord.charAt(0).toUpperCase() + myWord.slice(1);
+        // Returning a percentage followed by the expression.
+        return [ parseFloat(pair[0]) * 100, myWord ];
+      }
+    });
+  // Removes first and last line. They are not necesary.
   results.shift();
   results.pop();
-
-  console.log(results);
-
-  //for( i=0; i<results.length; i++)
-    //console.log( results[i].split(' - '));
 
   // Writing results.
   resultArea.innerHTML = '<ul>';
