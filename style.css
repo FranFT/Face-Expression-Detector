@@ -43,7 +43,7 @@
 h1,h2,h3{
   font-family: 'Montserrat', sans-serif;
 }
-p, a{
+p, a, div{
   font-family: 'Raleway', sans-serif;
 }
 
@@ -97,15 +97,20 @@ body{
   display: flex;
   flex-flow: row nowrap;
 }
+#imageArea{
+  margin-right: 20px;
+}
 #graphContainer{
   flex: 0 1 100%;
   display: flex;
   flex-flow: column nowrap;
+  margin-left: 20px;
 }
 .row{
   display: inline-flex;
   flex-flow: row nowrap;
-  height: 50px;
+  height: 30px;
+  padding: 20px 0px;
 }
 .row .filled{
   flex: 0 1 50%;
@@ -121,6 +126,11 @@ body{
   flex-flow: row nowrap;
   border: 1px dotted black;
 }
+#graphContainer .row:nth-child(1) .filled{ background-color: #e06c75; }
+#graphContainer .row:nth-child(2) .filled{ background-color: #61afef; }
+#graphContainer .row:nth-child(3) .filled{ background-color: #d19a66; }
+#graphContainer .row:nth-child(4) .filled{ background-color: #98c379; }
+#graphContainer .row:nth-child(5) .filled{ background-color: #c678dd; }
 
 
 /* Log */
