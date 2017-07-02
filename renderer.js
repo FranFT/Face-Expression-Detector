@@ -6,7 +6,7 @@ const startScreen = document.getElementById( 'startScreen' );
 const analysisScreen = document.getElementById( 'analysisScreen' );
 const dropImageArea = document.getElementById( 'dropImageArea' );
 const logWindow = document.getElementById('logWindow');
-
+const graphArea = document.getElementById('graphContainer');
 
 // Body.
 document.ondragover = () => {
@@ -45,19 +45,22 @@ dropImageArea.ondrop = (e) => {
 
 startScreen.addEventListener( 'animationend', () => {
   startScreen.style.webkitAnimationPlayState = 'paused';
-  startScreen.classList.toggle('fadeout');
-  startScreen.classList.toggle('hidden');
+  startScreen.classList.remove('fadeout');
+  startScreen.classList.add('hidden');
 
-  analysisScreen.classList.toggle('hidden');
-  analysisScreen.classList.toggle('fadein');
+  analysisScreen.classList.remove('hidden');
+  analysisScreen.classList.add('fadein');
   analysisScreen.style.webkitAnimationPlayState = 'running';
 });
 
 analysisScreen.addEventListener( 'animationend', () => {
   analysisScreen.style.webkitAnimationPlayState = 'paused';
-  analysisScreen.classList.toggle('fadein');
+  analysisScreen.classList.remove('fadein');
 });
-
+graphArea.addEventListener( 'animationend', () => {
+  graphArea.style.webkitAnimationPlayState = 'paused';
+  graphArea.classList.remove('fadein');
+});
 
 // Resets Fade-in-out log window animation.
 logWindow.addEventListener( 'animationend', () => {
@@ -98,7 +101,7 @@ ipcRenderer.on('faceInfo', (event, message) => {
   img.src = message[0];
 
   // Hiding start screen.
-  startScreen.classList.toggle('fadeout');
+  startScreen.classList.add('fadeout');
   startScreen.style.webkitAnimationPlayState = "running";
 });
 
@@ -123,16 +126,17 @@ ipcRenderer.on('results', (event, _results) => {
   results.pop();
 
   // Drawing the bar graph.
-  var graph = document.getElementById('graphContainer');
   for( i = 0; i < results.length; i++ ){
     if( results[i][0] !== 0.0 ){
-      graph.innerHTML +=
+      graphArea.innerHTML +=
       '<div class="row"><div class="label">' + results[i][1] + '</div>' +
       '<div class="bar"><div class="filled"></div>' +
       '<div class="remain"></div></div>' +
       '<div class="value">' + results[i][0] + '%</div></div>';
     }
   }
+  graphArea.classList.add( 'fadein' );
+  graphArea.style.webkitAnimationPlayState = "running";
 
 });
 
