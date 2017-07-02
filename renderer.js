@@ -104,8 +104,6 @@ ipcRenderer.on('faceInfo', (event, message) => {
 
 // Renderer process event that receive main process classification output.
 ipcRenderer.on('results', (event, _results) => {
-  var resultArea = document.getElementById('resultsArea');
-
   // Result filtering.
   var results = _results.split( '\n' ) // Gets every line individualy.
     .map( function( item ){ // Splits every line by the character " - ".
@@ -124,12 +122,16 @@ ipcRenderer.on('results', (event, _results) => {
   results.shift();
   results.pop();
 
-  // Writing results.
-  resultArea.innerHTML = '<ul>';
-  for( i = 0; i < results.length; i++ ) {
-    resultArea.innerHTML += '<li>' + results[i] + '</li>';
+  // Drawing the bar graph.
+  var graph = document.getElementById('graphContainer');
+  for( i = 0; i < results.length; i++ ){
+    graph.innerHTML +=
+    '<div class="row"><div class="label">' + results[i][1] + '</div>' +
+    '<div class="bar"><div class="filled"></div>' +
+    '<div class="remain"></div></div>' +
+    '<div class="value">' + results[i][0] + '</div></div>';
   }
-  resultArea.innerHTML += '</ul>';
+
 });
 
 ipcRenderer.on('logMsg', (event, message) => {

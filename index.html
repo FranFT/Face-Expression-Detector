@@ -16,11 +16,13 @@
     </section>
     <section id="analysisScreen" class="hidden">
         <h1> Analysis Screen </h1>
-        <canvas id="imageArea" src="" width="400" height="400"></canvas>
-        <div id="resultsArea"></div>
+        <div id="container">
+          <canvas id="imageArea" src="" width="350" height="350"></canvas>
+          <div id="graphContainer"></div>
+        </div>
     </section>
     <div id="logWindow" class="hidden fadeinout">
-      <p id="log"> Esto es el footer y un error super largo </p>
+      <p id="log"></p>
     </div>
   </body>
   <script src="renderer.js"></script>

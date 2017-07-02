@@ -73,10 +73,12 @@ body{
   background-color: #568af2;
 }
 /* Start Screen */
-#startScreen{
+#startScreen,
+#analysisScreen{
   margin: 20px 50px;
 }
-#startScreen h1{
+#startScreen h1,
+#analysisScreen h1{
   margin: 40px 0px;
 }
 #dropImageArea{
@@ -91,8 +93,35 @@ body{
 }
 
 /* Analysis Screen */
-#analysisScreen{
+#container{
+  display: flex;
+  flex-flow: row nowrap;
 }
+#graphContainer{
+  flex: 0 1 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.row{
+  display: inline-flex;
+  flex-flow: row nowrap;
+  height: 50px;
+}
+.row .filled{
+  flex: 0 1 50%;
+  background-color: red;
+  border-right: 1px solid black;
+}
+.label{
+  flex: 0 1 20%;
+}
+.bar{
+  flex: 0 1 70%;
+  display: flex;
+  flex-flow: row nowrap;
+  border: 1px dotted black;
+}
+
 
 /* Log */
 #logWindow{
