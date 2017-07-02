@@ -105,6 +105,7 @@ body{
   display: flex;
   flex-flow: column nowrap;
   margin-left: 20px;
+
 }
 .row{
   display: inline-flex;
@@ -113,9 +114,10 @@ body{
   padding: 20px 0px;
 }
 .row .filled{
-  flex: 0 1 50%;
+  flex: 0 1 0%;
   background-color: red;
   border-right: 1px solid black;
+  transition: all 5s ease-in-out;
 }
 .label{
   flex: 0 1 20%;

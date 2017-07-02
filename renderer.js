@@ -135,8 +135,20 @@ ipcRenderer.on('results', (event, _results) => {
       '<div class="value">' + results[i][0] + '%</div></div>';
     }
   }
+
+  // Running fade in animation.
   graphArea.classList.add( 'fadein' );
   graphArea.style.webkitAnimationPlayState = "running";
+
+  var bars = document.getElementsByClassName('filled');
+  if( bars.length > 0 ){
+    for( i = 0; i < bars.length; i++ )
+      if( results[i][0] < 0.1 )
+        bars[i].style.flex = '0 1 ' + (results[i][0] * 10) + '%';
+      else
+        bars[i].style.flex = '0 1 ' + results[i][0] + '%';
+  }
+
 
 });
 
