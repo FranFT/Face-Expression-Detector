@@ -149,14 +149,13 @@ function findFace( filePath ){
       else{
         // Sending face location to renderer process.
         const thumbnailPath = path.join( __dirname, 'temp', 'thumbnail.jpg');
-        console.log(thumbnailPath);
         main_window.webContents.send( 'faceInfo', [thumbnailPath,stdout] );
         classify();
       }
     });
 
   child.on('error', (err) => {
-    console.log( 'Ups, an error occured' );
+    showLogMsg( 'Ups, an unexpected error occured while finding face.');
   });
 }
 
