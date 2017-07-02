@@ -117,16 +117,19 @@ body{
   flex: 0 1 0%;
   background-color: red;
   border-right: 1px solid black;
-  transition: all 5s ease-in-out;
+  transition-timing-function: linear;
 }
 .label{
-  flex: 0 1 20%;
+  flex: 0 1 30%;
 }
 .bar{
-  flex: 0 1 70%;
+  flex: 0 1 60%;
   display: flex;
   flex-flow: row nowrap;
   border: 1px dotted black;
+}
+.value{
+  margin-left: 10px;
 }
 #graphContainer .row:nth-child(1) .filled{ background-color: #e06c75; }
 #graphContainer .row:nth-child(2) .filled{ background-color: #61afef; }

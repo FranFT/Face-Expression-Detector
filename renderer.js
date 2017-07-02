@@ -107,6 +107,10 @@ ipcRenderer.on('faceInfo', (event, message) => {
 
 // Renderer process event that receive main process classification output.
 ipcRenderer.on('results', (event, _results) => {
+  // Needed variables.
+  var initialValues = [];
+  var targetValues = [];
+  var valueIsComplete = [];
   // Result filtering.
   var results = _results.split( '\n' ) // Gets every line individualy.
     .map( function( item ){ // Splits every line by the character " - ".
@@ -127,12 +131,16 @@ ipcRenderer.on('results', (event, _results) => {
 
   // Drawing the bar graph.
   for( i = 0; i < results.length; i++ ){
-    if( results[i][0] !== 0.0 ){
+    if( results[i][0] > 1.0 ){
       graphArea.innerHTML +=
       '<div class="row"><div class="label">' + results[i][1] + '</div>' +
       '<div class="bar"><div class="filled"></div>' +
       '<div class="remain"></div></div>' +
-      '<div class="value">' + results[i][0] + '%</div></div>';
+      '<div class="value">0%</div></div>';
+      //'<div class="value">' + results[i][0] + '%</div></div>';
+      targetValues.push(Math.floor(results[i][0]));
+      initialValues.push(0);
+      valueIsComplete.push(false);
     }
   }
 
@@ -140,16 +148,28 @@ ipcRenderer.on('results', (event, _results) => {
   graphArea.classList.add( 'fadein' );
   graphArea.style.webkitAnimationPlayState = "running";
 
+  // Getting graph necesary elements.
   var bars = document.getElementsByClassName('filled');
-  if( bars.length > 0 ){
-    for( i = 0; i < bars.length; i++ )
-      if( results[i][0] < 0.1 )
-        bars[i].style.flex = '0 1 ' + (results[i][0] * 10) + '%';
-      else
-        bars[i].style.flex = '0 1 ' + results[i][0] + '%';
-  }
+  var values = document.getElementsByClassName('value');
 
-
+  // Graph animation.
+  var interval = setInterval( function(){
+    var finalStatus = true;
+    // Updating values which havent reached its target value.
+    for( i = 0; i < values.length; i++ ){
+      if( !valueIsComplete[i] ){
+        values[i].innerHTML = initialValues[i] + '%';
+        bars[i].style.flex = '0 1 ' + initialValues[i] + '%';
+        if( initialValues[i] >= targetValues[i] )
+          valueIsComplete[i] = true;
+        initialValues[i] += 1;
+      }
+    }
+    // Checking if all bars have reached the target value to finish the loop.
+    for( i = 0; i < valueIsComplete.length; i++ )
+      finalStatus = finalStatus && valueIsComplete[i];
+    if( finalStatus ) clearInterval(interval);
+  }, 50);
 });
 
 ipcRenderer.on('logMsg', (event, message) => {
