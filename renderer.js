@@ -125,11 +125,13 @@ ipcRenderer.on('results', (event, _results) => {
   // Drawing the bar graph.
   var graph = document.getElementById('graphContainer');
   for( i = 0; i < results.length; i++ ){
-    graph.innerHTML +=
-    '<div class="row"><div class="label">' + results[i][1] + '</div>' +
-    '<div class="bar"><div class="filled"></div>' +
-    '<div class="remain"></div></div>' +
-    '<div class="value">' + results[i][0] + '</div></div>';
+    if( results[i][0] !== 0.0 ){
+      graph.innerHTML +=
+      '<div id="row' + i + '" class="row"><div class="label">' + results[i][1] + '</div>' +
+      '<div class="bar"><div class="filled"></div>' +
+      '<div class="remain"></div></div>' +
+      '<div class="value">' + results[i][0] + '</div></div>';
+    }
   }
 
 });
