@@ -76,6 +76,11 @@ document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => 
   });
 });
 
+// Method that restart the UI when the element is clicked.
+document.getElementById( 'restartButton' ).addEventListener( 'click', () => {
+  location.reload(true);
+});
+
 // Renderer process events.
 // Events which receive an image path and face coords and draws the face.
 ipcRenderer.on('faceInfo', (event, message) => {
