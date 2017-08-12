@@ -6,3 +6,16 @@ data/*
 !data/haarcascade_eye_tree_eyeglasses.xml
 
 npm-debug.log
+
+## Core latex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
