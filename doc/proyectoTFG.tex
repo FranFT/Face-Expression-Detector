@@ -291,10 +291,10 @@ Imagine que deseamos desarrollar un agente basado en inteligencia artificial par
 
 Como se puede ver, la solución a este problema puede ser de utilidad en diversas aplicaciones del mundo real, sin embargo, ¿Cómo podría un computador resolver este problema? Hay diversas propuestas que han tratado de resolver este problema.
 
-\subsection{Facial Expression Analysis using Active Shape Model}
+\subsection{Facial Expression Analysis using Active Shape Model\cite{shbib_zhou15}}
 
-Active Shape Model(ASM) es una técnica que permite, dada una imagen del objeto para el que fue entrenado, localizar un conjunto de puntos de referencia previamente definidos tal y como se puede ver en la Figura \ref{fig:landmarks}. En el caso de un rostro humano estos puntos pueden estar los principales indicadores de la expresión facial, como pueden ser las cejas, boca, ojos...\\
-En este paper en concreto, se tienen en cuenta para cada cara, 68 puntos de referencia. Se procesan los puntos extraídos y se obtiene un modelo geométrico para ese rostro concreto. Acto seguido, haciendo uso de la técnica de clasificación conocida como Support Vector Machine(SVM), se clasifica ese modelo geométrico para predecir a qué expresión facial pertenece obteniendo un porcentaje de acierto del 92,1\%.
+Active Shape Model(ASM)\cite{cootes_taylor_cooper_graham94} es una técnica que permite, dada una imagen del objeto para el que fue entrenado, localizar un conjunto de puntos de referencia previamente definidos tal y como se puede ver en la Figura \ref{fig:landmarks}. En el caso de un rostro humano estos puntos pueden estar los principales indicadores de la expresión facial, como pueden ser las cejas, boca, ojos...\\
+En este paper \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada cara, 68 puntos de referencia. Se procesan los puntos extraídos y se obtiene un modelo geométrico para ese rostro concreto. Acto seguido, haciendo uso de la técnica de clasificación conocida como Support Vector Machine(SVM), se clasifica ese modelo geométrico para predecir a qué expresión facial pertenece obteniendo un porcentaje de acierto del 92,1\%.
 
 \begin{figure}[!]
 \centering
@@ -305,7 +305,9 @@ En este paper en concreto, se tienen en cuenta para cada cara, 68 puntos de refe
 
 
 \subsection{Facial expression recognition and synthesis based on
-	an appearance model}
+	an appearance model\cite{abboud_davoine_dang04}}
+En este caso se hace uso de la técnica \textit{Active Appearance Model (AAM)}\cite{cootes_edwards_taylor98}, un método estadístico que se emplea para emparejar, un modelo geométrico, a una nueva forma del mismo tipo para el que fue entrenado, pero que el modelo no ha visto antes, como por ejemplo un nuevo rostro humano. Esta técnica (AAM)  es una generalización de la ya antes mencionada ASM\cite{cootes_taylor_cooper_graham94}.
+Además, lo que en este caso se intenta es que la información usada esté exenta de redundancia por lo que se aplican técnicas de aprendizaje no supervisado en una fase de preprocesamiento de la información como \textit{Análisis de Componentes Principales (PCA)}\cite{pearson01,abdi_williams10} o \textit{Análisis de Componentes Independientes(ICA)} para reducir la dimensionalidad de la información. En este caso obtienen alrededor de un 84\% de acierto.
 
 
 %Para ser capaces Sin embargo, ¿cómo podría un computador dar solución al problema que aquí se presenta?\\
@@ -452,18 +454,54 @@ Valoración personal si se quiere.
 Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detectadas o para conseguir nuevas funcionalidades interesantes.
 
 \chapter{Bibliografía}
-\begin{thebibliography}{9}
-	\bibitem{lamport94}
-	Leslie Lamport,
-	\textit{\LaTeX: a document preparation system},
-	Addison Wesley, Massachusetts,
-	2nd edition,
-	1994.
+
+%% Poner las citas bibliográficas, direcciones de internet, etc.
+
+\begin{thebibliography}{99}
+	%%%%% Papers %%%%%
+	\bibitem{shbib_zhou15}
+	R. Shbib, and S. Zhou. %Names
+	\textit{Facial Expression Analysis using Active Shape Model}, %Title
+	School of Engineering, University of Portsmouth, United Kingdom	%Location
+	2015.	%Date
+	
+	\bibitem{abboud_davoine_dang04}
+	B. Abboud, F. Davoine, and M. Dang. %Names
+	\textit{Facial expression recognition and synthesis based on
+		an appearance model}, %Title
+	Heudiasyc Laboratory CNRS, University of Technology of Compi" egne, BP 20529, 60205 Compiegne Cedex, France	%Location
+	2004.	%Date
+	
+	\bibitem{cootes_taylor_cooper_graham94}
+	T. F. Cootes, C. J. Taylor, D. H. Cooper, and J. Graham. %Names
+	\textit{Active Shape Models - Their Training and Application}, %Title
+	Department of Medical Biophysics, University of Manchester, Oxford Road, Manchester M13 9PT, England 	%Location
+	1994.	%Date
+	
+	\bibitem{cootes_edwards_taylor98}
+	T. F. Cootes, G. J. Edwards, and C. J. Taylor. %Names
+	\textit{Active Appearance Models}, %Title
+	Wolfson Image Analysis Unit, Department of Medical Biophysic, University of Manchester, Manchester M13 9PT, UK %Location
+	1998.	%Date
+	
+	\bibitem{pearson01}
+	K. Pearson. %Names
+	\textit{On Lines and Planes of Closest Fit to Systems of Points in Space}, %Title
+	Philosophical Magazine. 2 (11): 559–572 %Location
+	1901.	%Date
+	
+	\bibitem{abdi_williams10}
+	H. Adbi, and L. Williams. %Names
+	\textit{Principal component analysis}, %Title
+	2010.	%Date
+	
+	%%%%% Tools %%%%%
+	
+	%%%%% Databases %%%%%
+	
+	%%%%% URLS %%%%%
+	
 \end{thebibliography}
-
-Poner las citas bibliográficas, direcciones de internet, etc.
-
-
 \chapter{Anexo}
 
 Al final de la memoria hay que añadir un anexo de una página o dos, explicando como se usa el software a modo de manual de usuario. Es decir, como se llaman los comandos, qué parámetros hay que darle, como se llaman los ficheros de datos de entrada, etc.
