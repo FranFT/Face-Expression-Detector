@@ -287,11 +287,11 @@ A priori la solución para un ser humano es trivial. Tenemos muchas maneras de a
 
 Imagine que deseamos desarrollar un agente basado en inteligencia artificial para que interactúe con otros seres humanos. Sería de gran utilidad que este agente basara sus acciones en función del estado de ánimo de la persona/as con las que está comunicándose para lograr de esta forma un mayor grado de comprensión o empatía. De la misma manera podríamos pensar en una aplicación que escoge la música idónea para nosotros en función de nuestro estado de ánimo en ese momento a través de una captura mediante la cámara del computador.
 
-\section{Trabajos relacionados}
+\subsection{Trabajos relacionados}
 
 Como se puede ver, la solución a este problema puede ser de utilidad en diversas aplicaciones del mundo real, sin embargo, ¿Cómo podría un computador resolver este problema? Hay diversas propuestas que han tratado de resolver este problema.
 
-\subsection{Facial Expression Analysis using Active Shape Model\cite{shbib_zhou15}}
+\subsubsection{Facial Expression Analysis using Active Shape Model\cite{shbib_zhou15}}
 
 Active Shape Model(ASM)\cite{cootes_taylor_cooper_graham94} es una técnica que permite, dada una imagen del objeto para el que fue entrenado, localizar un conjunto de puntos de referencia previamente definidos tal y como se puede ver en la Figura \ref{fig:landmarks}. En el caso de un rostro humano estos puntos pueden estar los principales indicadores de la expresión facial, como pueden ser las cejas, boca, ojos...\\
 En este paper \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada cara, 68 puntos de referencia. Se procesan los puntos extraídos y se obtiene un modelo geométrico para ese rostro concreto. Acto seguido, haciendo uso de la técnica de clasificación conocida como Support Vector Machine(SVM), se clasifica ese modelo geométrico para predecir a qué expresión facial pertenece obteniendo un porcentaje de acierto del 92,1\%.
@@ -304,10 +304,9 @@ En este paper \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada car
 \end{figure}
 
 
-\subsection{Facial expression recognition and synthesis based on
-	an appearance model\cite{abboud_davoine_dang04}}
+\subsubsection{Facial expression recognition and synthesis based on an appearance model\cite{abboud_davoine_dang04}}
 En este caso se hace uso de la técnica \textit{Active Appearance Model (AAM)}\cite{cootes_edwards_taylor98}, un método estadístico que se emplea para emparejar, un modelo geométrico, a una nueva forma del mismo tipo para el que fue entrenado, pero que el modelo no ha visto antes, como por ejemplo un nuevo rostro humano. Esta técnica (AAM)  es una generalización de la ya antes mencionada ASM\cite{cootes_taylor_cooper_graham94}.
-Además, lo que en este caso se intenta es que la información usada esté exenta de redundancia por lo que se aplican técnicas de aprendizaje no supervisado en una fase de preprocesamiento de la información como \textit{Análisis de Componentes Principales (PCA)}\cite{pearson01,abdi_williams10} o \textit{Análisis de Componentes Independientes(ICA)} para reducir la dimensionalidad de la información. En este caso obtienen alrededor de un 84\% de acierto.
+Además, lo que en este caso se intenta es que la información usada esté exenta de redundancia por lo que se aplican técnicas de aprendizaje no supervisado en una fase de preprocesamiento de la información como \textit{Análisis de Componentes Principales (PCA)} o \textit{Análisis de Componentes Independientes(ICA)} para reducir la dimensionalidad de la información  en una fase de preprocesamiento. En este caso obtienen alrededor de un 84\% de acierto.
 
 
 %Para ser capaces Sin embargo, ¿cómo podría un computador dar solución al problema que aquí se presenta?\\
@@ -320,6 +319,22 @@ Además, lo que en este caso se intenta es que la información usada esté exent
 %\end{itemize}
 %Una vez seleccionadas las técnicas más útiles que responden a las preguntas anteriores, se tratará el problema desde el punto de vista del desarrollo software. Es decir, justificar las decisiones que se han tomado y describir el proceso que se ha seguido para la implementación de la aplicación final.\\
 
+\subsection{¿Qué se pretende conseguir con este proyecto?}
+\begin{figure}[!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{imagenes/feg_diagram}
+	\caption[Diagrama FER]{Diagrama general del proceso de reconocimiento.}
+	\label{fig:feg_diagram}
+\end{figure}
+Las técnicas de ASM\cite{cootes_taylor_cooper_graham94} y AAM\cite{cootes_edwards_taylor98} son sensibles a rotaciones de la imagen, es decir, será difícil extraer los puntos de referencia en imágenes que disten mucho del concepto de imagen frontal, como por ejemplo una la fotografía de una persona mirando hacia un lado con una expresión facial determinada. Además, en la Figura \ref{fig:feg_diagram} extraída del siguiente paper\cite{kumari_rajesh_pooja15}, se puede ver el proceso general que se sigue a la hora de clasificar una imagen, en nuestro caso reconocimiento de expresiones faciales.\\
+El objetivo de este proyecto es simplificar dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características de la imagen, y que sea más robusto con imágenes inclinadas o rotadas. Para lograr este objetivo y tras observar el auge que han tenido en la resolución de problemas de visión artificial, basaremos nuestra solución en el uso de Redes Neuronales Convolucionales.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/my_fer_diagram}
+\caption[my_diagram]{Diagrama del proceso objetivo.}
+\label{fig:my_fer_diagram}
+\end{figure}
+ 
 %\item Una vez descrito el marco general, se explica lo que se quiere hacer con el proyecto con la propuesta concreta que se pretende conseguir.
 
 %\item Se termina explicando la organización de la memoria diciendo lo que se trata en cada capítulo.
@@ -484,16 +499,11 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	Wolfson Image Analysis Unit, Department of Medical Biophysic, University of Manchester, Manchester M13 9PT, UK %Location
 	1998.	%Date
 	
-	\bibitem{pearson01}
-	K. Pearson. %Names
-	\textit{On Lines and Planes of Closest Fit to Systems of Points in Space}, %Title
-	Philosophical Magazine. 2 (11): 559–572 %Location
-	1901.	%Date
-	
-	\bibitem{abdi_williams10}
-	H. Adbi, and L. Williams. %Names
-	\textit{Principal component analysis}, %Title
-	2010.	%Date
+	\bibitem{kumari_rajesh_pooja15}
+	J. Kumari, R. Rajesh, and KM. Pooja. %Names
+	\textit{Facial expression recognition: A survey}, %Title
+	Dept. of Computer Science, Central University of South Bihar, India 
+	2015.	%Date
 	
 	%%%%% Tools %%%%%
 	
