@@ -271,9 +271,7 @@
 
 \chapter{Introducción}
 
-%\begin{itemize}
-
-%\item Aquí hay que contextualizar el TFG, es decir, explicar la motivación que existe para realizar el TFG describiendo la realidad de la que se parte haciendo un estudio del estado del arte breve con referencias bibliográficas a trabajos que han tratado también el tema que vamos a abordar.
+%\ Aquí hay que contextualizar el TFG, es decir, explicar la motivación que existe para realizar el TFG describiendo la realidad de la que se parte haciendo un estudio del estado del arte breve con referencias bibliográficas a trabajos que han tratado también el tema que vamos a abordar.
 
 \section{Motivación}
 
@@ -308,17 +306,7 @@ En este paper \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada car
 En este caso se hace uso de la técnica \textit{Active Appearance Model (AAM)}\cite{cootes_edwards_taylor98}, un método estadístico que se emplea para emparejar, un modelo geométrico, a una nueva forma del mismo tipo para el que fue entrenado, pero que el modelo no ha visto antes, como por ejemplo un nuevo rostro humano. Esta técnica (AAM)  es una generalización de la ya antes mencionada ASM\cite{cootes_taylor_cooper_graham94}.
 Además, lo que en este caso se intenta es que la información usada esté exenta de redundancia por lo que se aplican técnicas de aprendizaje no supervisado en una fase de preprocesamiento de la información como \textit{Análisis de Componentes Principales (PCA)} o \textit{Análisis de Componentes Independientes(ICA)} para reducir la dimensionalidad de la información  en una fase de preprocesamiento. En este caso obtienen alrededor de un 84\% de acierto.
 
-
-%Para ser capaces Sin embargo, ¿cómo podría un computador dar solución al problema que aquí se presenta?\\
-%Imagine que deseamos 
-%El objetivo de este documento es mostrar al lector el proceso seguido para el desarrollo de una aplicación software capaz de resolver este problema.
-%Esto implica discutir sobre las técnicas referentes a la Inteligencia Artificial que nos proporcionan una mejor aproximación a la solución. Para ello se intentará dar respuesta a las preguntas que este problema plantea de manera inmediata,  como por ejemplo:\\
-%\begin{itemize}
-%	\item ¿Cómo saber si aparece una cara en una imagen?\\
-%	\item Y suponiendo que hay una cara, ¿Cómo codificar una expresión facial de manera que el computador pueda distinguirlas? ¿Es realmente necesario codificarlas?
-%\end{itemize}
-%Una vez seleccionadas las técnicas más útiles que responden a las preguntas anteriores, se tratará el problema desde el punto de vista del desarrollo software. Es decir, justificar las decisiones que se han tomado y describir el proceso que se ha seguido para la implementación de la aplicación final.\\
-
+% Una vez descrito el marco general, se explica lo que se quiere hacer con el proyecto con la propuesta concreta que se pretende conseguir.
 \subsection{¿Qué se pretende conseguir con este proyecto?}
 \begin{figure}[!]
 	\centering
@@ -327,19 +315,23 @@ Además, lo que en este caso se intenta es que la información usada esté exent
 	\label{fig:feg_diagram}
 \end{figure}
 Las técnicas de ASM\cite{cootes_taylor_cooper_graham94} y AAM\cite{cootes_edwards_taylor98} son sensibles a rotaciones de la imagen, es decir, será difícil extraer los puntos de referencia en imágenes que disten mucho del concepto de imagen frontal, como por ejemplo una la fotografía de una persona mirando hacia un lado con una expresión facial determinada. Además, en la Figura \ref{fig:feg_diagram} extraída del siguiente paper\cite{kumari_rajesh_pooja15}, se puede ver el proceso general que se sigue a la hora de clasificar una imagen, en nuestro caso reconocimiento de expresiones faciales.\\
-El objetivo de este proyecto es simplificar dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características de la imagen, y que sea más robusto con imágenes inclinadas o rotadas. Para lograr este objetivo y tras observar el auge que han tenido en la resolución de problemas de visión artificial, basaremos nuestra solución en el uso de Redes Neuronales Convolucionales.
+
 \begin{figure}[h!]
-\centering
-\includegraphics[width=0.7\linewidth]{imagenes/my_fer_diagram}
-\caption[my_diagram]{Diagrama del proceso objetivo.}
-\label{fig:my_fer_diagram}
+	\centering
+	\includegraphics[width=0.7\linewidth]{imagenes/my_fer_diagram}
+	\caption[my_diagram]{Diagrama del proceso objetivo.}
+	\label{fig:my_fer_diagram}
 \end{figure}
- 
-%\item Una vez descrito el marco general, se explica lo que se quiere hacer con el proyecto con la propuesta concreta que se pretende conseguir.
 
-%\item Se termina explicando la organización de la memoria diciendo lo que se trata en cada capítulo.
+La idea principal que se quiere conseguir para resolver el problema consiste en simplificar de alguna manera dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características cada vez que se clasifique una nueva imagen. Otra de las propuestas es que la rotación de la imagen de entrada no suponga un handicap a la hora de clasificarla. El motivo de estas medidas es:\\
+\begin{itemize}
+	\item Intentar realizar la clasificación en tiempo real simplificando el preprocesamiento de las imágenes.
+	\item Ganar en robustez con imágenes inclinadas.
+	\item Combinar todo en una aplicación de escritorio con una interfaz simple por encima.
+\end{itemize}
 
-%\end{itemize}
+% Se termina explicando la organización de la memoria diciendo lo que se trata en cada capítulo.
+\subsection{Organización del documento}
 
 \chapter{Objetivos}
 
