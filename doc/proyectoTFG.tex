@@ -308,6 +308,7 @@ Además, lo que en este caso se intenta es que la información usada esté exent
 
 % Una vez descrito el marco general, se explica lo que se quiere hacer con el proyecto con la propuesta concreta que se pretende conseguir.
 \subsection{¿Qué se pretende conseguir con este proyecto?}
+\label{subsec:aspirations}
 \begin{figure}[!]
 	\centering
 	\includegraphics[width=0.7\linewidth]{imagenes/feg_diagram}
@@ -323,26 +324,59 @@ Las técnicas de ASM\cite{cootes_taylor_cooper_graham94} y AAM\cite{cootes_edwar
 	\label{fig:my_fer_diagram}
 \end{figure}
 
-La idea principal que se quiere conseguir para resolver el problema consiste en simplificar de alguna manera dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características cada vez que se clasifique una nueva imagen. Otra de las propuestas es que la rotación de la imagen de entrada no suponga un handicap a la hora de clasificarla. El motivo de estas medidas es:\\
+La idea principal que se quiere conseguir para resolver el problema consiste en simplificar de alguna manera dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características cada vez que se clasifique una nueva imagen. Otra de las propuestas es que la rotación de la imagen de entrada no suponga un handicap a la hora de clasificarla. El propósito de estas medidas es:\\
 \begin{itemize}
-	\item Intentar realizar la clasificación en tiempo real simplificando el preprocesamiento de las imágenes.
-	\item Ganar en robustez con imágenes inclinadas.
-	\item Combinar todo en una aplicación de escritorio con una interfaz simple por encima.
+	\item Ganar en robustez con imágenes rotadas o inclinadas.
+	\item Realizar la clasificación en tiempo real simplificando el preprocesamiento de las imágenes.
+	\item Combinar todo en una aplicación de escritorio con una interfaz simple por encima para que cualquier usuario pueda utilizarla.
 \end{itemize}
 
 % Se termina explicando la organización de la memoria diciendo lo que se trata en cada capítulo.
 \subsection{Organización del documento}
+Este documento tratará de explicar el proceso seguido para el desarrollo de este trabajo. Para ello, se estructurará en los siguientes capítulos:\\
+\begin{description}
+	\item [Portada] - Información básica sobre el nombre del proyecto, la institución, el autor y los tutores.
+	\item [Prefacio] - Resumen, palabras clave y agradecimientos.
+	\item [Introducción] - Motivación del trabajo y estado del arte de este campo de investigación.  
+	\item [Objetivos] - Se planteará un objetivo principal el cual será dividido en sub-objetivos más simples para poder llevar a cabo la tarea principal así como un resumen de las técnicas aprendidas durante la formación académica empleadas en este trabajo.
+	\item [Resolución del trabajo] - Este capítulo se dividirá en varias secciones, en las que se explicará el método de ingeniería del software empleado para la resolución del trabajo, así como los recursos hardware y software, la especificación de requisitos, planificación, análisis funcional e implementación de la aplicación.
+	\item [Conclusión] - Se hará una valoración del producto final y se valorará si se han alcanzaron o no los objetivos iniciales y en qué medida, teniendo en cuenta los puntos fuertes y débiles de la solución.
+	\item [Bibliografía] - Referencias y citas bibliográficas usadas.
+	\item [Anexo] - Pequeño manual de cómo usar la aplicación.
+\end{description} 
 
 \chapter{Objetivos}
+\section{Objetivo principal}
+%Objetivo general a conseguir: se enuncia lo que se quiere hacer sin entrar en detalles.
+\begin{center}
+	\textit{Desarrollar una aplicación de escritorio que dada una imagen detecte si aparece un rostro humano y en que en caso afirmativo, sea capaz de mostrar por pantalla, la etiqueta que mejor identifica la expresión facial que presenta dicho rostro.}\\
+\end{center}
+Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar con este trabajo (\ref{subsec:aspirations}). Esto es, simplificar el proceso de pre-procesamiento de las imágenes y de esta forma ver si es factible un proceso de clasificación en tiempo real. Teniendo esto en mente, dividiremos el objetivo principal en distintas fases o sub-tareas.
 
-Objetivo general a conseguir: se enuncia lo que se quiere hacer sin entrar en detalles.
+\section{Objetivos específicos}
+% Objetivos específicos: Es dividir el objetivo general en los pasos a seguir con sub-objetivos más simples.
+% Dicho de otro modo, son cada uno de los pasos a realizar para alcanzar el objetivo general, es decir solucionando todos y cada uno de los objetivos específicos se resuelve el objetivo general. (Poner entre 3 y 5 como mucho).
+%%%%%%%%%%%%%%%%%%%% Se puede decir en qué apartado se tratará cada objetivo específico. %%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+	\item Preparación de la información con la que entrenaremos el clasificador.
+	\begin{enumerate}
+		\item Obtener una base de datos.
+		\item Pre-procesamiento de la información.
+		\item Creación del conjunto de training, validación y test.
+	\end{enumerate}
+	\item Entrenamiento del clasificador.
+	\begin{enumerate}
+		\item Selección de parámetros.
+		\item Realización de pruebas (Vuelta al paso 2 si es necesario).
+	\end{enumerate}
+	\item Desarrollo de interfaz que haga uso del clasificador.
+\end{enumerate}
 
-Objetivos específicos: Es dividir el objetivo general en los pasos a seguir con sub-objetivos más simples.
-Dicho de otro modo, son cada uno de los pasos a realizar para alcanzar el objetivo general, es decir solucionando todos y cada uno de los objetivos específicos se resuelve el objetivo general. (Poner entre 3 y 5 como mucho).
-
-Se puede decir en qué apartado se tratará cada objetivo específico.
-
-Poner también los aspectos formativos previos utilizados, por ejemplo si se han usado técnicas de visión concretas como Transformada de Hough, Método de detección de rostros Viola-Jones, Filtro de Partículas, o técnicas de aprendizaje por SVM, etc. Se explica un poco cada método.
+%Poner también los aspectos formativos previos utilizados, por ejemplo si se han usado técnicas de visión concretas como Transformada de Hough, Método de detección de rostros Viola-Jones, Filtro de Partículas, o técnicas de aprendizaje por SVM, etc. Se explica un poco cada método.
+\section{Técnicas empleadas}
+Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas dando una pequeña explicación de su fundamentación teórica.
+\subsection{Detector Facial}
+\subsection{Redes Neuronales Convolucionales}
 
 \chapter{Resolución del trabajo}
 
