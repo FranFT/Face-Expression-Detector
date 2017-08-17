@@ -374,9 +374,27 @@ Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar c
 
 %Poner también los aspectos formativos previos utilizados, por ejemplo si se han usado técnicas de visión concretas como Transformada de Hough, Método de detección de rostros Viola-Jones, Filtro de Partículas, o técnicas de aprendizaje por SVM, etc. Se explica un poco cada método.
 \section{Técnicas empleadas}
-Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas dando una pequeña explicación de su fundamentación teórica.
+Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas, dando una pequeña explicación de su fundamentación teórica.
 \subsection{Detector Facial}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.3\linewidth]{imagenes/hog01}
+	\caption[Descriptores HOG]{Visualización de descriptores HOG en un rostro humano \cite{king14}}
+	\label{fig:hog01}
+\end{figure}
+Dada una imagen, lo primero que necesitamos saber es si aparece un rostro humano o no y en función de ello hacer que nuestra aplicación, actúe de una manera u otra. De esto es de lo que se encarga precisamente un detector facial.\\
+Para llevar a cabo esta tarea, el detector facial que he usado ha sido entrenado para aprender mediante un algoritmo basado en SVM los descriptores de características de una batería de imágenes de rostros humanos previamente marcados y localizados manualmente (Si pudiésemos automatizar el proceso de marcado no necesitaríamos un detector facial). Los descriptores de características aprendidos por el detector son los conocidos como Histogram of Oriented Gradients (HOG)\cite{dalal_triggs05} de los que hablaremos a continuación.
+\subsubsection{¿Qué es un descriptor de características?}
+Es una representación de un conjunto de pixels, ya sea de una imagen completa o de un trozo de esta. Su misión es simplificar la información que representa una imagen de forma que el descriptor represente la información más útil de la imagen eliminando aquella que no es representativa. 
+\subsubsection{Histogram of Oriented Gradients (HOG)}
+Hay muchos descriptores de características distintos, pero los que usa nuestro detector son conocidos como descriptores HOG. Estos cuentan las ocurrencias de orientaciones de gradiente en zonas localizadas de una imagen. El gradiente nos indica por cada pixel la magnitud del mayor cambio de intensidad posible y su dirección de oscuro a claro. VisuPodemos observar un ejemplo de esto en la Figura \ref{fig:hog01}.\\
+Usando un algoritmo\cite{king15} basado en la técnica de aprendizaje automático conocida como \textit{Support Vector Machine}\cite{cortes_vapnik95}, el detector es capaz de aprender la composición de los descriptores de características HOG de un gran número de caras distintas.\\
+Así, dada una imagen, se calculará su descriptor de características y si se encuentra en ella una ventana que contenga descriptores que se asemejen a los aprendidos, habremos detectado satisfactoriamente una cara.
+
+
+
 \subsection{Redes Neuronales Convolucionales}
+
 
 \chapter{Resolución del trabajo}
 
@@ -510,7 +528,7 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	B. Abboud, F. Davoine, and M. Dang. %Names
 	\textit{Facial expression recognition and synthesis based on
 		an appearance model}, %Title
-	Heudiasyc Laboratory CNRS, University of Technology of Compi" egne, BP 20529, 60205 Compiegne Cedex, France	%Location
+	Heudiasyc Laboratory CNRS, University of Technology of Compiegne, BP 20529, 60205 Compiegne Cedex, France	%Location
 	2004.	%Date
 	
 	\bibitem{cootes_taylor_cooper_graham94}
@@ -531,11 +549,36 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	Dept. of Computer Science, Central University of South Bihar, India 
 	2015.	%Date
 	
+	\bibitem{dalal_triggs05}
+	N. Dalal, and B. Triggs. %Names
+	\textit{Histograms of Oriented Gradients for Human Detection}, %Title
+	INRIA Rhône-Alps, 655 avenue de l’Europe, Montbonnot 38334, France
+	2005.	%Date
+	
+	\bibitem{king15}
+	D. E. King.
+	\textit{Max-Margin Object Detection}, %Title
+	arXiv:1502.00046 [cs.CV],
+	2015.	%Date
+	
+	\bibitem{cortes_vapnik95}
+	C. Cortes, and V. Vapnik. %Names
+	\textit{Support Vector Networks}, %Title
+	Kluwer Academic Publishers, Boston. Manufactured in The Netherlands,
+	1995.	%Date
+	
 	%%%%% Tools %%%%%
 	
 	%%%%% Databases %%%%%
 	
 	%%%%% URLS %%%%%
+	\bibitem{king14}
+	D. King. 
+	\textit{Dlib 18.6 released: Make your own object detector!}, 
+	URL: \url{http://blog.dlib.net/2014/02/dlib-186-released-make-your-own-object.html}, 
+	2014.
+	
+	
 	
 \end{thebibliography}
 \chapter{Anexo}
