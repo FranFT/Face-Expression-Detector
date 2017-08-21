@@ -351,6 +351,19 @@ Este documento tratará de explicar el proceso seguido para el desarrollo de est
 \begin{center}
 	\textit{Desarrollar una aplicación de escritorio que dada una imagen detecte si aparece un rostro humano y en que en caso afirmativo, sea capaz de mostrar por pantalla, la etiqueta que mejor identifica la expresión facial que presenta dicho rostro.}\\
 \end{center}
+Las etiquetas de las expresiones que deseamos predecir son:
+\begin{multicols}{2}
+	\label{list:expressions}
+	\begin{itemize}
+		\item Afraid
+		\item Angry
+		\item Disgusted
+		\item Happy
+		\item Neutral
+		\item Sad
+		\item Surprised
+	\end{itemize}
+\end{multicols}
 Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar con este trabajo (apartado \ref{subsec:aspirations}). Esto es, simplificar el proceso de pre-procesamiento de las imágenes y de esta forma ver si es factible un proceso de clasificación en tiempo real. Teniendo esto en mente, dividiremos el objetivo principal en distintas fases o sub-tareas.
 
 \section{Objetivos específicos}
@@ -421,7 +434,30 @@ Dicho esto, podemos dar una pequeña visión de qué hay dentro de esa caja negr
 \end{figure}
 \subsubsection{Funcionamiento}
 Ahora que conocemos de qué se compone una CNN vamos a ver a grandes rasgos cómo funciona una red neuronal convolucional. Cada una de las capas de las mencionadas en la sección anterior (\ref{subsub:composicion}) se compone a su vez de una serie de neuronas, las cuales tienen unos parámetros, que irán se irán ajustando (aprendiendo) en la fase de entrenamiento de la red, conocidos como pesos. Las neuronas de una capa, estarán solo conectadas con una pequeña región de la capa anterior. De esta forma, a medida que la red va aprendiendo, capas más avanzadas abstraen la información en mayor medida y aprenden patrones más complejos.\\
-Dada una imagen de entrada, las neuronas de la red se van activando en función de los patrones aprendidos, y en la última capa calcula la puntuación de que la imagen pertenezca a cada una de las clases para las que la red fue entrenada, dando de esta forma, una etiqueta de salida.
+Dada una imagen de entrada, las neuronas de la red se van activando en función de los patrones aprendidos, y en la última capa calcula la puntuación de que la imagen pertenezca a cada una de las clases para las que la red fue entrenada, dando de esta forma, una etiqueta de salida. Hay muchos tipos de capas que pueden formar la arquitectura de red de una CNN. A continuación veremos un resumen de las más importantes y por norma general, las más usadas.
+\begin{description}
+	\item [Capas de entrada \cite{cs231n}] - Tal y como su nombre indica, recogen los datos n-dimensionales para la red. Suele ser la primera capa de nuestra arquitectura de red. En nuestro caso, los datos de entrada son las imágenes, que serían elementos tridimensionales teniendo de esta manera un vector del tipo \([ancho \times alto \times profundidad]\). La profundidad puede ser 1 o 3 dependiendo de si la imagen es en color (3 canales RGB) o en escala de grises (1 canal).
+	\item [Capas de convolución \cite{cs231n}] - Calcula la salida de neuronas que están conectadas a zonas locales de la imagen de entrada. El valor de cada neurona de salida es el producto escalar entre los pesos de las neuronas de la capa anterior y esa pequeña área local de la imagen. Podemos ver una representación gráfica en la Figura \ref{fig:convolutionlayer}
+		\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imagenes/convolutionlayer}
+		\caption[Convolution\cite{cs231n}]{Filtro \(5 \times 5\) convolucionando sobre un volumen de entrada\cite{deshpande16}.}
+		\label{fig:convolutionlayer}
+		\end{figure}
+	\item [Capas no lineales o Capas de activación\cite{nair_hinton10,deshpande16b}] - Por convenio, tras una capa de convolución se suele aplicar una capa de activación con el objetivo de añadir \textit{no-linealidad} a un sistema que ha estado haciendo operaciones lineales durante las capas de convolución. Un ejemplo de función no lineal, y una de las más usadas en capas no lineales es:
+	\[f(x) = max(0,x)\] 
+	También conocida como \textit{Rectified Linear Units} o función \textit{ReLu} que transforma únicamente los valores negativos en cero.
+	\item [Capas de submuestreo] - Reduce el tamaño de la imagen a la mitad por norma general. Se pueden aplicar diferentes técnicas para realizar esta operación. Una de las más conocidas se denomina \textit{maxpooling} y podemos ver como funciona en la Figura \ref{fig:poolinglayer}. Esta transformación actúa en las dimensiones espaciales de la imagen (Anchura y Altura).
+		\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imagenes/poolinglayer}
+		\caption[PoolingLayer]{Reajuste de una imagen \(4\times4\) a una imagen \(2\times2\) usando \textit{maxpooling}\cite{deshpande16b}.}
+		\label{fig:poolinglayer}
+		\end{figure}
+	\item [Capa totalmente conectada\cite{cs231n}] - Esta capa calculará la puntuación de cada clase obteniendo una estructura de salida del tamaño \([1 \times 1 \times n]\) donde \(n\) es el número de clases de salida. En nuestro caso \(n = 7 \) (\ref{list:expressions}).
+\end{description}
+
+Esta un pequeño resumen acerca de lo que las redes neuronales convolucionales suponen. Si se desea saber más acerca de este tema recomiendo el siguiente libro \cite{nielsen}.
 
 
 
@@ -607,6 +643,12 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	also, Canadian Institute for Advanced Research (CIFAR),
 	2014.	%Date
 	
+	\bibitem{nair_hinton10}
+	V. Nair, and G. E. Hilton. %Names
+	\textit{Rectified Linear Units Improve Restricted Boltzmann Machines}, %Title
+	Department of Computer Science, University of Toronto, Toronto, ON M5S 2G4, Canada
+	2010.	%Date
+	
 	%%%%% Tools %%%%%
 	
 	%%%%% Databases %%%%%
@@ -630,10 +672,21 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	URL: \url{https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/}, 
 	2016.
 	
+	\bibitem{deshpande16b}
+	A. Deshpande. 
+	\textit{A Beginner's Guide To Understanding Convolutional Neural Networks - Part 2}, 
+	URL: \url{https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks-Part-2/}, 
+	2016.
+		
 	\bibitem{cs231n}
 	CS231n  
 	\textit{Convolutional Neural Networks for Visual Recognition}, 
 	URL: \url{http://cs231n.github.io/convolutional-networks/}.
+	
+	\bibitem{nielsen}
+	M. Nielsen,   
+	\textit{Neural Networks and Deep Learning}, 
+	URL: \url{http://neuralnetworksanddeeplearning.com/}.
 	
 	
 	
