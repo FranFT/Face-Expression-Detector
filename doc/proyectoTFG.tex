@@ -387,6 +387,7 @@ Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar c
 
 %Poner también los aspectos formativos previos utilizados, por ejemplo si se han usado técnicas de visión concretas como Transformada de Hough, Método de detección de rostros Viola-Jones, Filtro de Partículas, o técnicas de aprendizaje por SVM, etc. Se explica un poco cada método.
 \section{Técnicas empleadas}
+\label{sec:tecnicas}
 Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas, dando una pequeña explicación de su fundamentación teórica.
 \subsection{Detector Facial}
 \begin{figure}[t]
@@ -457,7 +458,7 @@ Dada una imagen de entrada, las neuronas de la red se van activando en función 
 	\item [Capa totalmente conectada\cite{cs231n}] - Esta capa calculará la puntuación de cada clase obteniendo una estructura de salida del tamaño \([1 \times 1 \times n]\) donde \(n\) es el número de clases de salida. En nuestro caso \(n = 7 \) (\ref{list:expressions}).
 \end{description}
 
-Esta un pequeño resumen acerca de lo que las redes neuronales convolucionales suponen. Si se desea saber más acerca de este tema recomiendo el siguiente libro \cite{nielsen}.
+Este ha sido un pequeño resumen acerca de lo que las redes neuronales convolucionales ofrecen. Es un tema muy extenso el cual no se puede cubrir de forma completa en este documento, además de no ser el objetivo de este. Si se desea saber más acerca de este tema recomiendo el siguiente libro \cite{nielsen}.
 
 
 
@@ -466,14 +467,46 @@ Esta un pequeño resumen acerca de lo que las redes neuronales convolucionales s
 
 
 \chapter{Resolución del trabajo}
-
-Como método de ingeniería del software decir que vamos a seguir la técnicas de modelo de prototipos rápido o también llamado modelado de prototipado rápido.
-
-Ver \url{http://www.ecured.cu/index.php/Modelo_de_Prototipos}
+%Como método de ingeniería del software decir que vamos a seguir la técnicas de modelo de prototipos rápido o también llamado modelado de prototipado rápido.
+%Ver \url{http://www.ecured.cu/index.php/Modelo_de_Prototipos}catering trade
+Dado que el sistema que queremos construir está sujeto a experimentar, como método de ingeniería del software he empleado la técnica de modelo de prototipos rápido o también conocida como modelado de prototipado rápido\cite{ecured_a}.
 
 \section{Recursos}
+En esta sección enumeraremos los recursos que han sido utilizados para el desarrollo de este trabajo. Esto incluye recursos humanos como el autor y tutores, hardware y software utilizados así como las bases de datos.
+% Decir los recursos humanos (autor y directores), hardware y software que se van a utilizar.
+\subsection{Recursos Humanos}
+\begin{itemize}
+	\item \textbf{Autor}: \myName.
+	\item \textbf{Tutor A}: \myProf.
+	\item \textbf{Tutor B}: \myOtherProf.
+\end{itemize}
+\subsection{Recursos Hardware}
+Para el desarrollo de este trabajo he empleado mi ordenador personal cuyas especificaciones principales son:
+\begin{description}
+	\item [CPU] - AMD Phenom(tm) II X4 975
+	\item [GPU] - NVidia GTX 760
+	\item [Memoria] - 8GB RAM DDR3
+\end{description}
+\subsection{Recursos Software}
+Para el desarrollo de la aplicación final, ha hecho falta usar distintas librerías que implementan de una forma eficiente las técnicas descritas en la sección anterior(\ref{sec:tecnicas}), así como distintos frameworks para desarrollar la interfaz de usuario por ejemplo. En la Figura \ref{fig:programming_languages} podemos observar los lenguajes de programación que han sido necesarios para la implementación de esta aplicación.
+\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\linewidth]{imagenes/programming_languages}
+	\caption[Lenguajes de programación]{Lenguajes de programación que componen la aplicación\cite{franft}.}
+	\label{fig:programming_languages}
+\end{figure}
 
-Decir los recursos humanos (autor y directores), hardware y software que se van a utilizar.
+\subsubsection{OpenCV \cite{opencv}}
+Por la facilidad de uso que me suponía debido a experiencia previa y su rapidez porque está implementada en C++ e usado esta librería para la manipulación general de imágenes.
+\subsubsection{Dlib \cite{dlib}}
+Es una librería que implementa un gran número de algoritmos de Machine Learning en C++. En este caso ha sido usada sólo para el procesamiento de imágenes, pero solo he usado el detector de caras que implementa, el cual he introducido en la Sección \ref{sec:tecnicas}, ya que presentaba menos falsos positivos que el detector de caras de OpenCV\cite{king14}.
+\subsubsection{Caffe \cite{caffe}}
+Es un framework de \textit{Deep Learning} implementado en C++ aunque tiene una interfaz en Python. He escogido esta herramienta porque te permite construir tu propia red neuronal, definir tus propias capas de la arquitectura de red, posee buena documentación y buena comunidad. También puedes entrenar y testear tus modelos usando CPU o GPU, además de que ofrece herramientas que facilitan la creación de las bases de datos, todo esto desde la linea de comandos.
+\subsubsection{NVIDIA Deep Learning GPU Training System \cite{digits}}
+O también conocido como \textit{NVIDIA DIGITS} es un sistema que funciona sobre \textit{Caffe} y que ofrece una interfaz de usuario muy cómoda. Permite ahorrar mucho tiempo en la gestión de diferentes bases de datos, en la recolección de estadísticas de rendimiento de los modelos entrenados. Además simplifica en gran medida la capacidad de entrenamiento con GPU, que mediante linea de comandos puede ser algo difícil de configurar.
+\subsubsection{Electron \cite{electron}}
+Este framework de código abierto permite crear aplicaciones de escritorio de forma nativa usando tecnologías web como son HTML, JavaScript y CSS. Esto nos permite compatibilidad con diferentes sistemas operativos y desarrollar una interfaz de usuario bonita de forma sencilla.
 
 \section{Especificación de requisitos}
 
@@ -582,11 +615,12 @@ Valoración personal si se quiere.
 Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detectadas o para conseguir nuevas funcionalidades interesantes.
 
 \chapter{Bibliografía}
-
 %% Poner las citas bibliográficas, direcciones de internet, etc.
-
 \begin{thebibliography}{99}
+	\section{Artículos científicos}
+	%%%%%%%%%%%%%%%%%%
 	%%%%% Papers %%%%%
+	%%%%%%%%%%%%%%%%%%
 	\bibitem{shbib_zhou15}
 	R. Shbib, and S. Zhou. %Names
 	\textit{Facial Expression Analysis using Active Shape Model}, %Title
@@ -649,11 +683,10 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	Department of Computer Science, University of Toronto, Toronto, ON M5S 2G4, Canada
 	2010.	%Date
 	
-	%%%%% Tools %%%%%
-	
-	%%%%% Databases %%%%%
-	
+	\section{URLs}
+	%%%%%%%%%%%%%%%%
 	%%%%% URLS %%%%%
+	%%%%%%%%%%%%%%%%
 	\bibitem{king14}
 	D. King. 
 	\textit{Dlib 18.6 released: Make your own object detector!}, 
@@ -670,14 +703,14 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	A. Deshpande. 
 	\textit{A Beginner's Guide To Understanding Convolutional Neural Networks}, 
 	URL: \url{https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/}, 
-	2016.
-	
+		2016.
+		
 	\bibitem{deshpande16b}
 	A. Deshpande. 
 	\textit{A Beginner's Guide To Understanding Convolutional Neural Networks - Part 2}, 
 	URL: \url{https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks-Part-2/}, 
 	2016.
-		
+	
 	\bibitem{cs231n}
 	CS231n  
 	\textit{Convolutional Neural Networks for Visual Recognition}, 
@@ -688,9 +721,46 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	\textit{Neural Networks and Deep Learning}, 
 	URL: \url{http://neuralnetworksanddeeplearning.com/}.
 	
+	\bibitem{ecured_a}
+	Ecu Red Conocimiento con todos y para todos,   
+	\textit{Modelo de Prototipos}, 
+	URL: \url{http://www.ecured.cu/index.php/Modelo_de_Prototipos}.
 	
+	\bibitem{franft}
+	F. Fajardo,   
+	\textit{Face Expression Detector}, 
+	Repositorio GitHub del proyecto, 
+	URL: \url{https://github.com/FranFT/Face-Expression-Detector}, 
+	2017
 	
+	\section{Herramientas}
+	%%%%%%%%%%%%%%%%%
+	%%%%% Tools %%%%%
+	%%%%%%%%%%%%%%%%%
+	\bibitem{opencv}
+	\textit{OpenCV}, 
+	URL: \url{http://opencv.org/}.
 	
+	\bibitem{dlib}
+	\textit{Dlib}, 
+	URL: \url{http://dlib.net/}.
+	
+	\bibitem{caffe}
+	\textit{Caffe}, 
+	URL: \url{http://caffe.berkeleyvision.org/}.
+	
+	\bibitem{digits}
+	\textit{NVIDIA DIGITS}, 
+	URL: \url{https://developer.nvidia.com/digits}.
+	
+	\bibitem{electron}
+	\textit{Electron}, 
+	URL: \url{https://electron.atom.io/}.
+	
+	\section{Bases de datos}
+	%%%%%%%%%%%%%%%%%%%%%
+	%%%%% Databases %%%%%
+	%%%%%%%%%%%%%%%%%%%%%
 	
 \end{thebibliography}
 \chapter{Anexo}
