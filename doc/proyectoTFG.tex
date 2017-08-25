@@ -405,7 +405,7 @@ Hay muchos descriptores de características distintos, pero los que usa nuestro 
 Usando un algoritmo\cite{king15} basado en la técnica de aprendizaje automático conocida como \textit{Support Vector Machine}\cite{cortes_vapnik95}, el detector es capaz de aprender la composición de los descriptores de características HOG de un gran número de caras distintas.\\
 Así, dada una imagen, se calculará su descriptor de características y si se encuentra en ella una ventana que contenga descriptores que se asemejen a los aprendidos, habremos detectado satisfactoriamente una cara.
 
-\subsection{Redes Neuronales Convolucionales}
+\subsection{Redes Neuronales Convolucionales}\label{sub:cnns}
 Tal y como mencioné en la motivación de este trabajo, sin entrar demasiado en detalles, que una de las restricciones de este proyecto era minimizar la fase de pre-procesamiento (apartado \ref{subsec:aspirations}) antes de clasificar una imagen.\\ \\
 \begin{figure}[h]
 \centering
@@ -497,15 +497,15 @@ Para el desarrollo de la aplicación final, ha hecho falta usar distintas librer
 	\label{fig:programming_languages}
 \end{figure}
 
-\subsubsection{OpenCV \cite{opencv}}
+\subsubsection{OpenCV \cite{opencv}}\label{sub:opencv}
 Por la facilidad de uso que me suponía debido a experiencia previa y su rapidez porque está implementada en C++ e usado esta librería para la manipulación general de imágenes.
 \subsubsection{Dlib \cite{dlib}}
 Es una librería que implementa un gran número de algoritmos de Machine Learning en C++. En este caso ha sido usada sólo para el procesamiento de imágenes, pero solo he usado el detector de caras que implementa, el cual he introducido en la Sección \ref{sec:tecnicas}, ya que presentaba menos falsos positivos que el detector de caras de OpenCV\cite{king14}.
-\subsubsection{Caffe \cite{caffe}}
+\subsubsection{Caffe \cite{caffe}}\label{sub:caffe}
 Es un framework de \textit{Deep Learning} implementado en C++ aunque tiene una interfaz en Python. He escogido esta herramienta porque te permite construir tu propia red neuronal, definir tus propias capas de la arquitectura de red, posee buena documentación y buena comunidad. También puedes entrenar y testear tus modelos usando CPU o GPU, además de que ofrece herramientas que facilitan la creación de las bases de datos, todo esto desde la linea de comandos.
-\subsubsection{NVIDIA Deep Learning GPU Training System \cite{digits}}
+\subsubsection{NVIDIA Deep Learning GPU Training System \cite{digits}}\label{sub:digits}
 O también conocido como \textit{NVIDIA DIGITS} es un sistema que funciona sobre \textit{Caffe} y que ofrece una interfaz de usuario muy cómoda. Permite ahorrar mucho tiempo en la gestión de diferentes bases de datos, en la recolección de estadísticas de rendimiento de los modelos entrenados. Además simplifica en gran medida la capacidad de entrenamiento con GPU, que mediante linea de comandos puede ser algo difícil de configurar.
-\subsubsection{Electron \cite{electron}}
+\subsubsection{Electron \cite{electron}}\label{sub:electron}
 Este framework de código abierto permite crear aplicaciones de escritorio de forma nativa usando tecnologías web como son HTML, JavaScript y CSS. Esto nos permite compatibilidad con diferentes sistemas operativos y desarrollar una interfaz de usuario bonita de forma sencilla.
 
 \subsubsection{Base de datos: Yalefaces \cite{yalefaces}}
@@ -578,12 +578,12 @@ En la Figura \ref{fig:integracion} se puede ver una visión esquemática de la i
 
 %algo de la interfaz, como tratar posibles fallos, etc.
 
-En este proyecto se partió de una especificación inicial de requisitos que se fue refinando a medida que se fueron implementando los distintos prototipos. Los requisitos finales son:
+En este proyecto se partió de una especificación inicial de requisitos que se fue refinando a medida que se fueron implementando los distintos prototipos. Los requisitos \textbf{finales} son:
 \subsection{Requisitos del usuario}
-\begin{description}
+\begin{itemize}
 	\item [RU1] El usuario puede seleccionar cualquier fichero de su computador como entrada para la aplicación.
 	\item [RU2] El usuario puede arrastrar cualquier fichero a la ventana de la aplicación para proporcionarle una entrada.
-\end{description}
+\end{itemize}
 \subsection{Requisitos funcionales}
 \begin{itemize}
 	\item [RF1:] La aplicación podrá recibir ficheros de entrada mediante el gestor de ficheros predeterminado del sistema operativo o bien arrastrando el fichero a la ventana principal.
@@ -611,16 +611,46 @@ En este proyecto se partió de una especificación inicial de requisitos que se 
 	\item [RFN8:] El histograma mostrará una animación donde los porcentajes van creciendo hasta alcanzar su valor.	
 \end{itemize}
 
-
-
-
 \section{Planificación}
 
-Poner una tabla de tiempos con las planificación del proyecto diciendo cuando se tiene previsto alcanzar cada subobjetivo planteado. Con su correspondiente división en fases y tareas, y la posterior
-comparación con los datos reales obtenidos tras realizar el proyecto. Entre las fases está la realización de los diferentes prototipos I, II y III por ejemplo.
+%Poner una tabla de tiempos con las planificación del proyecto diciendo cuando se tiene previsto alcanzar cada subobjetivo planteado. Con su correspondiente división en fases y tareas, y la posterior comparación con los datos reales obtenidos tras realizar el proyecto. Entre las fases está la realización de los diferentes prototipos I, II y III por ejemplo.
 
-Poner presupuesto según horas de trabajo estimadas.
+%Poner presupuesto según horas de trabajo estimadas.
 
+%\begin{enumerate}
+%	\item Preparación de la información con la que entrenaremos el clasificador.
+%	\begin{enumerate}
+%		\item Obtener una base de datos.
+%		\item Pre-procesamiento de la información.
+%		\item Creación del conjunto de training, validación y test.
+%	\end{enumerate}
+%	\item Entrenamiento del clasificador.
+%	\begin{enumerate}
+%		\item Selección de parámetros.
+%		\item Realización de pruebas (Vuelta al paso 2 si es necesario).
+%	\end{enumerate}
+%	\item Desarrollo de interfaz que haga uso del clasificador.
+% \end{enumerate}
+En la tabla \ref{tab:planificacion} están dispuestos, de forma aproximada, los tiempos estimados y empleados en cada uno de los principales sub-objetivos. \\
+Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto es porque era el punto de inicio, lo que implica tener que empezar de cero, aprender conceptos teóricos sobre temas que solo conocía de oídas como por ejemplo las Redes Neuronales Convolucionales (Apartado \ref{sub:cnns}) a usar nuevas tecnologías que las implementaban como Caffe (Apartado\ref{sub:caffe}) además del resto como puede ser OpenCV (Apartado\ref{sub:opencv}) mediante la realización de ejemplos para entenderlas de forma correcta. El prototipo I además no constaba con interfaz, se manejaba todo por línea de comandos y algunos scripts en shell bash.\\
+
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}} % Nuevo tipo de columna: Párrafo centrado.
+\begin{table}[h]
+	\centering
+	\label{tab:planificacion}
+	\begin{tabular}{lc|P{2cm}|P{2cm}|P{2cm}|}
+		\cline{3-5}
+		\multicolumn{2}{l}{}                                  				& \multicolumn{3}{|c|}{\textbf{T. empleado} por prototipo} \\ \hline
+		\multicolumn{1}{|p{3cm}|}{\textbf{Sub-objetivo}} 					&  \textbf{T. estimado} 	& \textbf{I}	& \textbf{II} & \textbf{III} \\ \hline
+		\multicolumn{1}{|p{3cm}|}{\textbf{Preparación de la información}}	& \(\sim 1\) mes & \(\sim 2\) meses & \(\sim 7\) días & \(\sim 5\) días \\ \hline
+		\multicolumn{1}{|p{3cm}|}{\textbf{Entrenamiento del clasificador}}	& \(\sim 2\) meses & \(\sim 3\) meses & \(\sim 1\) mes & \(\sim 7\) días \\ \hline
+		\multicolumn{1}{|p{3cm}|}{\textbf{Desarrollo de la interfaz}}		& \(\sim 2\) meses & - & \(\sim 1\) mes & - \\ \hline
+	\end{tabular}
+	\caption{Planificación de tiempos sub-objetivos. Nota:\textit I, II y III equivale al número de prototipo. }
+\end{table}
+
+En el prototipo II, ya tenía asentados los conocimientos aprendidos mediante la implementación del primer prototipo, lo que agilizó el desarrollo del segundo prototipo. Este se basó en mejorar los resultados del entrenamiento de la Red Neuronal Convolucional mediante nuevas técnicas de pre-procesado sobre las imágenes y haciendo test con distintos parámetros de entrenamiento, pero se reutilizaban muchas de las herramientas implementadas en el prototipo I. El descubrimiento de NVIDIA DIGITS (Apartado \ref{sub:digits}) también ayudó en gran medida a la reducción de este tiempo gracias al aprovechamiento de la GPU para la fase de entrenamiento. En este prototipo además implementé la interfaz, que llevó menos tiempo del esperado debido a la sencillez que aporta Electron (Apartado \ref{sub:electron}) para el desarrollo de interfaces.\\
+En el último prototipo es una versión mejorada del segundo en el que se mejora la precisión del clasificador dejando la interfaz intacta.
 
 \section{Análisis funcional}
 
