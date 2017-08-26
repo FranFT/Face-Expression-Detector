@@ -459,11 +459,15 @@ Dada una imagen de entrada, las neuronas de la red se van activando en función 
 \end{description}
 
 Este ha sido un pequeño resumen acerca de lo que las redes neuronales convolucionales ofrecen. Es un tema muy extenso el cual no se puede cubrir de forma completa en este documento, además de no ser el objetivo de este. Si se desea saber más acerca de este tema recomiendo el siguiente libro \cite{nielsen}.
-
-
-
-
-
+\subsection{Data Augmentation}
+Para nosotros los seres humanos, puede ser muy fácil distinguir una persona sonriendo, aunque esta lleve gafas, tenga o no barba, etc. Pero para una Red Neuronal Convolucional esto no es un hecho automático. Debemos enseñar al modelo, durante la fase de entrenamiento, todas estas posibles variaciones de una misma expresión facial. Debemos mostrarle gente con o sin barba, con o sin gafas, con diferentes condiciones lumínicas, etc. Es por ese motivo que el entrenamiento de una Red Neuronal Convolucional requiere de una gran número de imágenes. \\
+Como veremos en el Apartado \ref{db:kdef}, la base de datos que emplearemos para entrenar la red no contiene suficientes imágenes para representar todas estas variaciones de lo que podría ser una imagen de entrada para nuestra aplicación. Hay muchos factores que pueden variar incluso entre dos imágenes del mismo individuo con la misma expresión facial, como por ejemplo:
+\begin{itemize}
+	\item Diferentes condiciones de luz.
+	\item La rotación del rostro con respecto al eje vertical y horizontal de la imagen.
+	\item Si el sujeto lleva algún tipo accesorio, como gafas o tiene vello facial.
+\end{itemize}
+Mientras que hay casos en los que no podemos hacer nada para solucionarlo que no sea obtener otras imágenes distintas, podemos simular algunas de estas variaciones aplicando transformaciones afines y combinaciones de estas a las imágenes de la base de datos, para obtener varias versiones de una misma imagen, que aunque realmente son linealmente dependientes, nos servirán para proporcionar mas variabilidad al modelo. Esta técnica que permite el aumento artificial del conjunto de datos es lo que se conoce como \textit{Data Augmentation}.
 
 
 \chapter{Resolución del trabajo}
@@ -520,7 +524,7 @@ Se compone de 165 imágenes en escala de grises donde se fotografiaron 15 indivi
 \end{figure}
 
 
-\subsubsection{Base de datos: Karolinska Directed Emotional Faces (KDEF) \cite{kdef98}}
+\subsubsection{Base de datos: Karolinska Directed Emotional Faces (KDEF) \cite{kdef98}}\label{db:kdef}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\linewidth]{imagenes/kdefSample}
@@ -617,20 +621,6 @@ En este proyecto se partió de una especificación inicial de requisitos que se 
 
 %Poner presupuesto según horas de trabajo estimadas.
 
-%\begin{enumerate}
-%	\item Preparación de la información con la que entrenaremos el clasificador.
-%	\begin{enumerate}
-%		\item Obtener una base de datos.
-%		\item Pre-procesamiento de la información.
-%		\item Creación del conjunto de training, validación y test.
-%	\end{enumerate}
-%	\item Entrenamiento del clasificador.
-%	\begin{enumerate}
-%		\item Selección de parámetros.
-%		\item Realización de pruebas (Vuelta al paso 2 si es necesario).
-%	\end{enumerate}
-%	\item Desarrollo de interfaz que haga uso del clasificador.
-% \end{enumerate}
 En la tabla \ref{tab:planificacion} están dispuestos, de forma aproximada, los tiempos estimados y empleados en cada uno de los principales sub-objetivos. \\
 Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto es porque era el punto de inicio, lo que implica tener que empezar de cero, aprender conceptos teóricos sobre temas que solo conocía de oídas como por ejemplo las Redes Neuronales Convolucionales (Apartado \ref{sub:cnns}) a usar nuevas tecnologías que las implementaban como Caffe (Apartado\ref{sub:caffe}) además del resto como puede ser OpenCV (Apartado\ref{sub:opencv}) mediante la realización de ejemplos para entenderlas de forma correcta. El prototipo I además no constaba con interfaz, se manejaba todo por línea de comandos y algunos scripts en shell bash.\\
 
@@ -653,14 +643,17 @@ En el prototipo II, ya tenía asentados los conocimientos aprendidos mediante la
 En el último prototipo es una versión mejorada del segundo en el que se mejora la precisión del clasificador dejando la interfaz intacta.
 
 \section{Análisis funcional}
+% A partir de aquí nos referimos solamente al prototipo final que da lugar a la aplicación final.
 
-A partir de aquí nos referimos solamente al prototipo final que da lugar a la aplicación final.
+% Hay que describir la funcionalidad que debe poseer el sistema para poder cumplir con los objetivos y requisitos que se han dicho previamente.La descripción de esta funcionalidad puede hacerse analizando las tareas (que aparecerán en la planificación) y estudiando la inter-relación entre ellas y sus conexiones.
 
-Hay que describir la funcionalidad que debe poseer el sistema para poder cumplir con los objetivos y requisitos que se han dicho previamente.La descripción de esta funcionalidad puede hacerse analizando las tareas (que aparecerán en la planificación) y estudiando la inter-relación entre ellas y sus conexiones.
+%Para la realización de este análisis se pueden utilizar Diagramas de Flujo para poder conocer generalmente un único punto de inicio y un único punto de término o en varios.
 
-Para la realización de este análisis se pueden utilizar Diagramas de Flujo para poder conocer generalmente un único punto de inicio y un único punto de término o en varios. 
+%\url{https://es.wikipedia.org/wiki/Diagrama_de_flujo}
 
-\url{https://es.wikipedia.org/wiki/Diagrama_de_flujo}
+La aplicación tiene que ser capaz de obtener un fichero de entrada, comprobar si es válido y en caso afirmativo proceder a la clasificación de este usando el modelo previamente entrenado. Puede verse este procedimiento en el diagrama de flujo de la Figura \ref{}
+
+
 
  Se pueden plantear también casos de uso. Los diagramas de casos de uso sirven para describir la inter-relación entre el sistema y el usuario del mismo. Se pueden utilizar para plantear diferentes casos de interacción entre el robot y la persona y cómo tiene que reaccionar el sistema en cada caso.
 
