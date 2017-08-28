@@ -389,7 +389,7 @@ Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar c
 \section{Técnicas empleadas}
 \label{sec:tecnicas}
 Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas, dando una pequeña explicación de su fundamentación teórica.
-\subsection{Detector Facial}
+\subsection{Detector Facial}\label{sub:detectorFacial}
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.3\linewidth]{imagenes/hog01}
@@ -459,6 +459,9 @@ Dada una imagen de entrada, las neuronas de la red se van activando en función 
 \end{description}
 
 Este ha sido un pequeño resumen acerca de lo que las redes neuronales convolucionales ofrecen. Es un tema muy extenso el cual no se puede cubrir de forma completa en este documento, además de no ser el objetivo de este. Si se desea saber más acerca de este tema recomiendo el siguiente libro \cite{nielsen}.
+\subsubsection{Transfer Learning \cite{cs231n1}}
+Se trata de una técnica que se aplica en la fase de entrenamiento de una red neuronal. Consiste en tomar los pesos de un entrenamiento previo como pesos iniciales para nuestro entrenamiento. Dicho de otra manera, es una forma de reutilizar lo que una red neuronal ha podido aprender en otro entrenamiento.\\
+Esta técnica es muy útil cuando queremos ahorrar tiempo durante la fase de entrenamiento ya que aumenta la velocidad a la que converge el entrenamiento, o bien cuando el número de imágenes que tenemos es reducido y deseamos reutilizar el trabajo que se ha podido hacer con otras bases de datos.
 \subsection{Data Augmentation}
 Para nosotros los seres humanos, puede ser muy fácil distinguir una persona sonriendo, aunque esta lleve gafas, tenga o no barba, etc. Pero para una Red Neuronal Convolucional esto no es un hecho automático. Debemos enseñar al modelo, durante la fase de entrenamiento, todas estas posibles variaciones de una misma expresión facial. Debemos mostrarle gente con o sin barba, con o sin gafas, con diferentes condiciones lumínicas, etc. Es por ese motivo que el entrenamiento de una Red Neuronal Convolucional requiere de una gran número de imágenes. \\
 Como veremos en el Apartado \ref{db:kdef}, la base de datos que emplearemos para entrenar la red no contiene suficientes imágenes para representar todas estas variaciones de lo que podría ser una imagen de entrada para nuestra aplicación. Hay muchos factores que pueden variar incluso entre dos imágenes del mismo individuo con la misma expresión facial, como por ejemplo:
@@ -491,7 +494,7 @@ Para el desarrollo de este trabajo he empleado mi ordenador personal cuyas espec
 	\item [GPU] - NVidia GTX 760
 	\item [Memoria] - 8GB RAM DDR3
 \end{description}
-\subsection{Recursos Software}
+\subsection{Recursos Software}\label{sub:software}
 Para el desarrollo de la aplicación final, ha hecho falta usar distintas librerías que implementan de una forma eficiente las técnicas descritas en la sección anterior(\ref{sec:tecnicas}), así como distintos frameworks para desarrollar la interfaz de usuario por ejemplo. En la Figura \ref{fig:programming_languages} podemos observar los lenguajes de programación que han sido necesarios para la implementación de esta aplicación.
 \\
 \begin{figure}[h]
@@ -503,7 +506,7 @@ Para el desarrollo de la aplicación final, ha hecho falta usar distintas librer
 
 \subsubsection{OpenCV \cite{opencv}}\label{sub:opencv}
 Por la facilidad de uso que me suponía debido a experiencia previa y su rapidez porque está implementada en C++ e usado esta librería para la manipulación general de imágenes.
-\subsubsection{Dlib \cite{dlib}}
+\subsubsection{Dlib \cite{dlib}}\label{sub:dlib}
 Es una librería que implementa un gran número de algoritmos de Machine Learning en C++. En este caso ha sido usada sólo para el procesamiento de imágenes, pero solo he usado el detector de caras que implementa, el cual he introducido en la Sección \ref{sec:tecnicas}, ya que presentaba menos falsos positivos que el detector de caras de OpenCV\cite{king14}.
 \subsubsection{Caffe \cite{caffe}}\label{sub:caffe}
 Es un framework de \textit{Deep Learning} implementado en C++ aunque tiene una interfaz en Python. He escogido esta herramienta porque te permite construir tu propia red neuronal, definir tus propias capas de la arquitectura de red, posee buena documentación y buena comunidad. También puedes entrenar y testear tus modelos usando CPU o GPU, además de que ofrece herramientas que facilitan la creación de las bases de datos, todo esto desde la linea de comandos.
@@ -651,18 +654,112 @@ En el último prototipo es una versión mejorada del segundo en el que se mejora
 
 %\url{https://es.wikipedia.org/wiki/Diagrama_de_flujo}
 
-La aplicación tiene que ser capaz de obtener un fichero de entrada, comprobar si es válido y en caso afirmativo proceder a la clasificación de este usando el modelo previamente entrenado. Puede verse este procedimiento en el diagrama de flujo de la Figura \ref{}
+La aplicación tiene que ser capaz de obtener un fichero de entrada, comprobar si es válido y en caso afirmativo proceder a la clasificación de este usando el modelo previamente entrenado.\\
+En la Figura \ref{fig:appFlowchart} se ilustra el comportamiento de la aplicación final en función de los posibles casos que se pueden dar durante la ejecución. Los rectángulos verdes indican la ejecución de sub-procesos. El que se encuentra más arriba de los dos en la Figura \ref{fig:appFlowchart}, es el único que realiza algún tipo de preprocesamiento en la imagen que se quiere clasificar, y lo único que hace es generar el recorte de la cara. Este era uno de los principales objetivos como se comentó en el Apartado \ref{subsec:aspirations}.
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\linewidth]{imagenes/appFlowchart}
+\caption[FlowChart]{Diagrama de flujo de la aplicación final.}
+\label{fig:appFlowchart}
+\end{figure}
 
 
 
- Se pueden plantear también casos de uso. Los diagramas de casos de uso sirven para describir la inter-relación entre el sistema y el usuario del mismo. Se pueden utilizar para plantear diferentes casos de interacción entre el robot y la persona y cómo tiene que reaccionar el sistema en cada caso.
+%Se pueden plantear también casos de uso. Los diagramas de casos de uso sirven para describir la inter-relación entre el sistema y el usuario del mismo. Se pueden utilizar para plantear diferentes casos de interacción entre el robot y la persona y cómo tiene que reaccionar el sistema en cada caso.
 
-\url{https://es.wikipedia.org/wiki/Diagrama_de_casos_de_uso}
+%\url{https://es.wikipedia.org/wiki/Diagrama_de_casos_de_uso}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.7\linewidth]{imagenes/usecases}
+	\caption[Casos de uso.]{Casos de uso}
+	\label{fig:usecases}
+\end{figure}
+
+Aunque la inter-relación entre el usuario y la aplicación es muy simple, pueden darse varios casos de uso de la aplicación a la hora de proporcionar el fichero de entrada. Como se puede ver en la Figura \ref{fig:usecases} el usuario puede proporcionar el fichero mediante el uso del botón de selección presente en la interfaz, que abre el gestor de archivos por defecto del S.O. Si se da este caso, no haría falta comprobar que el fichero es una imagen porque el propio gestor te permite filtrar por tipos de archivo y solo he permitido la selección de archivos con un formato de imagen válido.\\
+El otro caso es que el usuario arrastre directamente el fichero a la ventana. En esta ocasión si sería necesario comprobar que el fichero tiene una extensión de archivo válida ya que ha podido arrastrar cualquier tipo de fichero.\\
+Como se puede ver la aplicación final no es demasiado compleja. La complejidad de este trabajo reside en entrenar una Red Neuronal Convolucional para obtener la máxima precisión posible, tema que abordaremos de lleno en la siguiente sección.
+
 
 
 \section{Implementación y pruebas}
 
-Decir qué lenguaje de programación se ha utilizado y las tecnologías implicadas aunque se hayan comentado en el apartado de recursos. Justificar su uso (rendimiento, disponibilidad, etc.). Si se ha usado open source decirlo y explicar las ventajas.
+%Decir qué lenguaje de programación se ha utilizado y las tecnologías implicadas aunque se hayan comentado en el apartado de recursos. Justificar su uso (rendimiento, disponibilidad, etc.). Si se ha usado open source decirlo y explicar las ventajas.
+Los lenguajes de programación que más he utilizado han sido \textit{C++, HTML, CSS, JavaScript y Bash} como se puede aprecia en la Figura \ref{fig:programming_languages}. Aunque este último ha sido empleado en gran parte durante la implementación de los primeros prototipos para su gestión de ficheros en el S.O. En el Apartado \ref{sub:software} se presentó cada una de ellas pero en esta sección hablaremos un poco más a fondo sobre su uso en la implementación de la aplicación.\\
+Si vemos la aplicación como un conjunto de capas, empezaremos a describir cómo están integradas estas tecnologías de arriba hacia abajo, siendo este el orden:
+\begin{enumerate}
+	\item Interfaz
+	\item Módulo de clasificación.
+	\item Entrenamiento del clasificador.
+\end{enumerate}
+
+\subsection{Interfaz}\label{sub:interfaz}
+\textit{HTML, CSS y JavaScript} siempre han estado asociados al ámbito de las tecnologías web. Con estos lenguajes, se consiguen desarrollar interfaces de usuario de forma muy cómoda y rápida en el lado del cliente de forma que:
+\begin{itemize}
+	\item HTML se usa para la estructura.
+	\item CSS se usa para el aspecto.
+	\item JavaScript se usa para la funcionalidad.
+\end{itemize}
+Por mi experiencia en este campo, sabía que si lograba integrar estos tres lenguajes con mi funcionalidad principal, implementada en C++, conseguiría tener una aplicación de escritorio que pudiese funcionar en diversos sistemas operativos de una forma rápida con un aspecto más que notable. Además tendremos la estructura de nuestra interfaz, su estilo y su funcionalidad de forma separada, por lo que, si queremos cambiar el aspecto de la misma, por ejemplo, simplemente habrá que cambiar la hoja de estilos CSS.\\
+Es entonces cuando encontré \textbf{Electron} (Apartado \ref{sub:electron}), un framework \textbf{open source} que hacía posible integrar estos lenguajes asociados a las tecnologías web, HTML, CSS y JavaScript en una aplicación de escritorio, justo lo que buscaba.\\
+Internamente Electron, crea un proceso principal que es el que tiene permisos para hacer llamadas al S.O. ya sea para lectura de ficheros, creación de directorios, etc. A su vez, crea sub-procesos que renderizarán las distintas ventanas de nuestra aplicación. El proceso principal y sus sub-procesos se comunican de forma asíncrona mediante el envío y la recepción de mensajes.\\
+De esta forma el proceso principal puede proporcionar información que requiera uno de sus sub-procesos y que este no pueda conseguir porque no tiene acceso a llamadas al S.O. o bien obtener resultados al ejecutar sub-módulos, como por ejemplo, los resultados de clasificar una imagen.\\
+La interfaz en sí es concisa y no pretende ser complicada. Permite al usuario seleccionar un fichero mediante un botón de \textit{selección de fichero}. Este es capturado por el proceso que renderiza la ventana de la interfaz, y le envía al proceso principal un mensaje asíncrono para que realice una llamada al S.O que invoca al gestor de archivos por defecto y le aplica unos filtros para permitir solamente que el usuario pueda seleccionar imágenes.\\
+Una vez el proceso principal obtiene el path del archivo, este se pasa al módulo de clasificación para que realice las pertinentes operaciones con las imágenes, lo cual veremos en el siguiente apartado. Cuando el proceso principal obtiene los datos de salida del módulo de clasificación, este se los pasa al sub-proceso para renderizarlos en pantalla.\\
+Hasta este punto nuestra aplicación estaría de la siguiente manera tal cual se ve en la Figura \ref{fig:interfaz}, una interfaz que recoge un path.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/interfaz}
+\caption[Interfaz]{Composición parcial de la aplicación (1/3).}
+\label{fig:interfaz}
+\end{figure}
+
+
+\subsection{Módulo de clasificación}
+Desde un principio quería que la aplicación funcionara en torno a C++ ya que es uno de los lenguajes con mayor rendimiento, característica que es de interés si se está pensando en un sistema que trabaje en tiempo real en un futuro, además de ser el lenguaje que más he usado durante mi paso por la \myUni y con el que me sentía más cómodo.\\
+Teniendo esto en cuenta, busqué herramientas que estuviesen implementadas en este lenguaje que me pudiesen ayudar a resolver el problema del entrenamiento de una red neuronal convolucional, clasificar una imagen, detectar rostros en imágenes, etc. Este fue uno de los motivos por el que me decanté a usar herramientas como \textbf{OpenCV} (Apartado \ref{sub:opencv}) o \textbf{Caffe} (Apartado \ref{sub:caffe}) entre otras, ambas implementadas en C++, pero no el único.\\
+La parte de la aplicación que se dedica al análisis y la gestión de la imagen de entrada es el Módulo de clasificación, y tal y como he mencionado antes, es conveniente que sea lo más rápida posible, asique está implementada en C++. El módulo de clasificación consta de dos sub-módulos:
+
+\begin{enumerate}
+	\item El primero de ellos recibe el path de la imagen seleccionada por el usuario mediante la interfaz (Apartado \ref{sub:interfaz}) y comprueba que aparezca al menos una cara. En caso afirmativo, realiza un recorte de esa cara y lo guarda como una imagen de tamaño \([256\times256]\). Si no se encuentra una cara no se clasifica la imagen.\\
+	Esta herramienta está implementada en C++ y usa OpenCV y Dlib  (Apartado \ref{sub:opencv}). Ambas librerías son open source. Podría haberse usado solamente OpenCV ya que también incluye un detector pero el que implementa Dlib (Apartado \ref{sub:detectorFacial}) genera menos falsos positivos \cite{king14}.
+	\item El segundo sub-módulo es el que se encarga de clasificar el recorte del rostro obtenido antes. Para ello hemos tenido que entrenar y generar previamente un modelo basado en Redes Neuronales Convolucionales que sea capaz de dicha tarea. Aquí es donde entra en juego Caffe (Apartado \ref{sub:caffe}).\\
+	Como ya mencioné es un framework de deep learning, open source implementado en C++ que nos permite definir nuestra propia arquitectura de red, nuestras propias capas, realizar entrenamientos tanto en CPU como en GPU y ofrece un gran conjunto de herramientas, como por ejemplo, dado un modelo entrenado, generar una clasificación ante una información de entrada. Esto es justo este segundo sub-módulo.
+\end{enumerate}
+
+El estado de la aplicación en este momento es el que se muestra en la Figura \ref{fig:moduloClasificacion} pero nos sigue faltando lo más importante, el clasificador que veremos cómo ha sido obtenido en la siguiente sección.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/moduloClasificacion}
+\caption[Módulo de Clasificación]{Aplicación con interfaz y módulo de clasificación.}
+\label{fig:moduloClasificacion}
+\end{figure}
+
+
+\subsection{Entrenamiento del clasificador}
+Para que el módulo de clasificación funcione correctamente debemos entrenar un clasificador basado en redes neuronales convolucionales. En esta ocasión podríamos usar Caffe por si solo, pero decidí usar NVIDIA DIGITS (Apartado \ref{sub:digits}) porque simplifica el proceso permitiéndonos centrarnos en lo que realmente importa, la fase de entrenamiento. NVIDIA DIGITS funciona sobre Caffe, aunque también soporta otros frameworks, y ofrece una interfaz sencilla e intuitiva que permite gestionar todos los modelos, todos los conjuntos de datos y recoge de forma automática métricas útiles en el entrenamiento.
+
+
+
+
+\subsection{Pruebas}
+\begin{table}[h]
+	\centering
+	\small
+	\setlength\tabcolsep{3pt}
+	\setlength\extrarowheight{2pt}
+	\label{my-label}
+	\begin{tabular}{lccccccccc}
+		& \textbf{afraid} & \textbf{angry} & \textbf{disgusted} & \textbf{happy} & \textbf{neutral} & \textbf{sad} & \textbf{surprised} &  & \textbf{Per-Class acc}. \\
+		afraid    & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		angry     & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		disgusted & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		happy     & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		neutral   & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		sad       & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
+		surprised & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%           
+	\end{tabular}
+	\caption{Matriz de confusión}
+\end{table}
 
 Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
@@ -821,6 +918,12 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	Repositorio GitHub del proyecto, 
 	URL: \url{https://github.com/FranFT/Face-Expression-Detector}, 
 	2017
+	
+	\bibitem{cs231n1}
+	CS231n  
+	\textit{Convolutional Neural Networks for Visual Recognition: Transfer Learning}, 
+	URL: \url{http://cs231n.github.io/transfer-learning/}.
+	
 	
 	\section{Herramientas}
 	%%%%%%%%%%%%%%%%%
