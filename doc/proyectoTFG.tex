@@ -250,6 +250,7 @@
 \makeatother
 
 \usepackage{pdfpages}
+\usepackage[table,xcdraw]{xcolor}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% DOCUMENT %%%%%%%%%%%%
@@ -746,7 +747,7 @@ Para que el módulo de clasificación funcione correctamente debemos entrenar un
 \caption[AlexNet]{AlexNet\cite{krizhevsky12}}
 \label{fig:alexNet}
 \end{figure}
-El primer paso para entrenar un modelo es comenzar escogiendo o formando una arquitectura de red. En mi caso, he escogido una ya conocida como es AlexNet\cite{krizhevsky12} (Figura \ref{fig:alexNet}).
+El primer paso para entrenar un modelo es comenzar escogiendo o formando una arquitectura de red. En mi caso, he escogido AlexNet\cite{krizhevsky12}(Figura \ref{fig:alexNet}), conocida por su buen rendimiento en el concurso de ImageNet LSVRC-2010 que consistía en clasificar \(1,2M\) de imágenes entre \(1000\) clases diferentes.
 Contiene 8 capas de aprendizaje, distribuidas como 5 capas de convolución y 3 capas totalmente conectadas (Apartado \ref{sub:funcionamientoCnn}).\\
 
 \begin{figure}[h]
@@ -761,67 +762,137 @@ A la salida de la capa de convolución se le añade no-linealidad aplicándoles 
 \begin{center}
 	\(f(x) = \tanh(x)\) o bien \(f(x) = (1+e^{-x})^{-1}\)
 \end{center}
-En esta arquitectura se usa la función ReLu con el objetivo de aumentar la velocidad de entrenamiento sin sacrificar demasiado en rendimiento del clasificador. Acto seguido se normalizan los datos mediante Local Response Normalization o LRN de las 2 primeras capas de convolución, ya que se ha probado que el modelo gana en generalización\cite{krizhevsky12}, y se le aplica una capa de submuestreo. Este es el esquema general de la arquitectura de red para las capas de convolución.
+En esta arquitectura se usa la función ReLu con el objetivo de aumentar la velocidad de entrenamiento sin sacrificar demasiado en rendimiento del clasificador. Acto seguido se normalizan los datos mediante Local Response Normalization o LRN de las 2 primeras capas de convolución, ya que se ha probado que el modelo gana en generalización\cite{krizhevsky12}, y se le aplica una capa de submuestreo. Este es el esquema general de la arquitectura de red para las capas de convolución.\\
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{imagenes/alexNet2}
 	\caption[AlexNet input]{Últimas capas de AlexNet}
 	\label{fig:alexNet2}
 \end{figure}
-Luego se conecta lá última capa de convolución con la primera de las tres capas totalmente conectadas, como se puede ver en la Figura \ref{fig:alexNet2}, para comenzar a calcular los scores de cada clase y finalmente obtener la etiqueta de salida. Para reducir el sobreajuste en las capas totalmente conectadas se aplica una capa de Dropout una técnica que permite mejorar el rendimiento del clasificador que consiste en poner a cero la salida de cada una de las neuronas ocultas con una probabilidad del 50\%, para que no participen en el proceso de \textit{fordward pass} y de \textit{back propagation}. 
 
+Luego se conecta lá última capa de convolución con la primera de las tres capas totalmente conectadas, como se puede ver en la Figura \ref{fig:alexNet2}, para comenzar a calcular los scores de cada clase y finalmente obtener la etiqueta de salida. Para reducir el sobreajuste en las capas totalmente conectadas se aplica una capa de Dropout una técnica que permite mejorar el rendimiento del clasificador que consiste en poner a cero la salida de cada una de las neuronas ocultas con una probabilidad del 50\%, para que no participen en el proceso de \textit{fordward pass} y de \textit{back propagation}\cite{krizhevsky12}.
 
+\subsubsection{Base de datos}
+Una vez se tiene una arquitectura de red, debemos conseguir una base de datos con la que poder entrenarla. En mi caso, y como ya mencioné en el Apartado \ref{db:kdef} de Recursos, la base de datos que he podido conseguir es: \textit{Karolinska Directed Emotional Faces (KDEF)} \cite{kdef98}.\\
+Para cada entrenamiento debemos dividir esa base de datos en dos conjuntos a los que llamaremos:
+\begin{itemize}
+	\item \textbf{Conjunto de entrenamiento o de training}: Es el conjunto que se usa para el aprendizaje de la red neuronal. 
+	\item \textbf{Conjunto de validación}: Es el conjunto que se usa para verificar si la red neuronal está aprendiendo o no.
+\end{itemize}
+Por último decir que para medir el rendimiento real del clasificador es necesario otro conjunto de datos externo a la base de datos. A este conjunto lo llamaremos \textbf{conjunto de test}.
 
+\section{Fase de entrenamiento}
+En este apartado veremos las distintas pruebas que he realizado, y cómo ha ido evolucionando el clasificador ante distintos parámetros de entrenamiento. Véase que el conjunto de imágenes de test siempre será de un total de 140 imágenes escogidas al azar que no tienen nada que ver con la base de datos empleada para el entrenamiento.
+\subsection{Primer Intento}\label{sub:entrenamiento1}
+Este primer intento es una toma de contacto para probar la herramienta NVIDIA DIGITS por lo que el conjunto de imágenes es muy pequeño.
+\subsubsection{Base de datos}
+Para este primer intento he cogido simplemente las caras frontales de la base de datos, dejando a un lado las laterales.
 
+\subsubsection{Preprocesamiento}
+Para cada una de las imágenes escogidas de la base de datos:
+\begin{itemize}
+	\item He recortado el mismo rectángulo a todas las imágenes para obtener un recorte de los rostros centrado, ya que los sujetos que aparecen en la base de datos KDEF tienen los ojos en las mismas coordenadas.
+	\item He reajustado la imagen resultante del recorte a un tamaño de \(256\times256\ \).
+\end{itemize}
+Con esto, he obtenido una batería de imágenes como las de la Figura \ref{fig:primerIntentoDB}.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/primerIntentoDB}
+\caption[PrimerIntentoDB]{Muestra de imágenes empleadas para el primer intento de entrenamiento.}
+\label{fig:primerIntentoDB}
+\end{figure}
 
+Tras el preprocesamiento, se ha separado el conjunto de imágenes en los dos subconjuntos mencionados anteriormente, training y validación. El tamaño de ambos conjuntos se muestra en la tabla \ref{entr:PrimerIntento-DB}.\\
+Véase que los subconjuntos de training y validación \textbf{deben estar balanceados} para que los resultados del entrenamiento tengan validez. En este caso el conjunto de training tiene 105 imágenes por cada clase mientras que el conjunto de validación tiene 35 imágenes.
 
-\subsection{Pruebas}
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|c|c|c|}
+		\cline{2-4}
+		& \textbf{Training} & \textbf{Validación} (25\%) & \textbf{Total} \\ \hline
+		\multicolumn{1}{|c|}{\textbf{Nº de imágenes}} & 735        & 245          & 980     \\ \hline
+	\end{tabular}
+	\caption{DB empleada - Primer intento}
+	\label{entr:PrimerIntento-DB}
+\end{table}
+
+\subsubsection{Parámetros de entrenamiento}
+\begin{itemize}
+	\item Epochs: \(100\)
+	\item Coeficiente de aprendizaje inicial: \(0.02\)
+	\item Policy: Sigmoid (Figura \ref{fig:entrenamiento1results1})
+\end{itemize}
+
+\subsubsection{Resultados del entrenamiento}
+Como podemos ver en los resultados Figura \ref{fig:entrenamiento1results}, con el paso de los epochs o épocas, la precisión del clasificador ha ido mejorando. Esto se puede ver en como la línea naranja tiene una tendencia positiva. También podemos observar como a partir de los 70 epochs aproximadamente, el modelo converge y no mejora.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento1results}
+\caption[Resultados del entrenamiento 1]{Resultados del primer entramiento. Linea naranja: Precisión para el conjunto de validación. Linea verde: Función de pérdida para el conjunto de validación. Linea azul: Función de perdida para el conjunto de training.}
+\label{fig:entrenamiento1results}
+\end{figure}
+La función de pérdida (loss) tanto para training como para validación comienza disminuyendo de forma exponencial en las primeras épocas hasta que se estabiliza y no oscila tanto como al principio. Esto es debido a que el coeficiente de entrenamiento va disminuyendo también (Figura \ref{fig:entrenamiento1results1}), por lo que el modelo tiende a converger. Podemos interpretar esta función de pérdida como \textit{cúanto le queda por aprender a nuestro modelo} ya sea del conjunto de training (linea azul) o validación (linea verde).\\
+También podemos observar en la Figura \ref{fig:entrenamiento1results} como a partir de la mitad del entrenamiento, la función de pérdida del conjunto de validación cambia su tendencia descendente para comenzar a aumentar. Esto puede significar que estamos empezando a sobreajustar el modelo porque la función de pérdida para training es prácticamente 0.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento1results1}
+	\caption[Resultados del entrenamiento 1]{Política de disminución del coeficiente de aprendizaje.}
+	\label{fig:entrenamiento1results1}
+\end{figure}
+
+Para medir el rendimiento real del clasificador, debemos clasificar el conjunto de test y cuantificar los aciertos y los errores que se han cometido. Esto se conoce como calcular la matriz de confusión.\\
+
 \begin{table}[h]
 	\centering
 	\small
 	\setlength\tabcolsep{3pt}
 	\setlength\extrarowheight{2pt}
-	\label{my-label}
-	\begin{tabular}{lccccccccc}
-		& \textbf{afraid} & \textbf{angry} & \textbf{disgusted} & \textbf{happy} & \textbf{neutral} & \textbf{sad} & \textbf{surprised} &  & \textbf{Per-Class acc}. \\
-		afraid    & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		angry     & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		disgusted & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		happy     & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		neutral   & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		sad       & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%            \\
-		surprised & 0      & 0     & 0         & 0     & 0       & 0   & 0         &  & 0\%           
+	\begin{tabular}{lccccccclc}
+		& \multicolumn{1}{l}{\textbf{afraid}} & \multicolumn{1}{l}{\textbf{angry}} & \multicolumn{1}{l}{\textbf{disgusted}} & \multicolumn{1}{l}{\textbf{happy}} & \multicolumn{1}{l}{\textbf{neutral}} & \multicolumn{1}{l}{\textbf{sad}} & \multicolumn{1}{l}{\textbf{surprised}} &  & \multicolumn{1}{l}{\textbf{per-class}} \\
+		\textbf{afraid}    & \cellcolor[HTML]{EFEFEF}13 & 1	& 1 & 0 & 0 & 4 & 1 &  & 65,00\% \\
+		\textbf{angry}     & 17 & \cellcolor[HTML]{EFEFEF}1 & 0 & 0 & 1 & 1 & 0 &  & 5,00\% \\
+		\textbf{disgusted} & 9 & 1 & \cellcolor[HTML]{EFEFEF}0 & 0 & 0 & 10 & 0 &  & 0,00\% \\
+		\textbf{happy}     & 9 & 1 & 0 & \cellcolor[HTML]{EFEFEF}3 & 2 & 5 & 0 &  & 15,00\% \\
+		\textbf{neutral}   & 10 & 0 & 0 & 0 & \cellcolor[HTML]{EFEFEF}3 & 7 & 0 &  & 15,00\% \\
+		\textbf{sad}       & 8 & 0 & 1 & 0 & 1 & \cellcolor[HTML]{EFEFEF}8 & 2 &  & 40,00\% \\
+		\textbf{surprised} & 16 & 0 & 0 & 0 & 0 & 0 & \cellcolor[HTML]{EFEFEF}4 &  & 20,00\%
 	\end{tabular}
 	\caption{Matriz de confusión}
+	\label{tab:entrenamiento1MC}
 \end{table}
 
-Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
+Tras clasificar el conjunto de test, la matriz de confusión de este primer modelo es la que se muestra en la tabla \ref{tab:entrenamiento1MC}. Podemos ver en la matriz como los aciertos ocuparán las casillas en gris, el resto son fallos. Como vemos el clasificado tiene un rendimiento muy pobre y ha obtenido un porcentaje de acierto en el conjunto de test del 22,86\% pese a tener un 87,00\% de acierto con el conjunto de validación. Era de esperar viendo el reducido número de imágenes con el que hemos entrenado el clasificador.
 
-Verificación y Validación: Conjunto de procesos de comprobación y
-análisis que aseguran que el software que se desarrolla está acorde a su
-especificación y cumple las necesidades de los clientes.
+%Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
-Verificación:
-¿Estamos construyendo el producto correctamente?
-Se comprueba que el software cumple los requisitos funcionales y no funcionales
-de su especificación.
+%Verificación y Validación: Conjunto de procesos de comprobación y
+%análisis que aseguran que el software que se desarrolla está acorde a su
+%especificación y cumple las necesidades de los clientes.
 
-Validación:
-¿Estamos construyendo el producto correcto?
-Comprueba que el software cumple las expectativas que el cliente espera
-Importante: Nunca se va a poder demostrar que el software está
-completamente libre de defectos
+%Verificación:
+%¿Estamos construyendo el producto correctamente?
+%Se comprueba que el software cumple los requisitos funcionales y no funcionales
+%de su especificación.
 
-las pruebas que pueden utilizarse son muy diversas. Aconsejo centrarnos en pruebas de caja blanca y de caja negra.
+%Validación:
+%¿Estamos construyendo el producto correcto?
+%Comprueba que el software cumple las expectativas que el cliente espera
+%Importante: Nunca se va a poder demostrar que el software está
+%completamente libre de defectos
 
-Las pruebas de la caja blanca se centran en la estructura interna del programa para elegir los casos de prueba. El objetivo de estas pruebas consiste en probar todos los posibles casos de ejecución de la aplicación para comprobar que los datos se comportan de manera correcta internamente.
+%las pruebas que pueden utilizarse son muy diversas. Aconsejo centrarnos en pruebas de caja blanca y de caja negra.
 
-Decir que se han hecho las pruebas de caja blanca.
+%Las pruebas de la caja blanca se centran en la estructura interna del programa para elegir los casos de prueba. El objetivo de estas pruebas consiste en probar todos los posibles casos de ejecución de la aplicación para comprobar que los datos se comportan de manera correcta internamente.
 
-Las pruebas de caja negra son aquellas que se centran en las salidas y entradas de los módulos, sin atender a su comportamiento interno (comprobando mediante las pruebas de caja blanca). Las pruebas de caja negra garantizan la interconectividad entre los diferentes módulos de la aplicación, así como su correcto funcionamiento final.
+%Decir que se han hecho las pruebas de caja blanca.
 
-Poner algunos casos de prueba de caja negra.
+%Las pruebas de caja negra son aquellas que se centran en las salidas y entradas de los módulos, sin atender a su comportamiento interno (comprobando mediante las pruebas de caja blanca). Las pruebas de caja negra garantizan la interconectividad entre los diferentes módulos de la aplicación, así como su correcto funcionamiento final.
+
+%Poner algunos casos de prueba de caja negra.
 
 \chapter{Conclusiones y trabajo futuro}
 
