@@ -1,5 +1,6 @@
 node_modules
 build/
+doc/imagenes/yed images/
 
 data/*
 !data/haarcascade_frontalface_alt2.xml
