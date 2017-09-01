@@ -95,6 +95,9 @@
 % Allow us to use multiple columns
 \usepackage{multicol}
 
+% Allow us to use multiple rows
+\usepackage{multirow}
+
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
@@ -463,7 +466,7 @@ Este ha sido un pequeño resumen acerca de lo que las redes neuronales convoluci
 \subsubsection{Transfer Learning \cite{cs231n1}}
 Se trata de una técnica que se aplica en la fase de entrenamiento de una red neuronal. Consiste en tomar los pesos de un entrenamiento previo como pesos iniciales para nuestro entrenamiento. Dicho de otra manera, es una forma de reutilizar lo que una red neuronal ha podido aprender en otro entrenamiento.\\
 Esta técnica es muy útil cuando queremos ahorrar tiempo durante la fase de entrenamiento ya que aumenta la velocidad a la que converge el entrenamiento, o bien cuando el número de imágenes que tenemos es reducido y deseamos reutilizar el trabajo que se ha podido hacer con otras bases de datos.
-\subsection{Data Augmentation}
+\subsection{Data Augmentation}\label{sub:data-augmentation}
 Para nosotros los seres humanos, puede ser muy fácil distinguir una persona sonriendo, aunque esta lleve gafas, tenga o no barba, etc. Pero para una Red Neuronal Convolucional esto no es un hecho automático. Debemos enseñar al modelo, durante la fase de entrenamiento, todas estas posibles variaciones de una misma expresión facial. Debemos mostrarle gente con o sin barba, con o sin gafas, con diferentes condiciones lumínicas, etc. Es por ese motivo que el entrenamiento de una Red Neuronal Convolucional requiere de una gran número de imágenes. \\
 Como veremos en el Apartado \ref{db:kdef}, la base de datos que emplearemos para entrenar la red no contiene suficientes imágenes para representar todas estas variaciones de lo que podría ser una imagen de entrada para nuestra aplicación. Hay muchos factores que pueden variar incluso entre dos imágenes del mismo individuo con la misma expresión facial, como por ejemplo:
 \begin{itemize}
@@ -715,7 +718,7 @@ Hasta este punto nuestra aplicación estaría de la siguiente manera tal cual se
 \end{figure}
 
 
-\subsection{Módulo de clasificación}
+\subsection{Módulo de clasificación}\label{sub:moduloClasificacion}
 Desde un principio quería que la aplicación funcionara en torno a C++ ya que es uno de los lenguajes con mayor rendimiento, característica que es de interés si se está pensando en un sistema que trabaje en tiempo real en un futuro, además de ser el lenguaje que más he usado durante mi paso por la \myUni y con el que me sentía más cómodo.\\
 Teniendo esto en cuenta, busqué herramientas que estuviesen implementadas en este lenguaje que me pudiesen ayudar a resolver el problema del entrenamiento de una red neuronal convolucional, clasificar una imagen, detectar rostros en imágenes, etc. Este fue uno de los motivos por el que me decanté a usar herramientas como \textbf{OpenCV} (Apartado \ref{sub:opencv}) o \textbf{Caffe} (Apartado \ref{sub:caffe}) entre otras, ambas implementadas en C++, pero no el único.\\
 La parte de la aplicación que se dedica al análisis y la gestión de la imagen de entrada es el Módulo de clasificación, y tal y como he mencionado antes, es conveniente que sea lo más rápida posible, asique está implementada en C++. El módulo de clasificación consta de dos sub-módulos:
@@ -783,11 +786,17 @@ Para cada entrenamiento debemos dividir esa base de datos en dos conjuntos a los
 Por último decir que para medir el rendimiento real del clasificador es necesario otro conjunto de datos externo a la base de datos. A este conjunto lo llamaremos \textbf{conjunto de test}.
 
 \section{Fase de entrenamiento}
-En este apartado veremos las distintas pruebas que he realizado, y cómo ha ido evolucionando el clasificador ante distintos parámetros de entrenamiento. Véase que el conjunto de imágenes de test siempre será de un total de 140 imágenes escogidas al azar que no tienen nada que ver con la base de datos empleada para el entrenamiento.
+En este apartado veremos las distintas pruebas que he realizado, aunque sólo mencionaré las evoluciones más importantes debido al gran número de intentos que he realizado. Véase que el conjunto de imágenes de test siempre será de un total de 140 imágenes escogidas al azar que no tienen nada que ver con la base de datos empleada para el entrenamiento.
 \subsection{Primer Intento}\label{sub:entrenamiento1}
 Este primer intento es una toma de contacto para probar la herramienta NVIDIA DIGITS por lo que el conjunto de imágenes es muy pequeño.
 \subsubsection{Base de datos}
-Para este primer intento he cogido simplemente las caras frontales de la base de datos, dejando a un lado las laterales.
+Para este primer intento he cogido simplemente las caras frontales de la base de datos, dejando a un lado las laterales (Figura \ref{fig:primerIntentoDBangles}).
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/primerIntentoDBangles}
+\caption[KDEF primer intento]{Ángulos seleccionados de KDEF por cada sujeto. (Los ángulos de las imágenes en rojo se han ignorado.)}
+\label{fig:primerIntentoDBangles}
+\end{figure}
 
 \subsubsection{Preprocesamiento}
 Para cada una de las imágenes escogidas de la base de datos:
@@ -795,16 +804,15 @@ Para cada una de las imágenes escogidas de la base de datos:
 	\item He recortado el mismo rectángulo a todas las imágenes para obtener un recorte de los rostros centrado, ya que los sujetos que aparecen en la base de datos KDEF tienen los ojos en las mismas coordenadas.
 	\item He reajustado la imagen resultante del recorte a un tamaño de \(256\times256\ \).
 \end{itemize}
-Con esto, he obtenido una batería de imágenes como las de la Figura \ref{fig:primerIntentoDB}.
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.7\linewidth]{imagenes/primerIntentoDB}
-\caption[PrimerIntentoDB]{Muestra de imágenes empleadas para el primer intento de entrenamiento.}
-\label{fig:primerIntentoDB}
+	\centering
+	\includegraphics[width=0.7\linewidth]{imagenes/primerIntentoDB}
+	\caption[PrimerIntentoDB]{Muestra de imágenes empleadas para el primer intento de entrenamiento.}
+	\label{fig:primerIntentoDB}
 \end{figure}
 
-Tras el preprocesamiento, se ha separado el conjunto de imágenes en los dos subconjuntos mencionados anteriormente, training y validación. El tamaño de ambos conjuntos se muestra en la tabla \ref{entr:PrimerIntento-DB}.\\
+Con esto, he obtenido una batería de imágenes como las de la Figura \ref{fig:primerIntentoDB}. Tras el preprocesamiento, se ha separado el conjunto de imágenes en los dos subconjuntos mencionados anteriormente, training y validación. El tamaño de ambos conjuntos se muestra en la tabla \ref{entr:PrimerIntento-DB}.\\
 Véase que los subconjuntos de training y validación \textbf{deben estar balanceados} para que los resultados del entrenamiento tengan validez. En este caso el conjunto de training tiene 105 imágenes por cada clase mientras que el conjunto de validación tiene 35 imágenes.
 
 \begin{table}[h]
@@ -826,17 +834,14 @@ Véase que los subconjuntos de training y validación \textbf{deben estar balanc
 \end{itemize}
 
 \subsubsection{Resultados del entrenamiento}
-Como podemos ver en los resultados Figura \ref{fig:entrenamiento1results}, con el paso de los epochs o épocas, la precisión del clasificador ha ido mejorando. Esto se puede ver en como la línea naranja tiene una tendencia positiva. También podemos observar como a partir de los 70 epochs aproximadamente, el modelo converge y no mejora.\\
-
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento1results}
-\caption[Resultados del entrenamiento 1]{Resultados del primer entramiento. Linea naranja: Precisión para el conjunto de validación. Linea verde: Función de pérdida para el conjunto de validación. Linea azul: Función de perdida para el conjunto de training.}
-\label{fig:entrenamiento1results}
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento1results}
+	\caption[Resultados del entrenamiento 1]{Resultados del primer entramiento.}
+	\label{fig:entrenamiento1results}
 \end{figure}
+Como podemos ver en los resultados Figura \ref{fig:entrenamiento1results}, con el paso de los epochs o épocas, la precisión del clasificador ha ido mejorando. Esto se puede ver en como la línea naranja tiene una tendencia positiva. También podemos observar como a partir de los 70 epochs aproximadamente, el modelo converge y no mejora.\\
 La función de pérdida (loss) tanto para training como para validación comienza disminuyendo de forma exponencial en las primeras épocas hasta que se estabiliza y no oscila tanto como al principio. Esto es debido a que el coeficiente de entrenamiento va disminuyendo también (Figura \ref{fig:entrenamiento1results1}), por lo que el modelo tiende a converger. Podemos interpretar esta función de pérdida como \textit{cúanto le queda por aprender a nuestro modelo} ya sea del conjunto de training (linea azul) o validación (linea verde).\\
-También podemos observar en la Figura \ref{fig:entrenamiento1results} como a partir de la mitad del entrenamiento, la función de pérdida del conjunto de validación cambia su tendencia descendente para comenzar a aumentar. Esto puede significar que estamos empezando a sobreajustar el modelo porque la función de pérdida para training es prácticamente 0.
-
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento1results1}
@@ -844,7 +849,11 @@ También podemos observar en la Figura \ref{fig:entrenamiento1results} como a pa
 	\label{fig:entrenamiento1results1}
 \end{figure}
 
-Para medir el rendimiento real del clasificador, debemos clasificar el conjunto de test y cuantificar los aciertos y los errores que se han cometido. Esto se conoce como calcular la matriz de confusión.\\
+También podemos observar en la Figura \ref{fig:entrenamiento1results} como a partir de la mitad del entrenamiento, la función de pérdida del conjunto de validación cambia su tendencia descendente para comenzar a aumentar. Esto puede significar que estamos empezando a sobreajustar el modelo porque la función de pérdida para training es prácticamente 0.
+
+
+
+Para medir el rendimiento real del clasificador, debemos clasificar el conjunto de test y cuantificar los aciertos y los errores que se han cometido. Esto se conoce como calcular la matriz de confusión.
 
 \begin{table}[h]
 	\centering
@@ -865,7 +874,165 @@ Para medir el rendimiento real del clasificador, debemos clasificar el conjunto 
 	\label{tab:entrenamiento1MC}
 \end{table}
 
-Tras clasificar el conjunto de test, la matriz de confusión de este primer modelo es la que se muestra en la tabla \ref{tab:entrenamiento1MC}. Podemos ver en la matriz como los aciertos ocuparán las casillas en gris, el resto son fallos. Como vemos el clasificado tiene un rendimiento muy pobre y ha obtenido un porcentaje de acierto en el conjunto de test del 22,86\% pese a tener un 87,00\% de acierto con el conjunto de validación. Era de esperar viendo el reducido número de imágenes con el que hemos entrenado el clasificador.
+Tras clasificar el conjunto de test, la matriz de confusión de este primer modelo es la que se muestra en la tabla \ref{tab:entrenamiento1MC}. Podemos ver en la matriz como los aciertos ocuparán las casillas en gris, el resto son fallos. Como vemos el clasificador tiene un rendimiento muy pobre y ha obtenido un porcentaje de acierto en el conjunto de test del 22,86\% pese a tener un 87,00\% de acierto con el conjunto de validación, con solo una de las clases por encima del 50\% de acierto. Era de esperar por:
+\begin{itemize}
+	\item El reducido número de imágenes con el que hemos entrenado el clasificador.
+	\item Con el recorte del mismo rectángulo para todas las imágenes, hemos supuesto que todas las futuras imágenes de entrada, tendrán los ojos siempre en las mismas coordenadas.
+\end{itemize} 
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		\multicolumn{2}{l}{\multirow{2}{*}{}}                                                                         & \multicolumn{2}{|c|}{Actual Class} \\ \cline{3-4} 
+		\multicolumn{2}{l|}{}                                                                                          	& \textbf{Afraid} & \textbf{Non-Afraid}        \\ \hline
+		\multicolumn{1}{|c|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Predicted\\ Class\end{tabular}}} & \textbf{Afraid}      	& 13	& 69                 \\ \cline{2-4} 
+		\multicolumn{1}{|c|}{}                                                                           & \textbf{Non-Afraid} 		& 7		& 51                 \\ \hline
+	\end{tabular}
+	\caption{Matriz de confusión de la expresión \textbf{Afraid}}
+	\label{tab:entrenamiento1MCafraid}
+\end{table}
+
+Un ejemplo de la matriz de confusión de la expresión Afraid (Tabla \ref{tab:entrenamiento1MCafraid}) se ve que el número de imágenes del conjunto de test que han sido clasificadas como Afraid cuando en realidad no lo son. Este hecho se conoce como \textit{falsos positivos}, y en este caso hay 69 ocurrencias, lo que hace a esta clase tener un 57,50\% de probabilidad de falso positivo, un valor muy alto. En la siguiente sección veremos si se soluciona.\\
+
+\clearpage
+
+\section{Segundo Intento}
+Puesto que el problema aparente del escaso rendimiento del primer intento han sido el escaso número de imágenes y su recorte constante para todas las imágenes, en este segundo intento vamos a intentar subsanar eso.
+\subsubsection{Base de datos}
+He seleccionado no sólo las imágenes frontales, como en el primer intento, si no también las imágenes laterales y he ignorado las de perfil (Figura \ref{fig:segundoIntentoDB}). Esto supone un total de 2940 imágenes.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/segundoIntentoDB}
+\caption[KDEF segundo intento]{Ángulos seleccionados de KDEF por cada sujeto. (Los ángulos de las imágenes en rojo se han ignorado.)}
+\label{fig:segundoIntentoDB}
+\end{figure}
+\subsubsection{Preprocesamiento}
+En esta ocasión y a diferencia del primer intento, he intentado entrenar el clasificador, recreando las condiciones que se pueden presentar en una imagen de entrada de la aplicación. Tal y como se explicó en el Apartado \ref{sub:moduloClasificacion} , la aplicación usa un detector de caras para crear un recorte y este es el que se le da como entrada al clasificador. Por tanto, para cada una de las imágenes seleccionadas de la base de datos:
+\begin{enumerate}
+	\item Se crean dos nuevas imágenes aplicando un cambio de perspectiva. Para ello calcula la matriz de transformación entre el rectángulo original y en el que se quiere proyectar la imagen. Figura \ref{fig:segundoIntentoDA1}
+		\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{imagenes/segundoIntentoDA1}
+		\caption[Intento 2 Cambio de Perspectiva]{Cambio de perspectiva artificial. La imagen central es la imagen original y las otras dos se han generado de forma artificial.}
+		\label{fig:segundoIntentoDA1}
+		\end{figure} 
+	\item Se utiliza el mismo detector facial (Apartado \ref{sub:detectorFacial}) que usa la aplicación para obtener un recorte del rostro. En la imagen \ref{fig:segundoIntentoDA2} se puede ver una comparativa de ambos métodos.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{imagenes/segundoIntentoDA2}
+			\caption[Intento 2 Rectangulo vs Detector]{\textbf{Izquierda:} Recorte utilizando el detector facial. \textbf{Derecha:} Recorte usando el rectángulo del primer intento de entrenamiento.}
+			\label{fig:segundoIntentoDA2}
+		\end{figure}
+	\item A partir de las imágenes anteriores, se rotan de forma aleatoria entre 10º y 20º para crear una nueva imagen rotada. Usamos el reflejo de los bordes en lugar de un valor constante para los casos en los que hay que rellenar la imagen rotada. De esta forma añadimos información de la propia imagen, aunque sea repetida. Puede verse en la imagen superior derecha de la Figura \ref{fig:segundoIntentoDA3}.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{imagenes/segundoIntentoDA3}
+			\caption[Intento 2 Rotaciones]{ Imágenes no rotodas a la izquierda. Rotaciones aleatorias a la derecha.}
+			\label{fig:segundoIntentoDA3}
+		\end{figure}
+	
+	\item Para cada una de las imágenes generadas en los puntos 1, 2 y 3, se modifica la intensidad del valor de los píxeles de forma que se suma o se resta una cantidad aleatoria, para generar dos nuevas imágenes, una más clara y otra más oscura. El valor aleatorio puede oscilar entre 25 y 65 unidades. Una muestra de esto se puede ver en la Figura \ref{fig:segundoIntentoDA4}.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.9\linewidth]{imagenes/segundoIntentoDA4}
+			\caption[Intento 2 Iluminación]{De izquierda a derecha: Imagen iluminada - Imagen original - Imagen oscurecida.}
+			\label{fig:segundoIntentoDA4}
+		\end{figure}
+	\item A partir de las imágenes anteriores, creo nuevas aplicando zooms aleatorios, entre un 10\% y un 15\% más cerca. En la Figura \ref{fig:segundoIntentoDA5} se puede ver un ejemplo de esto.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{imagenes/segundoIntentoDA5}
+			\caption[Intento 2 Zooms]{Izquierda: Imagen con zoom aleatorio. Derecha: Imagen original.}
+			\label{fig:segundoIntentoDA5}
+		\end{figure}
+	\item Por último, ante la situación de que la cara detectada fuese más pequeña que el tamaño de las imágenes que se clasifican, \(256\times256\), al reajustar su tamaño a esas mismas dimensiones, la imagen que recibe el clasificador estaría pixelada. Es por esto que también simulé pixelados reajustando cada una de las imágenes generadas anteriormente. Para ello, pasé cada una de las imágenes de tamaño \(256\times256\) a tamaños \(40\times40\) y \(80\times80\) obteniendo dos imágenes nuevas. Ahora de nuevo las reajusté a \(256\times256\) usando un método de interpolación aleatorio de entre todos los que ofrece OpenCV\cite{opencvResize}. El resultado es el que se puede ver en la Figura \ref{fig:segundoIntentoDA6}.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.9\linewidth]{imagenes/segundoIntentoDA6}
+			\caption[Intento 2 Pixelado]{De izquierda a derecha: \textbf{1ª} Imagen original - \textbf{2ª} Imagen reajustada de \([80\times80] \longrightarrow [256\times256]\) - \textbf{3ª} Imagen reajustada de \([40\times40] \longrightarrow [256\times256]\).}
+			\label{fig:segundoIntentoDA6}
+		\end{figure}	
+\end{enumerate}
+
+La finalidad de estas transformaciones es aportar generalidad (Figura \ref{fig:segundoIntentoDBsample}) al clasificador, ya que la imagen de entrada de la aplicación no siempre tendrá las coordenadas de los ojos en la misma posición, las mismas condiciones de luz, inclinación, etc.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.82\linewidth]{imagenes/segundoIntentoDBsample}
+	\caption[Intento 2 Muestra]{Muestra de imágenes de la base de datos tras las trasnformaciones.}
+	\label{fig:segundoIntentoDBsample}
+\end{figure}
+
+Todas estas transformaciones han incrementado nuestro conjunto de datos de manera notable, obteniendo el conteo para los conjuntos de training y validación de la Tabla \ref{entr:segundoIntento-DB}.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|c|c|c|}
+		\cline{2-4}
+		& \textbf{Training} & \textbf{Validación} (25\%) & \textbf{Total} \\ \hline
+		\multicolumn{1}{|c|}{\textbf{Nº de imágenes}} & 78384        & 27108          & 105492     \\ \hline
+	\end{tabular}
+	\caption{DB empleada - Segundo intento}
+	\label{entr:segundoIntento-DB}
+\end{table}
+\subsubsection{Parámetros de entrenamiento}
+\begin{itemize}
+	\item Epochs: \(10\)
+	\item Coeficiente de aprendizaje inicial: \(0.01\)
+	\item Policy: Step Down (Figura \ref{fig:entrenamiento2results1})
+\end{itemize}
+
+\subsubsection{Resultados del entrenamiento}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento2results}
+	\caption[Resultados del entrenamiento 2]{Resultados del segundo entramiento.}
+	\label{fig:entrenamiento2results}
+\end{figure}
+
+En la Figura \ref{fig:entrenamiento2results} podemos observar los resultados de este segundo entrenamiento. Vemos como a partir del epoch 5 el entrenamiento del modelo converge. También podemos apreciar como se minimiza la función de pérdida (loss) tanto de entrenamiento como de validación en los 2 primeros epochs. A pesar de que hemos reducido el coeficiente de aprendizaje inicial con respecto a al primer entrenamiento, la red ha necesitado muy pocos epochs para minimizar esta función.\\
+Este hecho tiene sentido porque recordemos que se cuenta un epoch cada vez que la red le da una pasada a todas las imágenes. Puesto que hay muchas imágenes y son todas similares, pese a las transformaciones que hemos realizado en el pre-procesamiento, necesita menos epochs para aprender la mayoría de sus características.\\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento2results1}
+	\caption[Resultados del entrenamiento 2]{Política de disminución del coeficiente de aprendizaje.}
+	\label{fig:entrenamiento2results1}
+\end{figure}
+
+En esta ocasión la precisión obtenida con el conjunto de validación es del 85\% frente al 87\% del primer intento. ¿Ha disminuido el rendimiento del clasificador?\\
+Cuando clasificamos el mismo conjunto de test del primer intento con el clasificador entrenado en este segundo intento, obtenemos la matriz de confusión de la Tabla \ref{tab:entrenamiento2MC}.
+
+\begin{table}[h]
+	\centering
+	\small
+	\setlength\tabcolsep{3pt}
+	\setlength\extrarowheight{2pt}
+	\begin{tabular}{lccccccclc}
+		& \multicolumn{1}{l}{\textbf{afraid}} & \multicolumn{1}{l}{\textbf{angry}} & \multicolumn{1}{l}{\textbf{disgusted}} & \multicolumn{1}{l}{\textbf{happy}} & \multicolumn{1}{l}{\textbf{neutral}} & \multicolumn{1}{l}{\textbf{sad}} & \multicolumn{1}{l}{\textbf{surprised}} &  & \multicolumn{1}{l}{\textbf{per-class}} \\
+		\textbf{afraid}    & \cellcolor[HTML]{EFEFEF}11 & 1	& 4 & 2 & 0 & 2 & 0 &  & 55,00\% \\
+		\textbf{angry}     & 1 & \cellcolor[HTML]{EFEFEF}3 & 15 & 0 & 0 & 0 & 1 &  & 15,00\% \\
+		\textbf{disgusted} & 2 & 2 & \cellcolor[HTML]{EFEFEF}13 & 1 & 1 & 1 & 0 &  & 65,00\% \\
+		\textbf{happy}     & 0 & 0 & 5 & \cellcolor[HTML]{EFEFEF}14 & 0 & 0 & 1 &  & 75,00\% \\
+		\textbf{neutral}   & 1 & 3 & 4 & 0 & \cellcolor[HTML]{EFEFEF}10 & 2 & 0 &  & 50,00\% \\
+		\textbf{sad}       & 3 & 4 & 8 & 0 & 1 & \cellcolor[HTML]{EFEFEF}4 & 0 &  & 20,00\% \\
+		\textbf{surprised} & 5 & 1 & 2 & 2 & 3 & 0 & \cellcolor[HTML]{EFEFEF}7 &  & 35,00\%
+	\end{tabular}
+	\caption{Matriz de confusión}
+	\label{tab:entrenamiento2MC}
+\end{table}
+
+Si comparamos esta tabla con la matriz de confusión del primer intento (Tabla \ref{tab:entrenamiento1MC}) la ganancia es más que notoria. En este caso la diagonal está mucho más llena de aciertos y el clasificador no erra la mayor parte del tiempo con los falsos positivos de la clase Afraid, como se vió en los resultados del primer entreno. Además podemos ver como el clasificador no sabe distinguir la expresión \textit{Angry} y \textit{Sad}, que son asociadas a la clase \textit{Disgusted}.\\
+La mejoría en el resto de clases se traduce en un 44,29\% de acierto con el conjunto de test frente al 22,86\% del intento anterior, por lo que podemos decir que las técnicas de preprocesamiento han sido \textbf{positivas} en este caso.\\
+\clearpage
+\section{Segundo Intento}
+
+\subsubsection{Base de datos}
+
+\subsubsection{Preprocesamiento}
+
+\subsubsection{Parámetros de entrenamiento}
+
+\subsubsection{Resultados del entrenamiento}
 
 %Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
@@ -1039,6 +1206,12 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	CS231n  
 	\textit{Convolutional Neural Networks for Visual Recognition: Transfer Learning}, 
 	URL: \url{http://cs231n.github.io/transfer-learning/}.
+	
+	\bibitem{opencvResize}
+	OpenCV Documentation,  
+	\textit{Interpolation methods}, 
+	URL: \url{	http://docs.opencv.org/2.4/modules/imgproc/doc/geometric_transformations.html#resize}.
+
 	
 	
 	\section{Herramientas}
