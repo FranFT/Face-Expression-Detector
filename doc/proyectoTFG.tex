@@ -41,7 +41,8 @@
 
 % Useful to add algorithms.
 % Package wiki: https://en.wikibooks.org/wiki/LaTeX/Algorithms
-\usepackage[chapter]{algorithm}
+%\usepackage[chapter]{algorithm}
+\usepackage[]{algorithm2e}
 
 % Require verbatim enviroment. It allows us to make blocks which wont be interpreted by the compiler.
 % Package wiki: https://en.wikibooks.org/wiki/LaTeX/Paragraph_Formatting#Verbatim_text
@@ -1024,15 +1025,226 @@ Cuando clasificamos el mismo conjunto de test del primer intento con el clasific
 Si comparamos esta tabla con la matriz de confusión del primer intento (Tabla \ref{tab:entrenamiento1MC}) la ganancia es más que notoria. En este caso la diagonal está mucho más llena de aciertos y el clasificador no erra la mayor parte del tiempo con los falsos positivos de la clase Afraid, como se vió en los resultados del primer entreno. Además podemos ver como el clasificador no sabe distinguir la expresión \textit{Angry} y \textit{Sad}, que son asociadas a la clase \textit{Disgusted}.\\
 La mejoría en el resto de clases se traduce en un 44,29\% de acierto con el conjunto de test frente al 22,86\% del intento anterior, por lo que podemos decir que las técnicas de preprocesamiento han sido \textbf{positivas} en este caso.\\
 \clearpage
-\section{Segundo Intento}
 
+\section{Tercer Intento}
+Viendo la mejoría de rendimiento tras el proceso de pre-procesado del segundo intento, en este tercero intentaremos producir muchas más imágenes de la misma manera.
 \subsubsection{Base de datos}
+Para ello se han tenido en cuenta la misma batería de imágenes de la base de datos que en el segundo intento (Véase la Figura \ref{fig:segundoIntentoDB}). %Se desechan las imágenes de perfil porque el detector facial no es capaz de detectar caras de perfil.
 
 \subsubsection{Preprocesamiento}
+Se ha aplicado el mismo pre-procesado que en el segundo intento, pero para cada una de las transformaciones se han producido un mayor número de imágenes. Por ejemplo, a la hora de generar los pixelados, por cada imagen, se usan todos los métodos de interpolación disponibles en lugar de un aleatorio. La idea es intentar obtener aun más generalidad.\\
+Esto provoca, que el tamaño de los conjuntos de validación y training aumenten tal y como se ve en la Tabla \ref{entr:tercerIntento-DB}.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|c|c|c|}
+		\cline{2-4}
+		& \textbf{Training} & \textbf{Validación} (25\%) & \textbf{Total} \\ \hline
+		\multicolumn{1}{|c|}{\textbf{Nº de imágenes}} & 352998       & 121824          & 474822     \\ \hline
+	\end{tabular}
+	\caption{DB empleada - Tercer intento}
+	\label{entr:tercerIntento-DB}
+\end{table}
 
 \subsubsection{Parámetros de entrenamiento}
 
+\begin{itemize}
+	\item Epochs: \(3\)
+	\item Coeficiente de aprendizaje inicial: \(0.02\)
+	\item Policy: Inverse Decay (Figura \ref{fig:entrenamiento3results1})
+\end{itemize}
+
 \subsubsection{Resultados del entrenamiento}
+La Figura \ref{fig:entrenamiento3results} ilustra los resultados de este tercer entrenamiento. Sólo se han hecho falta 3 epochs para que el modelo converja. Incluso, a partir del primero, da la sensación de que el entreno comienza sobre-ajustar el modelo dado que la función de pérdida de validación comienza a tener una tendencia ascendente en lugar de descendente.\\
+Tras varios intentos con este conjunto de datos, he conseguido los mejores resultados con una política de disminución del coeficiente de aprendizaje de Inverse Decay como se ve en la Figura \ref{fig:entrenamiento3results1}.\\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento3results}
+	\caption[Resultados del entrenamiento 3]{Resultados del tercer entramiento.}
+	\label{fig:entrenamiento3results}
+\end{figure}
+
+El rendimiento de este clasificador con el conjunto de validación es del 86\% de acierto. Al clasificar el conjunto de test obtenemos un 51,43\% de acierto en este tercer intento frente al 44,29\% del primero. Un mejoría sustancial del 7,14\% pese a mi sospecha acerca del sobre-ajuste en el entrenamiento.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento3results1}
+	\caption[Resultados del entrenamiento 3]{Política de disminución del coeficiente de aprendizaje.}
+	\label{fig:entrenamiento3results1}
+\end{figure}
+
+La matriz de confusión de este intento puede verse en la Tabla \ref{tab:entrenamiento3MC}. Si comparamos estos datos con los datos de la matriz de confusión del se ha logrado mantener y mejorar el acierto de todas las clases. Sobre todo en casos como los de la clase Angry que ha visto su rendimiento mejorado del 15,00\% al 30,00\% y Surprised del 35,00\% al 50,00\%. La clase Sad es la que peor rendimiento sigue teniendo pese a haber mejorado de un 20,00\% a un 25,00\%.
+
+\begin{table}[h]
+	\centering
+	\small
+	\setlength\tabcolsep{3pt}
+	\setlength\extrarowheight{2pt}
+	\begin{tabular}{lccccccclc}
+		& \multicolumn{1}{l}{\textbf{afraid}} & \multicolumn{1}{l}{\textbf{angry}} & \multicolumn{1}{l}{\textbf{disgusted}} & \multicolumn{1}{l}{\textbf{happy}} & \multicolumn{1}{l}{\textbf{neutral}} & \multicolumn{1}{l}{\textbf{sad}} & \multicolumn{1}{l}{\textbf{surprised}} &  & \multicolumn{1}{l}{\textbf{per-class}} \\
+		\textbf{afraid}    & \cellcolor[HTML]{EFEFEF}13 & 1	& 2 & 2 & 2 & 0 & 0 &  & 65,00\% \\
+		\textbf{angry}     & 4 & \cellcolor[HTML]{EFEFEF}6 & 9 & 0 & 0 & 1 & 0 &  & 30,00\% \\
+		\textbf{disgusted} & 1 & 3 & \cellcolor[HTML]{EFEFEF}13 & 1 & 0 & 2 & 0 &  & 65,00\% \\
+		\textbf{happy}     & 0 & 0 & 4 & \cellcolor[HTML]{EFEFEF}14 & 1 & 0 & 1 &  & 70,00\% \\
+		\textbf{neutral}   & 2 & 3 & 1 & 0 & \cellcolor[HTML]{EFEFEF}11 & 3 & 0 &  & 55,00\% \\
+		\textbf{sad}       & 1 & 6 & 5 & 0 & 2 & \cellcolor[HTML]{EFEFEF}5 & 1 &  & 25,00\% \\
+		\textbf{surprised} & 4 & 1 & 1 & 1 & 0 & 3 & \cellcolor[HTML]{EFEFEF}10 &  & 50,00\%
+	\end{tabular}
+	\caption{Matriz de confusión}
+	\label{tab:entrenamiento3MC}
+\end{table}
+\clearpage
+
+\section{Cuarto Intento}
+El clasificador va mejorando. En este nuevo intento voy a cambiar el método de pre-procesamiento que se ha usado en el segundo y tercer intento, porque como se ha visto en el tercero, aumentar el conjunto de imágenes de forma metódica no va a mejorar mucho más el rendimiento de clasificador.
+
+\subsubsection{Base de datos}
+Se escogerá la misma batería de imágenes de la base de datos que en el segundo y tercer intento (Véase la Figura \ref{fig:segundoIntentoDB}).
+
+\subsubsection{Preprocesamiento}
+Para cada una de las imágenes escogidas de la base de datos se generan N nuevas imágenes. Cada una de esas imágenes es una combinación aleatoria de las siguiente transformaciones:
+\begin{itemize}
+	\item Flip horizontal.
+	\item Zooms aleatorios.
+	\item Cambios de perspectiva aleatorios.
+	\item Ruido Gaussiano aleatorio.
+	\item Añadir iluminación o bien oscurecer la imagen.
+	\item Rotaciones aleatorias.
+\end{itemize}
+Para aplicar una combinación aleatoria de las transformaciones anteriores en un orden aleatorio, se aplicará el Algoritmo \ref{algorithm1}. Para generar N imágenes aleatorias se aplicara N veces sobre la misma imagen.\\
+
+\begin{algorithm}[H]
+	\KwData{Imagen n-ésima}
+	\KwResult{Imagen de salida transformada de forma aleatoria}
+	\BlankLine
+	initialization\;
+	$img \leftarrow$ Imagen de entrada\;
+	$t \leftarrow$ Número aleatorio en el intervalo [3,6]\;
+	$indices[$ $] \leftarrow \{1,2,3,4,5,6\}$\;
+	$shuffle(indices[$ $])$\;
+	\For{$i\leftarrow 0$ \KwTo $t$}{
+		$n \leftarrow indices[i]$\;
+		$img \leftarrow AplicarTransformacion(n)$\;
+	}	
+\caption{Cómo se aplican transformaciones aleatorias}
+\label{algorithm1}
+\end{algorithm}
+\BlankLine
+Una vez se tienen las N imágenes, se detecta el rostro en ellas y se guardan para el conjunto final junto a sus versiones pixeladas, como se hizo en el entrenamiento 2. Podemos ver una muestra de estas imágenes aleatorias en la Figura \ref{fig:cuartoIntentoDA1}. Podemos distinguir las rotaciones, la iluminación, el ruido Gaussiano, cambios de perspectiva, etc, todo junto en una misma imagen y con resultados diferentes. También se pueden ver imágenes originales porque por supuesto se usan imágenes sin transformaciones.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/cuartoIntentoDA1}
+\caption[Imágenes Aleatorias]{Muestra de imágenes transformadas de forma aleatoria.}
+\label{fig:cuartoIntentoDA1}
+\end{figure}
+
+Con estas transformaciones obtenemos un conjunto de datos del tamaño que se muestra en la Tabla \ref{entr:cuartoIntento-DB}.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|c|c|c|}
+		\cline{2-4}
+		& \textbf{Training} & \textbf{Validación} (25\%) & \textbf{Total} \\ \hline
+		\multicolumn{1}{|c|}{\textbf{Nº de imágenes}} & 60189       & 20931          & 81120     \\ \hline
+	\end{tabular}
+	\caption{DB empleada - Cuarto intento}
+	\label{entr:cuartoIntento-DB}
+\end{table}
+
+
+\subsubsection{Parámetros de entrenamiento}
+\begin{itemize}
+	\item Epochs: \(10\)
+	\item Coeficiente de aprendizaje inicial: \(0.01\)
+	\item Policy: Step Down (Figura \ref{fig:entrenamiento4results1})
+\end{itemize}
+\subsubsection{Resultados del entrenamiento}
+Pese a tener un número de imágenes similar al del segundo intento (Tabla \ref{entr:segundoIntento-DB}), el modelo tarda más epochs en converger. Esto se puede deber a la mayor variabilidad que hemos introducido con las transformaciones aleatorias por lo que tarda más en poder minimizar las funciones de pérdida.\\
+También vemos como la función de pérdida de validación se encuentra cerca de la función de pérdida de training, por lo que, en principio, esto indica que no hemos sobre-ajustado el modelo.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento4results}
+	\caption[Resultados del entrenamiento 4]{Resultados del cuarto entramiento.}
+	\label{fig:entrenamiento4results}
+\end{figure}
+
+Este entrenamiento ha alcanzado un 82\% de precisión sobre el conjunto de validación. Al clasificar el conjunto de test he obtenido un 53,57\%, lo que supone un aumento del 2,14\% de precisión usando aproximadamente una sexta parte del número de imágenes que se usó en el tercer intento de entrenamiento. Por lo que podemos afirmar que esta técnica generaliza mejor que la de el tercer intento.\\
+La matriz de confusión de este entrenamiento se muestra en la Tabla  \ref{tab:entrenamiento4MC} y es similar a la del tercer intento. Se mantienen las deficiencias y las fortalezas del entreno anterior. La clase Angry y Sad siguen siendo las peores.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento4results1}
+	\caption[Resultados del entrenamiento 4]{Política de disminución del coeficiente de aprendizaje.}
+	\label{fig:entrenamiento4results1}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\small
+	\setlength\tabcolsep{3pt}
+	\setlength\extrarowheight{2pt}
+	\begin{tabular}{lccccccclc}
+		& \multicolumn{1}{l}{\textbf{afraid}} & \multicolumn{1}{l}{\textbf{angry}} & \multicolumn{1}{l}{\textbf{disgusted}} & \multicolumn{1}{l}{\textbf{happy}} & \multicolumn{1}{l}{\textbf{neutral}} & \multicolumn{1}{l}{\textbf{sad}} & \multicolumn{1}{l}{\textbf{surprised}} &  & \multicolumn{1}{l}{\textbf{per-class}} \\
+		\textbf{afraid}    & \cellcolor[HTML]{EFEFEF}12 & 0	& 2 & 1 & 1 & 1 & 3 &  & 60,00\% \\
+		\textbf{angry}     & 1 & \cellcolor[HTML]{EFEFEF}6 & 9 & 3 & 0 & 0 & 1 &  & 30,00\% \\
+		\textbf{disgusted} & 3 & 2 & \cellcolor[HTML]{EFEFEF}13 & 1 & 0 & 0 & 1 &  & 65,00\% \\
+		\textbf{happy}     & 0 & 0 & 3 & \cellcolor[HTML]{EFEFEF}16 & 0 & 0 & 1 &  & 80,00\% \\
+		\textbf{neutral}   & 3 & 3 & 1 & 0 & \cellcolor[HTML]{EFEFEF}12 & 1 & 0 &  & 60,00\% \\
+		\textbf{sad}       & 3 & 4 & 7 & 0 & 2 & \cellcolor[HTML]{EFEFEF}3 & 1 &  & 15,00\% \\
+		\textbf{surprised} & 4 & 0 & 1 & 0 & 1 & 1 & \cellcolor[HTML]{EFEFEF}13 &  & 65,00\%
+	\end{tabular}
+	\caption{Matriz de confusión}
+	\label{tab:entrenamiento4MC}
+\end{table}
+
+\clearpage
+
+\section{Quinto Intento}
+Este quinto intento fue una prueba para intentar unir los puntos fuertes de los modelos entrenados en el tercer y cuarto intento. Para ello intenté, usando el conjunto de imágenes generado en el intento 4, entrenar un nuevo modelo, pero para la inicialización de la red usar los pesos de un modelo ya entrenado previamente. Más concretamente usé los pesos del modelo entrenado en el tercer intento. Esta técnica se conoce como Transfer Learning y fue introducida en el Apartado \ref{sub:funcionamientoCnn}.
+
+\subsubsection{Parámetros de entrenamiento}
+\begin{itemize}
+	\item Epochs: \(5\)
+	\item Coeficiente de aprendizaje inicial: \(0.01\)
+	\item Policy: Exponencial Decay (Figura \ref{fig:entrenamiento5results1})
+\end{itemize}
+\subsubsection{Resultados del entrenamiento}
+Si observamos la Figura \ref{fig:entrenamiento5results} podemos ver que gracias a escoger los pesos de un modelo ya entrenado el modelo comienza con una precisión sobre el conjunto de training de más del 90\%.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento5results}
+	\caption[Resultados del entrenamiento 4]{Resultados del quinto entramiento.}
+	\label{fig:entrenamiento5results}
+\end{figure}
+
+He escogido un coeficiente de aprendizaje con una disminución exponencial (Figura \ref{fig:entrenamiento5results1}) porque interesa que el modelo aprenda lentamente, ya que partimos de pesos ya calculados de una base de datos similar.\\
+Vemos como la función de pérdida de entrenamiento fluctúa de bastante, pero a medida que va disminuyendo el coeficiente de aprendizaje las fluctuaciones son menores.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/entrenamiento5results1}
+	\caption[Resultados del entrenamiento 5]{Política de disminución del coeficiente de aprendizaje.}
+	\label{fig:entrenamiento5results1}
+\end{figure}
+
+Al clasificar el conjunto de test obtenemos un 54,29\% de precisión en el acierto lo que no supone ni un 1\% de mejora. La matriz de confusión de la Tabla \ref{tab:entrenamiento5MC}.
+\begin{table}[h]
+	\centering
+	\small
+	\setlength\tabcolsep{3pt}
+	\setlength\extrarowheight{2pt}
+	\begin{tabular}{lccccccclc}
+		& \multicolumn{1}{l}{\textbf{afraid}} & \multicolumn{1}{l}{\textbf{angry}} & \multicolumn{1}{l}{\textbf{disgusted}} & \multicolumn{1}{l}{\textbf{happy}} & \multicolumn{1}{l}{\textbf{neutral}} & \multicolumn{1}{l}{\textbf{sad}} & \multicolumn{1}{l}{\textbf{surprised}} &  & \multicolumn{1}{l}{\textbf{per-class}} \\
+		\textbf{afraid}    & \cellcolor[HTML]{EFEFEF}12 & 1	& 3 & 0 & 1 & 1 & 2 &  & 60,00\% \\
+		\textbf{angry}     & 1 & \cellcolor[HTML]{EFEFEF}7 & 11 & 0 & 1 & 0 & 1 &  & 35,00\% \\
+		\textbf{disgusted} & 1 & 3 & \cellcolor[HTML]{EFEFEF}14 & 1 & 0 & 1 & 0 &  & 70,00\% \\
+		\textbf{happy}     & 0 & 0 & 4 & \cellcolor[HTML]{EFEFEF}16 & 0 & 0 & 0 &  & 80,00\% \\
+		\textbf{neutral}   & 0 & 7 & 1 & 0 & \cellcolor[HTML]{EFEFEF}12 & 0 & 0 &  & 60,00\% \\
+		\textbf{sad}       & 1 & 3 & 9 & 0 & 3 & \cellcolor[HTML]{EFEFEF}4 & 0 &  & 20,00\% \\
+		\textbf{surprised} & 3 & 1 & 1 & 0 & 1 & 3 & \cellcolor[HTML]{EFEFEF}11 &  & 55,00\%
+	\end{tabular}
+	\caption{Matriz de confusión}
+	\label{tab:entrenamiento5MC}
+\end{table}
 
 %Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
