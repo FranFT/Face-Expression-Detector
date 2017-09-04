@@ -1,186 +1,97 @@
+#include <dlib/image_io.h>
+#include <dlib/image_processing.h>
+#include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/image_transforms.h>
+#include <dlib/opencv.h>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-using namespace std;
-using namespace cv;
-
-// Struct that stores image detected face and eye areas.
-struct FacialFeatures {
-  bool face_found, eyes_found;
-  Rect face;
-  Rect eye1;
-  Rect eye2;
-};
-
 /*** Functions ***/
-// Loading classifiers.
-bool loadClassifers(CascadeClassifier &_face, CascadeClassifier &_eye) {
-  bool output = true;
-  const String face_dectector_name = "haarcascade_frontalface_alt2.xml";
-  const String eye_detector_name = "haarcascade_eye_tree_eyeglasses.xml";
-  // Getting the cascade classifiers.
-  if (!_face.load("data/" + face_dectector_name)) {
-    cerr << "Could not find: data/" << face_dectector_name << endl;
-    output = false;
-  }
-  if (!_eye.load("data/" + eye_detector_name)) {
-    cerr << "Could not find: data/" << eye_detector_name << endl;
-    output = false;
-  }
-  return output;
-}
-
-// Passing from ROI relative coordinates to absolute img coordinates.
-Rect roiToOriginalCoordinates(const Rect &_roi, const Rect &_rect) {
-  return Rect(_roi.x + _rect.x, _roi.y + _rect.y, _rect.width, _rect.height);
-}
-
-// Searching for faces and eyes in the image.
-FacialFeatures detectFeatures(const Mat &_img, CascadeClassifier &_face,
-                              CascadeClassifier &_eye) {
-  FacialFeatures output;
-  vector<Rect> objs_found;
-  Mat gray_img;
-
-  cvtColor(_img, gray_img, CV_BGR2GRAY);
-  equalizeHist(gray_img, gray_img);
-
-  _face.detectMultiScale(gray_img, objs_found, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE,
-                         Size(_img.cols / 4, _img.rows / 4));
-  if (!objs_found.empty()) {
-    output.face = objs_found[0];
-    output.face_found = true;
-    objs_found.clear();
-
-    Mat faceROI = gray_img(output.face);
-    _eye.detectMultiScale(faceROI, objs_found, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE,
-                          Size(30, 30));
-    if (objs_found.size() == 2) {
-      output.eye1 = roiToOriginalCoordinates(output.face, objs_found[0]);
-      output.eye2 = roiToOriginalCoordinates(output.face, objs_found[1]);
-      output.eyes_found = true;
-    } else {
-      output.eyes_found = false;
-    }
-  } else {
-    output.face_found = output.eyes_found = false;
-  }
-
-  return output;
-}
-
-// Calculates the angle between the horizontal axis and the eyes.
-double calculateEyeAngle(const FacialFeatures &_features) {
-  double length1 = sqrt(pow(_features.eye2.x - _features.eye1.x, 2) +
-                        pow(_features.eye2.y - _features.eye1.y, 2));
-  double length2 = sqrt(pow(_features.eye2.x - _features.eye1.x, 2));
-
-  double angle = (acos(length2 / length1) * 180.0) / CV_PI;
-
-  return angle;
-}
-
-// Aling eyes with the horizontal axis.
-Mat alignEyes(const Mat &_img, const FacialFeatures &_features) {
-  // Variables.
-  Mat rotated_image;
-
-  // Getting alineation angle between eyes.
-  double angle = calculateEyeAngle(_features);
-
-  // Aligning eyes only if necesary.
-  if (abs(angle) > 4.0) {
-    Mat rot_matrix = getRotationMatrix2D(
-        Point((_features.face.x + _features.face.width) / 2,
-              (_features.face.y + _features.face.height) / 2),
-        angle, 1.0);
-    warpAffine(_img, rotated_image, rot_matrix, _img.size(), CV_INTER_CUBIC,
-               BORDER_REFLECT);
-    return rotated_image;
-  } else {
-    return _img;
-  }
-}
-
-// This method generate the output image that will be passed to the CNN.
-// In this case, we receive a rotated face image with eyes aligned. So we
-// try to detect again the face area in order to make the crop more precise.
-// If its not possible we crop the image using roi passed as argument.
-void generateClassifierImage(const Mat &_img, CascadeClassifier _detector,
-                             const Rect &_roi) {
-  Mat output;
-  vector<Rect> objs_found;
-  Mat gray_img;
-
-  cvtColor(_img, gray_img, CV_BGR2GRAY);
-  equalizeHist(gray_img, gray_img);
-
-  _detector.detectMultiScale(gray_img, objs_found, 1.1, 2,
-                             0 | CV_HAAR_SCALE_IMAGE,
-                             Size(_img.cols / 4, _img.rows / 4));
-  if (!objs_found.empty())
-    resize(_img(objs_found[0]), output, Size(256, 256));
-  else
-    resize(_img(_roi), output, Size(256, 256));
-
-  imwrite("temp/output.jpg", output);
-}
-
 // This method generate the output image that will be passed to the CNN. It
 // generates a 256x256 crop of the face area of the image.
-void generateClassifierImage(const Mat &_img, const Rect &_roi) {
-  Mat output;
-  resize(_img(_roi), output, Size(256, 256));
-  imwrite("temp/output.jpg", output);
+void generateClassifierImage(const cv::Mat &_img, const cv::Rect &_roi) {
+  cv::Mat output;
+  cv::resize(_img(_roi), output, cv::Size(256, 256));
+  cv::imwrite("temp/output.jpg", output);
 }
 
 // This method generates the image that will be shown in the app. We draw de
 // face area into the final image.
-void generateUImage(Mat &_img, const FacialFeatures &_features) {
-  rectangle(_img, _features.face, Scalar(0, 0, 255), 2);
-  imwrite("temp/thumbnail.jpg", _img);
+void generateUImage(cv::Mat &_img, const cv::Rect &face_area) {
+  cv::rectangle(_img, face_area, cv::Scalar(0, 0, 255), 2);
+  cv::imwrite("temp/thumbnail.jpg", _img);
+}
+
+// Transform a dlib-rectangle object to OpenCV-like rectangle object.
+// http://dlib.net/dlib/geometry/rectangle.h.html
+cv::Rect dlibRectangleToOpencvRect(dlib::rectangle &_rect,
+                                   const cv::Size _size) {
+  cv::Rect output;
+  // Making sure rect fits in image limits.
+  (_rect.left() < 0) ? output.x = 0 : output.x = _rect.left();
+  (_rect.top() < 0) ? output.y = 0 : output.y = _rect.top();
+  (_rect.width() + output.x > _size.width - 1)
+      ? output.width = _size.width - output.x - 1
+      : output.width = _rect.width() - 1;
+  (_rect.height() + output.y > _size.height - 1)
+      ? output.height = _size.height - output.y - 1
+      : output.height = _rect.height();
+  return output;
+  // return cv::Rect(_rect.left(), _rect.top(), _rect.width(), _rect.height());
+}
+
+cv::Rect detectFace(const cv::Mat &_img) {
+  // cv::auxImage = _img.clone();
+  cv::Rect output;
+  // Loading detector.
+  dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
+  // Transforming opencv image to dlib image.
+  dlib::cv_image<dlib::bgr_pixel> dlibImage(_img);
+  // Detecting face.
+  std::vector<dlib::rectangle> dets = detector(dlibImage);
+  // If faces were found.
+  if (dets.size() > 0) {
+    // Convert rectangle to OpenCV Rect object.
+    output = dlibRectangleToOpencvRect(dets[0], _img.size());
+  }
+  return output;
 }
 
 // Main.
 int main(int argc, char **argv) {
   if (argc != 2) {
-    cerr << "Please, specify an image path." << endl;
+    std::cerr << "Please, specify an image path." << std::endl;
     return 0;
   }
 
-  // Varibles.
-  Mat image;
-  FacialFeatures features;
-  CascadeClassifier face_detector, eye_detector;
+  // Variables.
+  cv::Mat opencvImage;
+  cv::Rect face;
 
-  // Reading the image
-  image = imread(argv[1]);
-  if (!image.data) {
-    cerr << "Could not open the image." << endl;
-    return 0;
-  }
-  // Loading classifiers.
-  if (!loadClassifers(face_detector, eye_detector))
-    return 0;
-
-  // Detecting face and eyes.
-  features = detectFeatures(image, face_detector, eye_detector);
-
-  // If both were found, align eyes.
-  if (features.face_found && features.eyes_found) {
-    Mat rotated_image = alignEyes(image, features);
-    generateClassifierImage(rotated_image, face_detector, features.face);
-  } else if (features.face_found) {
-    generateClassifierImage(image, features.face);
-  } else {
-    cerr << "Could not find a face in the image: '" << argv[1] << "'" << endl;
+  // Reading image.
+  opencvImage = cv::imread(argv[1]);
+  if (!opencvImage.data) {
+    std::cerr << "Could not open the image " << argv[1] << std::endl;
     return 0;
   }
 
-  generateUImage(image, features);
+  // Detecting face using dlib.
+  face = detectFace(opencvImage);
 
-  cout << features.face.x << "," << features.face.y << ";"
-       << features.face.width << "," << features.face.height << endl;
+  // Checking output.
+  if (!face.width || !face.height) {
+    std::cerr << "Could not find a face in the image: '" << argv[1] << "'"
+              << std::endl;
+    return 0;
+  }
 
+  // Generating image to be classied.
+  generateClassifierImage(opencvImage, face);
+  // Generating user interface image.
+  generateUImage(opencvImage, face);
+
+  // Output for Electron main process.
+  std::cout << face.x << "," << face.y << ";" << face.width << ","
+            << face.height << std::endl;
   return 0;
 }
