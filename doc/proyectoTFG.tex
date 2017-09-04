@@ -1226,7 +1226,7 @@ Vemos como la función de pérdida de entrenamiento fluctúa de bastante, pero a
 	\label{fig:entrenamiento5results1}
 \end{figure}
 
-Al clasificar el conjunto de test obtenemos un 54,29\% de precisión en el acierto lo que no supone ni un 1\% de mejora. La matriz de confusión de la Tabla \ref{tab:entrenamiento5MC}.
+Al clasificar el conjunto de test obtenemos un 54,29\% de precisión en el acierto lo que supone menos de un 1\% de mejora. La matriz de confusión de la Tabla \ref{tab:entrenamiento5MC}.
 \begin{table}[h]
 	\centering
 	\small
@@ -1245,6 +1245,20 @@ Al clasificar el conjunto de test obtenemos un 54,29\% de precisión en el acier
 	\caption{Matriz de confusión}
 	\label{tab:entrenamiento5MC}
 \end{table}
+
+Pese a todos los intentos, no he conseguido aumentar la precisión en expresiones como Angry y Sad, por lo que estoy pensando que quizás, las imágenes de estas dos clases de la base de datos no sean demasiado representativas de las imágenes de la misma clase en el conjunto de test.
+\clearpage
+
+Una vez tenemos el clasificador entrenado la aplicación final está completa ya que podemos mandar el recorte a este, clasificarlo con una de las herramientas que incluye Caffe y recoger los resultados para mostrarlos en la interfaz. Continuando con el esquema de la aplicación mostrado en la Figura \ref{fig:moduloClasificacion}, el gráfico final sería entonces el de la Figura \ref{fig:entrenamientoClasificador}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/entrenamientoClasificador}
+\caption[Aplicación Final]{Gráfico de la aplicación final}
+\label{fig:entrenamientoClasificador}
+\end{figure}
+
+\section{Pruebas}
+
 
 %Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
