@@ -1482,8 +1482,61 @@ Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detect
 	
 \end{thebibliography}
 \chapter{Anexo}
+\section{Instalación y ejecución}
+%Al final de la memoria hay que añadir un anexo de una página o dos, explicando como se usa el software a modo de manual de usuario. Es decir, como se llaman los comandos, qué parámetros hay que darle, como se llaman los ficheros de datos de entrada, etc.
+Para instalar la aplicación se proporciona el script \textbf{run.sh}. Este se encargará de instalar las dependencias necesarias y de compilar la aplicación para dejarla lista para su uso.\\
+El script ha sido probado sobre una instalación fresca de \textit{Ubuntu 16.04 LTS} consiguiendo ejecutar con éxito la aplicación. Para instalar la aplicación hay que ejecutar los siguientes comandos:
+\begin{enumerate}
+	\item Actualizar el sistema operativo.
+\begin{lstlisting}[language=bash]
+$ sudo apt-get update
+$ sudo apt-get upgrade
+\end{lstlisting}
+	\item Descomprimir el archivo.
+	\item Situarse dentro del directorio y ejecutar el script con el argumento de instalación.
+\begin{lstlisting}[language=bash]
+$ cd <app_directory_path>
+$ ./run.sh --install
+\end{lstlisting}
+\end{enumerate}
+El script \textbf{run.sh} con el argumento \textit{--install} instalará todas las dependencias necesarias, por lo que \textbf{solo es necesario usarlo la primera vez}. Tras instalar las dependencias, se descargarán los módulos necesarios de NodeJS, entre ellos Electron. Por último se compilará Caffe en el sub-directorio \textit{build} y se ejecutará la aplicación.\\
+Si deseamos ejecutar la aplicación una vez instaladas dependencias y compiladas simplemente habrá que ejecutar el script sin argumentos.
+\begin{lstlisting}[language=bash]
+$ ./run.sh
+\end{lstlisting}
 
-Al final de la memoria hay que añadir un anexo de una página o dos, explicando como se usa el software a modo de manual de usuario. Es decir, como se llaman los comandos, qué parámetros hay que darle, como se llaman los ficheros de datos de entrada, etc.
+\section{Uso}
+Tras ejecutar la aplicación se muestra la interfaz de la Figura \ref{fig:UI}:\\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\linewidth]{imagenes/UI}
+\caption[Interfaz de Usuario]{Interfaz de usuario}
+\label{fig:UI}
+\end{figure}
+
+Podemos arrastrar un archivo al área reservada para ello con el texto \textit{Drop an image here}, Figura \ref{fig:dragdrop}, o bien podemos presionar el botón de selección del fichero, que abrirá el gestor de archivos por defecto del sistema operativo para realizar una selección al modo tradicional.
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\linewidth]{imagenes/dragdrop}
+\caption[Drag and Drop]{Selección de la imagen de entrada mediante \textit{Drag \& Drop}}
+\label{fig:dragdrop}
+\end{figure}
+
+Tras proporcionar un fichero de entrada pueden suceder tres cosas:\\
+\begin{enumerate}
+	\item \textit{El fichero de entrada no es una imagen} \(\rightarrow\) Se notificará por una ventana emergente y se deberá proporcionar otro fichero de entrada.
+	\item \textit{No se encuentra una cara en la imagen} \(\rightarrow\) Se notificará por una ventana emergente y se deberá proporcionar otro fichero de entrada.
+	\item \textit{Se encuentra un rostro en la imagen} \(\rightarrow\) Se mostrará en la interfaz la pantalla de análisis Figura \ref{fig:analysiscreen}.
+\end{enumerate}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/analysiscreen}
+\caption[Pantalla de análisis]{Pantalla de análisis}
+\label{fig:analysiscreen}
+\end{figure}
+
+En la pantalla de análisis podemos observar los resultados y analizar otra imagen haciendo uso del botón \textit{Analyze another image} que nos devolverá a la interfaz de la Figura \ref{fig:UI}.
+
 
 
 
