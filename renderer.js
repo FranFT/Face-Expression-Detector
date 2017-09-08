@@ -9,10 +9,14 @@ const logWindow = document.getElementById('logWindow');
 const graphArea = document.getElementById('graphContainer');
 const previousResult = document.getElementById('previousResult');
 const nextResult = document.getElementById('nextResult');
+const canvas = document.getElementById( 'imageArea' )
+const ctx = canvas.getContext( '2d' );
+
 
 /*---------- Global Variables ----*/
 var showing = 0;
 var faceCoords;
+var thumbnailPath;
 
 // Body.
 document.ondragover = () => {
@@ -30,12 +34,36 @@ dropImageArea.ondragleave = dropImageArea.ondragend = () => {
   return false;
 }
 
+function drawResult( index ){
+  // Getting (x,y) face coordinates.
+  const coords = faceCoords[index].split(";")[0].split(",").map( function( item ){
+    return parseInt( item, 10 );
+  });
+  // Getting face area width and height.
+  const faceArea = faceCoords[index].split(";")[1].split(",").map( function( item ){
+    return parseInt( item, 10 );
+  });
+
+  // Reset canvas.
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Plotting the face into the canvas.
+  var img = new Image();
+  img.onload = function(){
+    ctx.drawImage( img,
+      coords[0] - 50, coords[1] - 50, faceArea[0] + 100, faceArea[1] + 100,
+      0, 0, 350, 350 // Canvas coords.
+    );
+    ctx.stroke();
+  }
+  img.src = thumbnailPath;
+
+}
 function showNextResult(){
   // Increase showing counter.
   showing++;
 
   // Updating UI showing message.
-  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + '/' + faceCoords.length.toString();
+  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
 
   // Hide next button if there arent next result.
   if( showing == faceCoords.length - 1 ){
@@ -46,14 +74,14 @@ function showNextResult(){
     previousResult.classList.toggle('hidden');
   }
 
-  console.log(showing);
+  drawResult(showing);
 }
 function showPreviousResult(){
   // Decrease showing counter.
   showing--;
 
   // Updating UI showing message.
-  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + '/' + faceCoords.length.toString();
+  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
 
   // Hide previous button if there aren't previous results.
   if( showing == 0 ){
@@ -62,7 +90,8 @@ function showPreviousResult(){
   if( showing == faceCoords.length - 2 ){
     nextResult.classList.toggle('hidden');
   }
-  console.log(showing);
+
+  drawResult(showing);
 }
 /*---------- Element-specific events. -----*/
 // Body.
@@ -128,9 +157,10 @@ document.getElementById( 'restartButton' ).addEventListener( 'click', () => {
 // Events which receive an image path and face coords and draws the face.
 ipcRenderer.on('faceInfo', (event, message) => {
   // Getting face coordinates.
+  thumbnailPath = message[0];
   faceCoords = message[1].split("\n");
   showing = 0;
-  document.getElementById('showingMessage').innerHTML = 'Result: 1/'+faceCoords.length.toString();
+  document.getElementById('showingMessage').innerHTML = 'Result: 1 / ' + faceCoords.length.toString();
   console.log(faceCoords);
 
   // Getting (x,y) face coordinates.
@@ -143,7 +173,6 @@ ipcRenderer.on('faceInfo', (event, message) => {
   });
 
   // Plotting the face into the canvas.
-  const ctx = document.getElementById( 'imageArea' ).getContext( '2d' );
   var img = new Image();
   img.onload = function(){
     ctx.drawImage( img,
@@ -152,7 +181,7 @@ ipcRenderer.on('faceInfo', (event, message) => {
     );
     ctx.stroke();
   }
-  img.src = message[0];
+  img.src = thumbnailPath;
 
   if( faceCoords.length > 1 )
     nextResult.classList.toggle('hidden');
@@ -161,33 +190,6 @@ ipcRenderer.on('faceInfo', (event, message) => {
   startScreen.style.webkitAnimationPlayState = "running";
 
 });
-
-/*ipcRenderer.on('faceInfo', (event, message) => {
-  // Getting (x,y) face coordinates.
-  const coords = message[1].split(";")[0].split(",").map( function( item ){
-    return parseInt( item, 10 );
-  });
-  // Getting face area width and height.
-  const faceArea = message[1].split(";")[1].split(",").map( function( item ){
-    return parseInt( item, 10 );
-  });
-
-  // Plotting the face into the canvas.
-  const ctx = document.getElementById( 'imageArea' ).getContext( '2d' );
-  var img = new Image();
-  img.onload = function(){
-    ctx.drawImage( img,
-      coords[0] - 50, coords[1] - 50, faceArea[0] + 100, faceArea[1] + 100,
-      0, 0, 350, 350 // Canvas coords.
-    );
-    ctx.stroke();
-  }
-  img.src = message[0];
-
-  // Hiding start screen.
-  startScreen.classList.add('fadeout');
-  startScreen.style.webkitAnimationPlayState = "running";
-});*/
 
 // Renderer process event that receive main process classification output.
 ipcRenderer.on('results', (event, _results) => {
