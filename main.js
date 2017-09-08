@@ -74,11 +74,10 @@ function deleteTempFolder () {
                 if ( err2 ) {
                   console.log( err2 );
                 }
-                console.log("Fichero '" + filePath + "' borrado.");
+                console.log("Temporary file '" + filePath + "' successfully deleted.");
               });
             }else{
               moreFiles = false;
-              console.log("FALSE");
             }
           }
           // Deleting thumbnail image.
@@ -162,9 +161,7 @@ function findFace( filePath ){
       }
       else{
         // Sending face location to renderer process.
-        console.log(stdout);
         const thumbnailPath = path.join( __dirname, 'temp', 'thumbnail.jpg');
-        console.log(thumbnailPath);
         main_window.webContents.send( 'faceInfo', [thumbnailPath,stdout] );
         classify();
       }
