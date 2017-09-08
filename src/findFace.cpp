@@ -62,14 +62,16 @@ std::vector<cv::Rect> detectFace(const cv::Mat &_img) {
 }
 
 void generateOutput(cv::Mat &_img, const std::vector<cv::Rect> &_faces) {
-  std::string output = std::to_string(_faces.size()) + "\n";
+  std::string output;
   for (unsigned int i = 0; i < _faces.size(); i++) {
     // Generating image to be classied.
     generateClassifierImage(_img, _faces[i], i);
     // Output for Electron main process.
     output += std::to_string(_faces[i].x) + "," + std::to_string(_faces[i].y) +
-              "," + std::to_string(_faces[i].width) + "," +
-              std::to_string(_faces[i].height) + "\n";
+              ";" + std::to_string(_faces[i].width) + "," +
+              std::to_string(_faces[i].height);
+    if (i < _faces.size() - 1)
+      output += "\n";
     // std::cout << faces.x << "," << faces.y << ";" << faces.width << ","
     //<< faces.height << std::endl;
   }
