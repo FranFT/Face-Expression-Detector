@@ -9,16 +9,19 @@
 /*** Functions ***/
 // This method generate the output image that will be passed to the CNN. It
 // generates a 256x256 crop of the face area of the image.
-void generateClassifierImage(const cv::Mat &_img, const cv::Rect &_roi) {
+void generateClassifierImage(const cv::Mat &_img, const cv::Rect &_roi,
+                             const unsigned int _index) {
   cv::Mat output;
+  std::string name = "temp/output-" + std::to_string(_index) + ".jpg";
   cv::resize(_img(_roi), output, cv::Size(256, 256));
-  cv::imwrite("temp/output.jpg", output);
+  cv::imwrite(name, output);
 }
 
 // This method generates the image that will be shown in the app. We draw de
 // face area into the final image.
-void generateUImage(cv::Mat &_img, const cv::Rect &face_area) {
-  cv::rectangle(_img, face_area, cv::Scalar(0, 0, 255), 2);
+void generateUImage(cv::Mat &_img, const std::vector<cv::Rect> &faces) {
+  for (unsigned int i = 0; i < faces.size(); i++)
+    cv::rectangle(_img, faces[i], cv::Scalar(0, 0, 255), 2);
   cv::imwrite("temp/thumbnail.jpg", _img);
 }
 
@@ -40,9 +43,9 @@ cv::Rect dlibRectangleToOpencvRect(dlib::rectangle &_rect,
   // return cv::Rect(_rect.left(), _rect.top(), _rect.width(), _rect.height());
 }
 
-cv::Rect detectFace(const cv::Mat &_img) {
+std::vector<cv::Rect> detectFace(const cv::Mat &_img) {
   // cv::auxImage = _img.clone();
-  cv::Rect output;
+  std::vector<cv::Rect> output;
   // Loading detector.
   dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
   // Transforming opencv image to dlib image.
@@ -51,10 +54,28 @@ cv::Rect detectFace(const cv::Mat &_img) {
   std::vector<dlib::rectangle> dets = detector(dlibImage);
   // If faces were found.
   if (dets.size() > 0) {
-    // Convert rectangle to OpenCV Rect object.
-    output = dlibRectangleToOpencvRect(dets[0], _img.size());
+    // Convert every detected rectangle to OpenCV Rect object.
+    for (unsigned int i = 0; i < dets.size(); i++)
+      output.push_back(dlibRectangleToOpencvRect(dets[i], _img.size()));
   }
   return output;
+}
+
+void generateOutput(cv::Mat &_img, const std::vector<cv::Rect> &_faces) {
+  std::string output = std::to_string(_faces.size()) + "\n";
+  for (unsigned int i = 0; i < _faces.size(); i++) {
+    // Generating image to be classied.
+    generateClassifierImage(_img, _faces[i], i);
+    // Output for Electron main process.
+    output += std::to_string(_faces[i].x) + "," + std::to_string(_faces[i].y) +
+              "," + std::to_string(_faces[i].width) + "," +
+              std::to_string(_faces[i].height) + "\n";
+    // std::cout << faces.x << "," << faces.y << ";" << faces.width << ","
+    //<< faces.height << std::endl;
+  }
+  std::cout << output;
+  // Generating user interface image.
+  generateUImage(_img, _faces);
 }
 
 // Main.
@@ -66,7 +87,7 @@ int main(int argc, char **argv) {
 
   // Variables.
   cv::Mat opencvImage;
-  cv::Rect face;
+  std::vector<cv::Rect> faces;
 
   // Reading image.
   opencvImage = cv::imread(argv[1]);
@@ -76,22 +97,16 @@ int main(int argc, char **argv) {
   }
 
   // Detecting face using dlib.
-  face = detectFace(opencvImage);
+  faces = detectFace(opencvImage);
 
   // Checking output.
-  if (!face.width || !face.height) {
+  if (!faces.size()) {
     std::cerr << "Could not find a face in the image: '" << argv[1] << "'"
               << std::endl;
     return 0;
   }
 
-  // Generating image to be classied.
-  generateClassifierImage(opencvImage, face);
-  // Generating user interface image.
-  generateUImage(opencvImage, face);
+  generateOutput(opencvImage, faces);
 
-  // Output for Electron main process.
-  std::cout << face.x << "," << face.y << ";" << face.width << ","
-            << face.height << std::endl;
   return 0;
 }
