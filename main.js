@@ -64,16 +64,30 @@ function deleteTempFolder () {
     if ( !err0 ) {
       fs.rmdir( tempFolderPath, ( err1 ) => {
         if ( err1 ) {
-          fs.unlink( path.join( tempFolderPath, 'output.jpg'), ( err2 ) => {
-            if ( err2 ) {
-              console.log( err2 );
+          // Deleting all images with the name "output-*.jpg".
+          let moreFiles = true;
+          for( i = 0; moreFiles; i++ ){
+            const fileName = 'output-' + i.toString() + '.jpg';
+            const filePath = path.join( tempFolderPath, fileName );
+            if( fs.existsSync( filePath ) ){
+              fs.unlink(filePath, ( err2 ) => {
+                if ( err2 ) {
+                  console.log( err2 );
+                }
+                console.log("Fichero '" + filePath + "' borrado.");
+              });
+            }else{
+              moreFiles = false;
+              console.log("FALSE");
             }
-          });
+          }
+          // Deleting thumbnail image.
           fs.unlink( path.join( tempFolderPath, 'thumbnail.jpg'), ( err2 ) => {
             if ( err2 ) {
               console.log( err2 );
             }
           });
+          // Deleting temp folder.
           fs.rmdir( tempFolderPath, ( err3 ) => { console.log( err3 );});
         }
       });
@@ -148,7 +162,9 @@ function findFace( filePath ){
       }
       else{
         // Sending face location to renderer process.
+        console.log(stdout);
         const thumbnailPath = path.join( __dirname, 'temp', 'thumbnail.jpg');
+        console.log(thumbnailPath);
         main_window.webContents.send( 'faceInfo', [thumbnailPath,stdout] );
         classify();
       }
