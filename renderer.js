@@ -5,6 +5,7 @@ const { ipcRenderer } = require('electron');
 const startScreen = document.getElementById( 'startScreen' );
 const analysisScreen = document.getElementById( 'analysisScreen' );
 const dropImageArea = document.getElementById( 'dropImageArea' );
+const loaderContainer = document.getElementById( 'loaderContainer' );
 const logWindow = document.getElementById('logWindow');
 const graphArea = document.getElementById('graphContainer');
 const previousResult = document.getElementById('previousResult');
@@ -132,11 +133,12 @@ function display(){
   // Drawing thumbnail image.
   drawThumbnail(showing);
 
-  // If this image was already classied, draw its results.
+  // If this image was already classified, draw its results.
   // Else classify it.
   if(classificationResults[showing] === undefined){
+    graphArea.classList.add('fadeout');
+    graphArea.style.webkitAnimationPlayState = 'running';
     ipcRenderer.send( 'classify', showing );
-    console.log("Send to classify");
   }
   else{
     drawGraph(showing);
@@ -214,9 +216,37 @@ analysisScreen.addEventListener( 'animationend', () => {
   analysisScreen.style.webkitAnimationPlayState = 'paused';
   analysisScreen.classList.remove('fadein');
 });
+
 graphArea.addEventListener( 'animationend', () => {
-  graphArea.style.webkitAnimationPlayState = 'paused';
-  graphArea.classList.remove('fadein');
+  if(graphArea.classList.contains('fadeout')){
+    graphArea.style.webkitAnimationPlayState = 'paused';
+    graphArea.classList.add( 'hidden' );
+    graphArea.classList.remove( 'fadeout' );
+
+    loaderContainer.classList.add( 'fadein' );
+    loaderContainer.classList.remove( 'hidden' );
+    loaderContainer.style.webkitAnimationPlayState = 'running';
+  }
+  else if(graphArea.classList.contains('fadein')){
+    graphArea.style.webkitAnimationPlayState = 'paused';
+    graphArea.classList.remove('fadein');
+  }
+
+});
+loaderContainer.addEventListener( 'animationend', () => {
+  if(loaderContainer.classList.contains('fadeout')){
+    loaderContainer.style.webkitAnimationPlayState = 'paused';
+    loaderContainer.classList.add( 'hidden' );
+    loaderContainer.classList.remove( 'fadeout' );
+
+    graphArea.classList.add( 'fadein' );
+    graphArea.classList.remove( 'hidden' );
+    graphArea.style.webkitAnimationPlayState = 'running';
+  }
+  else if(loaderContainer.classList.contains('fadein')){
+    loaderContainer.style.webkitAnimationPlayState = 'paused';
+    loaderContainer.classList.remove('fadein');
+  }
 });
 
 // Resets Fade-in-out log window animation.
@@ -262,6 +292,9 @@ ipcRenderer.on('faceInfo', (event, message) => {
 ipcRenderer.on('results', (event, _results) => {
   classificationResults.push(_results);
   drawGraph(showing);
+
+  loaderContainer.classList.add( 'fadeout' );
+  loaderContainer.style.webkitAnimationPlayState = "running";
 });
 
 ipcRenderer.on('logMsg', (event, message) => {
