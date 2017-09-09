@@ -129,7 +129,6 @@ function drawGraph( index ){
       clearInterval(interval);
       previousResult.classList.remove('disabled');
       nextResult.classList.remove('disabled');
-      console.log("FIN");
     }
   }, 30);
 }
