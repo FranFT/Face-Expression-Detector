@@ -125,8 +125,13 @@ function drawGraph( index ){
     // Checking if all bars have reached the target value to finish the loop.
     for( i = 0; i < valueIsComplete.length; i++ )
       finalStatus = finalStatus && valueIsComplete[i];
-    if( finalStatus ) clearInterval(interval);
-  }, 50);
+    if( finalStatus ){
+      clearInterval(interval);
+      previousResult.classList.remove('disabled');
+      nextResult.classList.remove('disabled');
+      console.log("FIN");
+    }
+  }, 30);
 }
 
 function display(){
@@ -152,6 +157,9 @@ function showNextResult(){
   // Updating UI showing message.
   document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
 
+  previousResult.classList.add('disabled');
+  nextResult.classList.add('disabled');
+
   // Hide next button if there arent next result.
   if( showing == faceCoords.length - 1 ){
     nextResult.classList.toggle('hidden');
@@ -169,6 +177,9 @@ function showPreviousResult(){
 
   // Updating UI showing message.
   document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
+
+  previousResult.classList.add('disabled');
+  nextResult.classList.add('disabled');
 
   // Hide previous button if there aren't previous results.
   if( showing == 0 ){
@@ -276,7 +287,6 @@ ipcRenderer.on('faceInfo', (event, message) => {
   faceCoords = message[1].split("\n");
   showing = 0;
   document.getElementById('showingMessage').innerHTML = 'Result: 1 / ' + faceCoords.length.toString();
-  console.log(faceCoords);
 
   drawThumbnail(showing);
 
