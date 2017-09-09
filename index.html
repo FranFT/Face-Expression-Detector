@@ -16,9 +16,15 @@
     </section>
     <section id="analysisScreen" class="hidden">
         <h1> Analysis Screen </h1>
+        <div id="subtitle-area">
+          <a href="#" id="previousResult" class="previous hidden disabled"> &#8249; </a>
+          <h3 id="showingMessage"></h3>
+          <a href="#" id="nextResult" class="next hidden disabled"> &#8250; </a>
+        </div>
         <div id="container">
           <canvas id="imageArea" src="" width="350" height="350"></canvas>
-          <div id="graphContainer"></div>
+          <div id="loaderContainer"><div class="loader"></div></div>
+          <div id="graphContainer" class="hidden"></div>
         </div>
         <a id="restartButton" class="button"> Analyze another image </a>
     </section>

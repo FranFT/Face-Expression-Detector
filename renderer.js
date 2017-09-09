@@ -5,8 +5,20 @@ const { ipcRenderer } = require('electron');
 const startScreen = document.getElementById( 'startScreen' );
 const analysisScreen = document.getElementById( 'analysisScreen' );
 const dropImageArea = document.getElementById( 'dropImageArea' );
+const loaderContainer = document.getElementById( 'loaderContainer' );
 const logWindow = document.getElementById('logWindow');
 const graphArea = document.getElementById('graphContainer');
+const previousResult = document.getElementById('previousResult');
+const nextResult = document.getElementById('nextResult');
+const canvas = document.getElementById( 'imageArea' )
+const ctx = canvas.getContext( '2d' );
+
+
+/*---------- Global Variables ----*/
+var showing;
+var faceCoords;
+var thumbnailPath;
+var classificationResults = new Array();
 
 // Body.
 document.ondragover = () => {
@@ -24,77 +36,19 @@ dropImageArea.ondragleave = dropImageArea.ondragend = () => {
   return false;
 }
 
-/*---------- Element-specific events. -----*/
-// Body.
-document.ondrop = (e) => {
-  e.preventDefault();
-  return false;
-}
-
-// Drop area.
-dropImageArea.ondrop = (e) => {
-  e.preventDefault();
-
-  ipcRenderer.send(
-    'receiveDroppedImagePath', // Channel.
-    [ e.dataTransfer.files[0].path ] // Arguments.
-  );
-
-  return false;
-}
-
-startScreen.addEventListener( 'animationend', () => {
-  startScreen.style.webkitAnimationPlayState = 'paused';
-  startScreen.classList.remove('fadeout');
-  startScreen.classList.add('hidden');
-
-  analysisScreen.classList.remove('hidden');
-  analysisScreen.classList.add('fadein');
-  analysisScreen.style.webkitAnimationPlayState = 'running';
-});
-
-analysisScreen.addEventListener( 'animationend', () => {
-  analysisScreen.style.webkitAnimationPlayState = 'paused';
-  analysisScreen.classList.remove('fadein');
-});
-graphArea.addEventListener( 'animationend', () => {
-  graphArea.style.webkitAnimationPlayState = 'paused';
-  graphArea.classList.remove('fadein');
-});
-
-// Resets Fade-in-out log window animation.
-logWindow.addEventListener( 'animationend', () => {
-  logWindow.style.webkitAnimationPlayState = 'paused';
-  logWindow.classList.toggle('hidden');
-});
-
-// Method which sends an 'openFile' event to the main process when the select
-// image button is pressed by the user.
-document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
-  ipcRenderer.send( 'openFile', () => {
-    console.log( 'Select-image event sent.' );
-  });
-});
-
-// Method that restart the UI when the element is clicked.
-document.getElementById( 'restartButton' ).addEventListener( 'click', () => {
-  location.reload(true);
-});
-
-// Renderer process events.
-// Events which receive an image path and face coords and draws the face.
-ipcRenderer.on('faceInfo', (event, message) => {
+function drawThumbnail( index ){
   // Getting (x,y) face coordinates.
-  const coords = message[1].split(";")[0].split(",").map( function( item ){
+  const coords = faceCoords[index].split(";")[0].split(",").map( function( item ){
     return parseInt( item, 10 );
   });
   // Getting face area width and height.
-  const faceArea = message[1].split(";")[1].split(",").map( function( item ){
+  const faceArea = faceCoords[index].split(";")[1].split(",").map( function( item ){
     return parseInt( item, 10 );
   });
 
+  // Reset canvas.
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   // Plotting the face into the canvas.
-  const ctx = document.getElementById( 'imageArea' ).getContext( '2d' );
   var img = new Image();
   img.onload = function(){
     ctx.drawImage( img,
@@ -103,21 +57,17 @@ ipcRenderer.on('faceInfo', (event, message) => {
     );
     ctx.stroke();
   }
-  img.src = message[0];
+  img.src = thumbnailPath;
 
-  // Hiding start screen.
-  startScreen.classList.add('fadeout');
-  startScreen.style.webkitAnimationPlayState = "running";
-});
+}
 
-// Renderer process event that receive main process classification output.
-ipcRenderer.on('results', (event, _results) => {
+function drawGraph( index ){
   // Needed variables.
   var initialValues = [];
   var targetValues = [];
   var valueIsComplete = [];
   // Result filtering.
-  var results = _results.split( '\n' ) // Gets every line individualy.
+  var results = classificationResults[index].split( '\n' ) // Gets every line individualy.
     .map( function( item ){ // Splits every line by the character " - ".
       return item.split(' - ');
     }).map( function( pair ){ // Transforms every previously splitted line.
@@ -133,6 +83,8 @@ ipcRenderer.on('results', (event, _results) => {
   // Removes first and last line. They are not necesary.
   results.shift();
   results.pop();
+
+  graphArea.innerHTML = '';
 
   // Drawing the bar graph.
   for( i = 0; i < results.length; i++ ){
@@ -173,8 +125,186 @@ ipcRenderer.on('results', (event, _results) => {
     // Checking if all bars have reached the target value to finish the loop.
     for( i = 0; i < valueIsComplete.length; i++ )
       finalStatus = finalStatus && valueIsComplete[i];
-    if( finalStatus ) clearInterval(interval);
-  }, 50);
+    if( finalStatus ){
+      clearInterval(interval);
+      previousResult.classList.remove('disabled');
+      nextResult.classList.remove('disabled');
+      console.log("FIN");
+    }
+  }, 30);
+}
+
+function display(){
+  // Drawing thumbnail image.
+  drawThumbnail(showing);
+
+  // If this image was already classified, draw its results.
+  // Else classify it.
+  if(classificationResults[showing] === undefined){
+    graphArea.classList.add('fadeout');
+    graphArea.style.webkitAnimationPlayState = 'running';
+    ipcRenderer.send( 'classify', showing );
+  }
+  else{
+    drawGraph(showing);
+  }
+}
+
+function showNextResult(){
+  // Increase showing counter.
+  showing++;
+
+  // Updating UI showing message.
+  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
+
+  previousResult.classList.add('disabled');
+  nextResult.classList.add('disabled');
+
+  // Hide next button if there arent next result.
+  if( showing == faceCoords.length - 1 ){
+    nextResult.classList.toggle('hidden');
+  }
+  // Show previous button if there are previous results.
+  if( showing == 1){
+    previousResult.classList.toggle('hidden');
+  }
+
+  display();
+}
+function showPreviousResult(){
+  // Decrease showing counter.
+  showing--;
+
+  // Updating UI showing message.
+  document.getElementById('showingMessage').innerHTML = 'Result: '+ (showing + 1).toString() + ' / ' + faceCoords.length.toString();
+
+  previousResult.classList.add('disabled');
+  nextResult.classList.add('disabled');
+
+  // Hide previous button if there aren't previous results.
+  if( showing == 0 ){
+    previousResult.classList.toggle('hidden');
+  }
+  if( showing == faceCoords.length - 2 ){
+    nextResult.classList.toggle('hidden');
+  }
+
+  display();
+}
+/*---------- Element-specific events. -----*/
+// Body.
+document.ondrop = (e) => {
+  e.preventDefault();
+  return false;
+}
+
+// Drop area.
+dropImageArea.ondrop = (e) => {
+  e.preventDefault();
+
+  ipcRenderer.send(
+    'receiveDroppedImagePath', // Channel.
+    [ e.dataTransfer.files[0].path ] // Arguments.
+  );
+
+  return false;
+}
+
+nextResult.addEventListener( 'click', showNextResult, false );
+previousResult.addEventListener( 'click', showPreviousResult, false );
+
+startScreen.addEventListener( 'animationend', () => {
+  startScreen.style.webkitAnimationPlayState = 'paused';
+  startScreen.classList.remove('fadeout');
+  startScreen.classList.add('hidden');
+
+  analysisScreen.classList.remove('hidden');
+  analysisScreen.classList.add('fadein');
+  analysisScreen.style.webkitAnimationPlayState = 'running';
+});
+
+analysisScreen.addEventListener( 'animationend', () => {
+  analysisScreen.style.webkitAnimationPlayState = 'paused';
+  analysisScreen.classList.remove('fadein');
+});
+
+graphArea.addEventListener( 'animationend', () => {
+  if(graphArea.classList.contains('fadeout')){
+    graphArea.style.webkitAnimationPlayState = 'paused';
+    graphArea.classList.add( 'hidden' );
+    graphArea.classList.remove( 'fadeout' );
+
+    loaderContainer.classList.add( 'fadein' );
+    loaderContainer.classList.remove( 'hidden' );
+    loaderContainer.style.webkitAnimationPlayState = 'running';
+  }
+  else if(graphArea.classList.contains('fadein')){
+    graphArea.style.webkitAnimationPlayState = 'paused';
+    graphArea.classList.remove('fadein');
+  }
+
+});
+loaderContainer.addEventListener( 'animationend', () => {
+  if(loaderContainer.classList.contains('fadeout')){
+    loaderContainer.style.webkitAnimationPlayState = 'paused';
+    loaderContainer.classList.add( 'hidden' );
+    loaderContainer.classList.remove( 'fadeout' );
+
+    graphArea.classList.add( 'fadein' );
+    graphArea.classList.remove( 'hidden' );
+    graphArea.style.webkitAnimationPlayState = 'running';
+  }
+  else if(loaderContainer.classList.contains('fadein')){
+    loaderContainer.style.webkitAnimationPlayState = 'paused';
+    loaderContainer.classList.remove('fadein');
+  }
+});
+
+// Resets Fade-in-out log window animation.
+logWindow.addEventListener( 'animationend', () => {
+  logWindow.style.webkitAnimationPlayState = 'paused';
+  logWindow.classList.toggle('hidden');
+});
+
+// Method which sends an 'openFile' event to the main process when the select
+// image button is pressed by the user.
+document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
+  ipcRenderer.send( 'openFile', () => {
+    console.log( 'Select-image event sent.' );
+  });
+});
+
+// Method that restart the UI when the element is clicked.
+document.getElementById( 'restartButton' ).addEventListener( 'click', () => {
+  location.reload(true);
+});
+
+// Renderer process events.
+// Events which receive an image path and face coords and draws the face.
+ipcRenderer.on('faceInfo', (event, message) => {
+  // Getting face coordinates.
+  thumbnailPath = message[0];
+  faceCoords = message[1].split("\n");
+  showing = 0;
+  document.getElementById('showingMessage').innerHTML = 'Result: 1 / ' + faceCoords.length.toString();
+
+  drawThumbnail(showing);
+
+  if( faceCoords.length > 1 )
+    nextResult.classList.toggle('hidden');
+  // Hiding start screen.
+  startScreen.classList.add('fadeout');
+  startScreen.style.webkitAnimationPlayState = "running";
+
+});
+
+// Renderer process event that receive main process classification output.
+ipcRenderer.on('results', (event, _results) => {
+  classificationResults.push(_results);
+  drawGraph(showing);
+
+  loaderContainer.classList.add( 'fadeout' );
+  loaderContainer.style.webkitAnimationPlayState = "running";
 });
 
 ipcRenderer.on('logMsg', (event, message) => {

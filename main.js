@@ -64,16 +64,29 @@ function deleteTempFolder () {
     if ( !err0 ) {
       fs.rmdir( tempFolderPath, ( err1 ) => {
         if ( err1 ) {
-          fs.unlink( path.join( tempFolderPath, 'output.jpg'), ( err2 ) => {
-            if ( err2 ) {
-              console.log( err2 );
+          // Deleting all images with the name "output-*.jpg".
+          let moreFiles = true;
+          for( i = 0; moreFiles; i++ ){
+            const fileName = 'output-' + i.toString() + '.jpg';
+            const filePath = path.join( tempFolderPath, fileName );
+            if( fs.existsSync( filePath ) ){
+              fs.unlink(filePath, ( err2 ) => {
+                if ( err2 ) {
+                  console.log( err2 );
+                }
+                console.log("Temporary file '" + filePath + "' successfully deleted.");
+              });
+            }else{
+              moreFiles = false;
             }
-          });
+          }
+          // Deleting thumbnail image.
           fs.unlink( path.join( tempFolderPath, 'thumbnail.jpg'), ( err2 ) => {
             if ( err2 ) {
               console.log( err2 );
             }
           });
+          // Deleting temp folder.
           fs.rmdir( tempFolderPath, ( err3 ) => { console.log( err3 );});
         }
       });
@@ -121,16 +134,18 @@ function isImage( filePath, callback ){
   }
 }
 
-function classify () {
+function classify ( index ) {
   const classifierPath = path.join( __dirname,
     'build', 'lib', 'caffe', 'examples', 'cpp_classification', 'classification');
+
+  const pictureName = 'output-' + index.toString() + '.jpg';
 
   const child = execFile( classifierPath, [
       path.join( __dirname, 'data', 'deploy.prototxt'),
       path.join( __dirname, 'data', 'cnn_face_detector.caffemodel' ),
       path.join( __dirname, 'data', 'mean.binaryproto' ),
       path.join( __dirname, 'data', 'labels.txt' ),
-      path.join( __dirname, 'temp', 'output.jpg' )
+      path.join( __dirname, 'temp', pictureName )
     ], function( error, stdout, stderr ) {
       if ( stdout ) {
         main_window.webContents.send( 'results', stdout );
@@ -150,7 +165,7 @@ function findFace( filePath ){
         // Sending face location to renderer process.
         const thumbnailPath = path.join( __dirname, 'temp', 'thumbnail.jpg');
         main_window.webContents.send( 'faceInfo', [thumbnailPath,stdout] );
-        classify();
+        classify(0);
       }
     });
 
@@ -168,10 +183,10 @@ function findFace( filePath ){
 
 // Method which call 'createWindow' function once 'Electron' has
 // finished its initialization and its ready to create browser windows.
-app.on( 'ready', createWindow )
+app.on( 'ready', createWindow );
 
 // App creates a temporal folder.
-app.on( 'ready', createTempFolder )
+app.on( 'ready', createTempFolder );
 
 // Quit when all windows are closed.
 app.on( 'window-all-closed', () => {
@@ -180,7 +195,7 @@ app.on( 'window-all-closed', () => {
   if ( process.platform !== 'darwin' ) {
     app.quit()
   }
-})
+});
 
 app.on( 'activate', () => {
   // On macOS it's common to re-create a window in the app when the
@@ -188,7 +203,7 @@ app.on( 'activate', () => {
   if ( main_window === null ) {
     createWindow()
   }
-})
+});
 
 // Rest of app main process.
 // can also put them in separate files and require them here.
@@ -212,10 +227,14 @@ ipcMain.on( 'openFile', (event, _path) => {
       findFace( fileNames[0] );
     }
   });
-})
+});
 
 // Method called when our Main process receive an receiveDroppedImagePath event
 // from any renderer process. The dropped object file path is received.
 ipcMain.on( 'receiveDroppedImagePath', (event, args) => {
   isImage( args[0], findFace );
-})
+});
+
+ipcMain.on( 'classify', (event, index) =>{
+  classify(index);
+});

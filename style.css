@@ -1,4 +1,9 @@
 /* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @keyframes pulse {
   0%    { background-color: transparent;  }
   50%   { background-color: #568af2;  }
@@ -38,7 +43,10 @@
   animation: fadeOut 1s;
   animation-play-state: paused;
 }
-
+.disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
 /*--------- Fonts --*/
 h1,h2,h3{
   font-family: 'Montserrat', sans-serif;
@@ -49,7 +57,7 @@ p, a, div{
 
 
 .hidden{
-  display: none;
+  display: none !important;
 }
 
 /*--------- Body --*/
@@ -67,8 +75,9 @@ body{
   padding: 25px;
   background-color: rgb(40, 44, 52);
   transition: 0.5s;
+  border: 1px solid #9da5b4;
 }
-.button:hover{
+.button:hover, .previous:hover, .next:hover{
   transition: 0.5s;
   background-color: #568af2;
 }
@@ -101,12 +110,41 @@ body{
 #imageArea{
   margin-right: 20px;
 }
+#subtitle-area{
+  display: flex;
+  float: right;
+  margin-top: -85px;
+  justify-content: center;
+  align-items: center;
+}
+#loaderContainer{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
 #graphContainer{
   flex: 0 1 100%;
   display: flex;
   flex-flow: column nowrap;
   margin-left: 20px;
-
+}
+.previous, .next{
+  padding: 0px 10px;
+  color:white;
+  text-decoration: none;
+  font-size: 25px;
+  margin: 0px 20px;
+  border: 1px solid #9da5b4;
+  transition: 0.5s;
+}
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
 }
 .row{
   display: inline-flex;
