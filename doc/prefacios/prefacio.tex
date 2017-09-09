@@ -12,7 +12,7 @@
 \thispagestyle{empty}
 
 \begin{center}
-{\large\bfseries \myTitle: \mySubtitle}\\
+{\large\bfseries \myTitle}\\
 \end{center}
 \begin{center}
 \myName\\
@@ -24,25 +24,7 @@
 \vspace{0.7cm}
 \noindent{\textbf{Resumen}}\\
 
-El objetivo de este documento es mostrar al lector el proceso seguido para el desarrollo de una aplicación software capaz de resolver el problema del reconocimiento de expresiones faciales por computador, que puede ser descrito como:\\
-\begin{center}
-	
-	\textit{Dada una imagen de entrada, obtener la etiqueta de salida que mejor identifique la expresión facial que aparece en dicha imagen.}\\
-	
-\end{center}
-De entre todas las técnicas posibles para la resolución del problema, he basado mi solución en el entrenamiento una red neuronal convolucional. El modelo entrenado clasifica la imagen de entrada mediante la asignación de una (o varias) etiquetas, incluyendo un porcentaje por cada una que indica cuál es la más probable de estar presente en dicha imagen. El conjunto de posibles etiquetas es:
-\begin{multicols}{2}
-	\begin{itemize}
-      \item Afraid
-      \item Angry
-      \item Disgusted
-      \item Happy
-      \item Neutral
-      \item Sad
-      \item Surprised
-	\end{itemize}
-\end{multicols}
-
+El objetivo de este documento es mostrar al lector el proceso seguido para el desarrollo de una aplicación software capaz de resolver el problema del reconocimiento de expresiones faciales por computador. Esto es, asignar a una imagen la etiqueta que mejor describe la expresión facial que esa imagen representa. Para la resolución de este problema se entrenará un clasificador basado en redes neuronales convolucionales, que etiquetará la imagen de entrada proporcionada por el usuario mediante una interfaz simple e intuitiva.
 
 \cleardoublepage
 
@@ -51,7 +33,7 @@ De entre todas las técnicas posibles para la resolución del problema, he basad
 
 
 \begin{center}
-{\large\bfseries \myTitleEN: \mySubtitleEN}\\
+{\large\bfseries \myTitleEN}\\
 \end{center}
 \begin{center}
 \myName\\
@@ -63,22 +45,7 @@ De entre todas las técnicas posibles para la resolución del problema, he basad
 \vspace{0.7cm}
 \noindent{\textbf{Abstract}}\\
 
-This document main objective is to show the reader the process I followed to develop a software application which is able to solve the face expression recognition problem through computer. It can be described as:\\
-\begin{center}
-	\textit{To obtein the tag that better describe the facial expression that appears in the given input image.}
-\end{center}
-Between all the possible techniques that allow us to solve this problem, I chose to train a convolutional neural network. Trained model classify the input image by the assignment of one or few tags, including a percentage that suggest which is the most probable tag to appear in that image. Here is the whole set of possible tags:
-\begin{multicols}{2}
-	\begin{itemize}
-		\item Afraid
-		\item Angry
-		\item Disgusted
-		\item Happy
-		\item Neutral
-		\item Sad
-		\item Surprised
-	\end{itemize}
-\end{multicols}
+This document main objective is to show the reader the process I followed to develop a software application which is able to solve the face expression recognition problem through computer. This implies to assign to an image, the tag that better describes the facial expression that is represented in that image. To solve this problem, I will train a convolutional neural network based model that will classify the image chosen by the final user through a simple and intuitive user interface.
 
 \chapter*{}
 \thispagestyle{empty}
@@ -105,11 +72,11 @@ consultada por las personas que lo deseen.
 
 \noindent\rule[-1ex]{\textwidth}{2pt}\\[4.5ex]
 
-D. \textbf{\myProf}, Profesor del Área de \myDepartment del Departamento YYYY de la \myUni.
+D. \textbf{\myProf}, Profesor del Área de \myDepartment del Departamento de Ciencias de la Computación e I.A. de la \myUni.
 
 \vspace{0.5cm}
 
-D. \textbf{\myOtherProf}, Profesor del Área de \myDepartment del Departamento YYYY de la \myUni..
+D. \textbf{\myOtherProf}, Profesor del Área de \myDepartment del Departamento de Ciencias de la Computación e I.A. de la \myUni.
 
 
 \vspace{0.5cm}

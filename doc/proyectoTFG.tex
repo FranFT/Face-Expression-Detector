@@ -103,8 +103,8 @@
 % Re-usable information
 % ********************************************************************
 \newcommand{\myTitle}{Reconocimiento de Expresiones Faciales\xspace}
-\newcommand{\mySubtitle}{por Computador\xspace}
-\newcommand{\myKeywords}{Reconocimiento, expresión, facial, visión, computador, aprendizaje, automático, redes, neuronales, convolucionales.\xspace}
+\newcommand{\mySubtitle}{}%por Computador\xspace}
+\newcommand{\myKeywords}{Reconocimiento de expresiones faciales, visión por computador, aprendizaje automático, redes neuronales convolucionales.\xspace}
 \newcommand{\myDegree}{Grado en Ingeniería Informática\xspace}
 \newcommand{\myName}{Francisco José Fajardo Toril\xspace}
 \newcommand{\myDNI}{76424577Q\xspace}
@@ -123,8 +123,8 @@
 
 % English info.
 \newcommand{\myTitleEN}{Facial Expression Recognition\xspace}
-\newcommand{\mySubtitleEN}{by Computer\xspace}
-\newcommand{\myKeywordsEN}{Facial, expression, recognition, computer, vision, machine, learning, convolutional, neural, network.\xspace}
+\newcommand{\mySubtitleEN}{}%by Computer\xspace}
+\newcommand{\myKeywordsEN}{Facial expression recognition, computer vision, machine learning, convolutional neural networks.\xspace}
 
 
 % "hyperref" package options
@@ -286,7 +286,7 @@ El problema del reconocimiento de expresiones faciales es un paso adelante tras 
 \end{center}
 
 A priori la solución para un ser humano es trivial. Tenemos muchas maneras de adivinar el estado de ánimo de una persona, pero si tenemos que basarnos en nuestra visión, una posible solución sería:
-\textit{"Simplemente observa los rasgos faciales del sujeto e intenta adivinar su estado de ánimo basándote en tu experiencia pasada con otros seres humanos."\\}
+\textit{``Simplemente observa los rasgos faciales del sujeto e intenta adivinar su estado de ánimo basándote en tu experiencia pasada con otros seres humanos."\\}
 
 Imagine que deseamos desarrollar un agente basado en inteligencia artificial para que interactúe con otros seres humanos. Sería de gran utilidad que este agente basara sus acciones en función del estado de ánimo de la persona/as con las que está comunicándose para lograr de esta forma un mayor grado de comprensión o empatía. De la misma manera podríamos pensar en una aplicación que escoge la música idónea para nosotros en función de nuestro estado de ánimo en ese momento a través de una captura mediante la cámara del computador.
 
@@ -297,7 +297,7 @@ Como se puede ver, la solución a este problema puede ser de utilidad en diversa
 \subsubsection{Facial Expression Analysis using Active Shape Model\cite{shbib_zhou15}}
 
 Active Shape Model(ASM)\cite{cootes_taylor_cooper_graham94} es una técnica que permite, dada una imagen del objeto para el que fue entrenado, localizar un conjunto de puntos de referencia previamente definidos tal y como se puede ver en la Figura \ref{fig:landmarks}. En el caso de un rostro humano estos puntos pueden estar los principales indicadores de la expresión facial, como pueden ser las cejas, boca, ojos...\\
-En este paper \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada cara, 68 puntos de referencia. Se procesan los puntos extraídos y se obtiene un modelo geométrico para ese rostro concreto. Acto seguido, haciendo uso de la técnica de clasificación conocida como Support Vector Machine(SVM), se clasifica ese modelo geométrico para predecir a qué expresión facial pertenece obteniendo un porcentaje de acierto del 92,1\%.
+En este artículo \cite{shbib_zhou15} en concreto, se tienen en cuenta para cada cara 68 puntos de referencia. Se procesan los puntos extraídos y se obtiene un modelo geométrico para ese rostro concreto. Acto seguido, haciendo uso de la técnica de clasificación conocida como Support Vector Machine(SVM), se clasifica ese modelo geométrico para predecir a qué expresión facial pertenece obteniendo un porcentaje de acierto del 92,1\%.
 
 \begin{figure}[!]
 \centering
@@ -320,28 +320,26 @@ Además, lo que en este caso se intenta es que la información usada esté exent
 	\caption[Diagrama FER]{Diagrama general del proceso de reconocimiento.}
 	\label{fig:feg_diagram}
 \end{figure}
-Las técnicas de ASM\cite{cootes_taylor_cooper_graham94} y AAM\cite{cootes_edwards_taylor98} son sensibles a rotaciones de la imagen, es decir, será difícil extraer los puntos de referencia en imágenes que disten mucho del concepto de imagen frontal, como por ejemplo una la fotografía de una persona mirando hacia un lado con una expresión facial determinada. Además, en la Figura \ref{fig:feg_diagram} extraída del siguiente paper\cite{kumari_rajesh_pooja15}, se puede ver el proceso general que se sigue a la hora de clasificar una imagen, en nuestro caso reconocimiento de expresiones faciales.\\
+Las técnicas de ASM\cite{cootes_taylor_cooper_graham94} y AAM\cite{cootes_edwards_taylor98} son sensibles a rotaciones de la imagen, es decir, será difícil extraer los puntos de referencia en imágenes que disten mucho del concepto de imagen frontal, como por ejemplo la fotografía de una persona mirando hacia un lado con una expresión facial determinada. Además, en la Figura \ref{fig:feg_diagram} extraída del siguiente artículo\cite{kumari_rajesh_pooja15}, se puede ver el proceso general que se sigue a la hora de clasificar una imagen, en nuestro caso reconocimiento de expresiones faciales.\\
 
-\begin{figure}[h!]
+La idea principal que se quiere conseguir para resolver el problema consiste en simplificar de alguna manera dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características cada vez que se clasifique una nueva imagen. Otra de las propuestas es que la rotación de la imagen de entrada no suponga un hándicap a la hora de clasificarla. El propósito de estas medidas es:\\
+\begin{itemize}
+	\item Ganar en robustez con imágenes rotadas o inclinadas.
+	\item Realizar la clasificación en tiempo real simplificando el preprocesamiento de las imágenes.
+	\item Combinar todo en una aplicación de escritorio con una interfaz simple  para que cualquier usuario pueda utilizarla.
+\end{itemize}
+
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{imagenes/my_fer_diagram}
 	\caption[my_diagram]{Diagrama del proceso objetivo.}
 	\label{fig:my_fer_diagram}
 \end{figure}
 
-La idea principal que se quiere conseguir para resolver el problema consiste en simplificar de alguna manera dicho diagrama para que se asemeje al de la Figura \ref{fig:my_fer_diagram} de forma que no sea necesario extraer características cada vez que se clasifique una nueva imagen. Otra de las propuestas es que la rotación de la imagen de entrada no suponga un hándicap a la hora de clasificarla. El propósito de estas medidas es:\\
-\begin{itemize}
-	\item Ganar en robustez con imágenes rotadas o inclinadas.
-	\item Realizar la clasificación en tiempo real simplificando el preprocesamiento de las imágenes.
-	\item Combinar todo en una aplicación de escritorio con una interfaz simple por encima para que cualquier usuario pueda utilizarla.
-\end{itemize}
-
 % Se termina explicando la organización de la memoria diciendo lo que se trata en cada capítulo.
 \subsection{Organización del documento}
 Este documento tratará de explicar el proceso seguido para el desarrollo de este trabajo. Para ello, se estructurará en los siguientes capítulos:\\
 \begin{description}
-	\item [Portada] - Información básica sobre el nombre del proyecto, la institución, el autor y los tutores.
-	\item [Prefacio] - Resumen, palabras clave y agradecimientos.
 	\item [Introducción] - Motivación del trabajo y estado del arte de este campo de investigación.  
 	\item [Objetivos] - Se planteará un objetivo principal el cual será dividido en sub-objetivos más simples para poder llevar a cabo la tarea principal así como un resumen de las técnicas aprendidas durante la formación académica empleadas en este trabajo.
 	\item [Resolución del trabajo] - Este capítulo se dividirá en varias secciones, en las que se explicará el método de ingeniería del software empleado para la resolución del trabajo, así como los recursos hardware y software, la especificación de requisitos, planificación, análisis funcional e implementación de la aplicación.
@@ -353,9 +351,8 @@ Este documento tratará de explicar el proceso seguido para el desarrollo de est
 \chapter{Objetivos}
 \section{Objetivo principal}
 %Objetivo general a conseguir: se enuncia lo que se quiere hacer sin entrar en detalles.
-\begin{center}
-	\textit{Desarrollar una aplicación de escritorio que dada una imagen detecte si aparece un rostro humano y en que en caso afirmativo, sea capaz de mostrar por pantalla, la etiqueta que mejor identifica la expresión facial que presenta dicho rostro.}\\
-\end{center}
+Desarrollar una aplicación de escritorio que dada una imagen detecte si aparece un rostro humano y en que en caso afirmativo, sea capaz de mostrar por pantalla, la etiqueta que mejor identifica la expresión facial que presenta dicho rostro.\\
+
 Las etiquetas de las expresiones que deseamos predecir son:
 \begin{multicols}{2}
 	\label{list:expressions}
@@ -369,7 +366,7 @@ Las etiquetas de las expresiones que deseamos predecir son:
 		\item Surprised
 	\end{itemize}
 \end{multicols}
-Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar con este trabajo (apartado \ref{subsec:aspirations}). Esto es, simplificar el proceso de pre-procesamiento de las imágenes y de esta forma ver si es factible un proceso de clasificación en tiempo real. Teniendo esto en mente, dividiremos el objetivo principal en distintas fases o sub-tareas.
+Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar con este trabajo (apartado \ref{subsec:aspirations}). Esto es, simplificar el proceso de pre-procesamiento de las imágenes. Teniendo esto en mente, dividiremos el objetivo principal en distintas fases o sub-tareas.
 
 \section{Objetivos específicos}
 % Objetivos específicos: Es dividir el objetivo general en los pasos a seguir con sub-objetivos más simples.
@@ -395,20 +392,21 @@ Se ha de cumplir este objetivo sin olvidar qué es lo que se pretende alcanzar c
 \label{sec:tecnicas}
 Hasta ahora hemos hablado de objetivos, sin entrar demasiado en detalle acerca de qué técnicas serán las que emplearemos para llevarlos a cabo. En la siguiente sección hablaremos sobre ellas, dando una pequeña explicación de su fundamentación teórica.
 \subsection{Detector Facial}\label{sub:detectorFacial}
-\begin{figure}[t]
+Dada una imagen, lo primero que necesitamos saber es si aparece un rostro humano o no y en función de ello hacer que nuestra aplicación, actúe de una manera u otra. De esto es de lo que se encarga precisamente un detector facial.\\
+Para llevar a cabo esta tarea, el detector facial que he usado ha sido entrenado para aprender mediante un algoritmo basado en \textit{SVM}\cite{cortes_vapnik95} los descriptores de características de una batería de imágenes de rostros humanos previamente marcados y localizados manualmente (Si pudiésemos automatizar el proceso de marcado no necesitaríamos un detector facial). Los descriptores de características aprendidos por el detector son los conocidos como \textit{Histogram of Oriented Gradients (HOG)}\cite{dalal_triggs05} de los que hablaremos a continuación.
+\subsubsection{¿Qué es un descriptor de características?}
+Es una representación de un conjunto de píxeles, ya sea de una imagen completa o de un trozo de esta. Su misión es simplificar la información que representa una imagen de forma que el descriptor represente la información más útil de la imagen eliminando aquella que no es representativa.
+
+\subsubsection{Histogram of Oriented Gradients (HOG)}
+Hay muchos descriptores de características distintos, pero los que usa nuestro detector son conocidos como descriptores HOG. Estos cuentan las ocurrencias de orientaciones de gradiente en zonas localizadas de una imagen. El gradiente nos indica por cada píxel la magnitud del mayor cambio de intensidad posible y su dirección de oscuro a claro. Podemos observar un ejemplo de esto en la Figura \ref{fig:hog01}.\\
+Usando un algoritmo\cite{king15} basado en la técnica de aprendizaje automático conocida como \textit{Support Vector Machine}\cite{cortes_vapnik95}, el detector es capaz de aprender la composición de los descriptores de características HOG de un gran número de caras distintas.\\
+Así, dada una imagen, se calculará su descriptor de características y si se encuentra en ella una ventana que contenga descriptores que se asemejen a los aprendidos, habremos detectado satisfactoriamente una cara.
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.3\linewidth]{imagenes/hog01}
 	\caption[Descriptores HOG]{Visualización de descriptores HOG en un rostro humano \cite{king14}}
 	\label{fig:hog01}
 \end{figure}
-Dada una imagen, lo primero que necesitamos saber es si aparece un rostro humano o no y en función de ello hacer que nuestra aplicación, actúe de una manera u otra. De esto es de lo que se encarga precisamente un detector facial.\\
-Para llevar a cabo esta tarea, el detector facial que he usado ha sido entrenado para aprender mediante un algoritmo basado en \textit{SVM}\cite{cortes_vapnik95} los descriptores de características de una batería de imágenes de rostros humanos previamente marcados y localizados manualmente (Si pudiésemos automatizar el proceso de marcado no necesitaríamos un detector facial). Los descriptores de características aprendidos por el detector son los conocidos como \textit{Histogram of Oriented Gradients (HOG)}\cite{dalal_triggs05} de los que hablaremos a continuación.
-\subsubsection{¿Qué es un descriptor de características?}
-Es una representación de un conjunto de píxeles, ya sea de una imagen completa o de un trozo de esta. Su misión es simplificar la información que representa una imagen de forma que el descriptor represente la información más útil de la imagen eliminando aquella que no es representativa. 
-\subsubsection{Histogram of Oriented Gradients (HOG)}
-Hay muchos descriptores de características distintos, pero los que usa nuestro detector son conocidos como descriptores HOG. Estos cuentan las ocurrencias de orientaciones de gradiente en zonas localizadas de una imagen. El gradiente nos indica por cada píxel la magnitud del mayor cambio de intensidad posible y su dirección de oscuro a claro. Podemos observar un ejemplo de esto en la Figura \ref{fig:hog01}.\\
-Usando un algoritmo\cite{king15} basado en la técnica de aprendizaje automático conocida como \textit{Support Vector Machine}\cite{cortes_vapnik95}, el detector es capaz de aprender la composición de los descriptores de características HOG de un gran número de caras distintas.\\
-Así, dada una imagen, se calculará su descriptor de características y si se encuentra en ella una ventana que contenga descriptores que se asemejen a los aprendidos, habremos detectado satisfactoriamente una cara.
 
 \subsection{Redes Neuronales Convolucionales}\label{sub:cnns}
 Tal y como mencioné en la motivación de este trabajo, sin entrar demasiado en detalles, que una de las restricciones de este proyecto era minimizar la fase de pre-procesamiento (apartado \ref{subsec:aspirations}) antes de clasificar una imagen.\\ \\
@@ -439,7 +437,7 @@ Dicho esto, podemos dar una pequeña visión de qué hay dentro de esa caja negr
 \label{fig:LeNet}
 \end{figure}
 \subsubsection{Funcionamiento}\label{sub:funcionamientoCnn}
-Ahora que conocemos de qué se compone una CNN vamos a ver a grandes rasgos cómo funciona una red neuronal convolucional. Cada una de las capas de las mencionadas en la sección anterior (\ref{subsub:composicion}) se compone a su vez de una serie de neuronas, las cuales tienen unos parámetros, que irán se irán ajustando (aprendiendo) en la fase de entrenamiento de la red, conocidos como pesos. Las neuronas de una capa, estarán solo conectadas con una pequeña región de la capa anterior. De esta forma, a medida que la red va aprendiendo, capas más avanzadas abstraen la información en mayor medida y aprenden patrones más complejos.\\
+Ahora que conocemos de qué se compone una CNN vamos a ver a grandes rasgos cómo funciona una red neuronal convolucional. Cada una de las capas mencionadas en la sección anterior (\ref{subsub:composicion}) se compone a su vez de una serie de neuronas, las cuales tienen unos parámetros, que se irán ajustando (aprendiendo) en la fase de entrenamiento de la red, conocidos como pesos. Las neuronas de una capa, estarán solo conectadas con una pequeña región de la capa anterior. De esta forma, a medida que la red va aprendiendo, capas más avanzadas abstraen la información en mayor medida y aprenden patrones más complejos.\\
 Dada una imagen de entrada, las neuronas de la red se van activando en función de los patrones aprendidos, y en la última capa calcula la puntuación de que la imagen pertenezca a cada una de las clases para las que la red fue entrenada, dando de esta forma, una etiqueta de salida. Hay muchos tipos de capas que pueden formar la arquitectura de red de una CNN. A continuación veremos un resumen de las más importantes y por norma general, las más usadas.
 \begin{description}
 	\item [Capas de entrada \cite{cs231n}] - Tal y como su nombre indica, recogen los datos n-dimensionales para la red. Suele ser la primera capa de nuestra arquitectura de red. En nuestro caso, los datos de entrada son las imágenes, que serían elementos tridimensionales teniendo de esta manera un vector del tipo \([ancho \times alto \times profundidad]\). La profundidad puede ser 1 o 3 dependiendo de si la imagen es en color (3 canales RGB) o en escala de grises (1 canal).
@@ -500,7 +498,7 @@ Para el desarrollo de este trabajo he empleado mi ordenador personal cuyas espec
 	\item [Memoria] - 8GB RAM DDR3
 \end{description}
 \subsection{Recursos Software}\label{sub:software}
-Para el desarrollo de la aplicación final, ha hecho falta usar distintas librerías que implementan de una forma eficiente las técnicas descritas en la sección anterior(\ref{sec:tecnicas}), así como distintos frameworks para desarrollar la interfaz de usuario por ejemplo. En la Figura \ref{fig:programming_languages} podemos observar los lenguajes de programación que han sido necesarios para la implementación de esta aplicación.
+Para el desarrollo de la aplicación final, ha hecho falta usar distintas librerías que implementan de una forma eficiente las técnicas descritas en la sección anterior(\ref{sec:tecnicas}), así como por ejemplo distintos frameworks para desarrollar la interfaz de usuario. En la Figura \ref{fig:programming_languages} podemos observar los lenguajes de programación que han sido necesarios para la implementación de esta aplicación.
 \\
 \begin{figure}[h]
 	\centering
@@ -510,7 +508,7 @@ Para el desarrollo de la aplicación final, ha hecho falta usar distintas librer
 \end{figure}
 
 \subsubsection{OpenCV \cite{opencv}}\label{sub:opencv}
-Por la facilidad de uso que me suponía debido a experiencia previa y su rapidez porque está implementada en C++ e usado esta librería para la manipulación general de imágenes.
+Por la facilidad de uso que me suponía debido a experiencia previa y su rapidez porque está implementada en C++ he usado esta librería para la manipulación general de imágenes.
 \subsubsection{Dlib \cite{dlib}}\label{sub:dlib}
 Es una librería que implementa un gran número de algoritmos de Machine Learning en C++. En este caso ha sido usada sólo para el procesamiento de imágenes, pero solo he usado el detector de caras que implementa, el cual he introducido en la Sección \ref{sec:tecnicas}, ya que presentaba menos falsos positivos que el detector de caras de OpenCV\cite{king14}.
 \subsubsection{Caffe \cite{caffe}}\label{sub:caffe}
@@ -600,27 +598,27 @@ En este proyecto se partió de una especificación inicial de requisitos que se 
 \begin{itemize}
 	\item [RF1:] La aplicación podrá recibir ficheros de entrada mediante el gestor de ficheros predeterminado del sistema operativo o bien arrastrando el fichero a la ventana principal.
 	\item [RF2:] La aplicación solo tendrá en cuenta aquellos ficheros de entrada cuya extensión sean de formatos de imagen válidos: \textit{.png, .jpeg, .jpg}.
-	\item [RF3:] La aplicación solo analizará imágenes en las que se encuentren al menos un rostro humano.
-	\item [RF4:] El único preprocesamiento que la aplicación realizará sobre la imagen de entrada, será recortar y reajustar el tamaño de la sección en la que se encuentra el rostro.
-	\item [RF5:] Una vez clasificada, la aplicación mostrará por pantalla la cara detectada junto a los resultados de su clasificación.
-	\item [RF6:] La interfaz notificará al usuario posibles errores mediante una ventana emergente.
-
+	\item [RF3:] La aplicación solo analizará imágenes en las que se encuentren al menos un rostro humano. Para verificar esta condición se empleará el detector \textit{Dlib}.
+	\item [RF4:] El único preprocesamiento que la aplicación realizará sobre la imagen de entrada, será recortar y reajustar el tamaño de la sección en la que se encuentra el rostro a un tamaño de \([256 \times 256]\) a la que denominaremos \textit{imagen intermedia}. Para ello se empleará \textit{OpenCV}.
+	\item [RF5:] Para clasificar la \textit{imagen intermedia} se usará un modelo basado en Redes Neuronales Convolucionales previamente entrenado con el framework \textit{Caffe}.
+	\item [RF6:] Una vez clasificada, la aplicación mostrará por pantalla la cara detectada junto a los resultados de su clasificación.
+	\begin{enumerate}
+		\item [RF6.1:] Los resultados serán representados en un histograma que recogerá las 5 posibles expresiones faciales más probables.
+		\item [RF6.2:] Solo se mostrarán las expresiones faciales que tengan más de un 1\% de estar presentes en la imagen de entrada según el clasificador.
+		\item [RF6.3:] El histograma será creado haciendo uso de HTML y JavaScript.
+	\end{enumerate}
+	\item [RF7:] La interfaz notificará al usuario posibles errores mediante una ventana emergente, la cual podrá indicar:
+	\begin{enumerate}
+		\item [RF7.1:] Cuando el fichero de entrada no tiene un formato de imagen válido.
+		\item [RF7.2:] Cuando no se pudo detectar al menos un rostro en la imagen.
+		\item [RF7.3:] Cuando no se seleccionó ningún fichero de entrada.
+	\end{enumerate}
+	\item [RF8:] El histograma mostrará una animación donde los porcentajes van creciendo hasta alcanzar su valor.
 \end{itemize}
 \subsection{Requisitos no funcionales}
 \begin{itemize}
-	\item [RNF1:] Para garantizar la validez del fichero de entrada, la aplicación aceptará solo \textit{paths} de imágenes cuya extensión coincida con los formatos de imagen válidos: \textit{png, jpeg, jpg}.
-	\item [RNF2:] La aplicación usará el detector de caras de \textit{Dlib} en la imagen de entrada para determinar si hay un rostro humano.
-	\item [RNF3:] La ventana emergente de errores indicará:
-	\begin{enumerate}
-		\item [RNF3.1:] Cuando el fichero de entrada no tiene un formato de imagen válido.
-		\item [RNF3.2:] Cuando no se pudo detectar al menos un rostro en la imagen.
-		\item [RNF3.3:] Cuando no se seleccionó ningún fichero de entrada.
-	\end{enumerate}
-	\item [RNF4:] En caso de que la imagen sea válida, es decir en caso de localizar un rostro humano, la aplicación lo recortará y lo reajustará a un tamaño de \([256 \times 256]\) haciendo uso de \textit{OpenCV}. Ese recorte se denominará \textit{imagen intermedia}.
-	\item [RNF5:] Para clasificar la \textit{imagen intermedia} se usará un modelo basado en Redes Neuronales Convolucionales previamente entrenado.
-	\item [RNF6:] Para mostrar los datos de la clasificación de la \textit{imagen intermedia}, se dibujará un histograma que muestra el porcentaje que tiene la imagen intermedia de contener una expresión determinada. El histograma tendrá un máximo de 5 resultados y será dibujado usando HTML y JavaScript.
-	\item [RFN7:] El histograma no mostrará por pantalla los resultados en los que el porcentaje de acierto es inferior al 1\%.
-	\item [RFN8:] El histograma mostrará una animación donde los porcentajes van creciendo hasta alcanzar su valor.	
+	\item [RNF1:] El tiempo de respuesta de la aplicación debe ser bajo..
+	\item [RNF2:] La aplicación debe ser fácil de usar con una interfaz amigable e intuitiva.	
 \end{itemize}
 
 \section{Planificación}
@@ -630,7 +628,7 @@ En este proyecto se partió de una especificación inicial de requisitos que se 
 %Poner presupuesto según horas de trabajo estimadas.
 
 En la tabla \ref{tab:planificacion} están dispuestos, de forma aproximada, los tiempos estimados y empleados en cada uno de los principales sub-objetivos. \\
-Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto es porque era el punto de inicio, lo que implica tener que empezar de cero, aprender conceptos teóricos sobre temas que solo conocía de oídas como por ejemplo las Redes Neuronales Convolucionales (Apartado \ref{sub:cnns}) a usar nuevas tecnologías que las implementaban como Caffe (Apartado\ref{sub:caffe}) además del resto como puede ser OpenCV (Apartado\ref{sub:opencv}) mediante la realización de ejemplos para entenderlas de forma correcta. El prototipo I además no constaba con interfaz, se manejaba todo por línea de comandos y algunos scripts en shell bash.\\
+Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto es porque era el punto de inicio, lo que implica tener que empezar de cero, aprender conceptos teóricos sobre temas que solo conocía de oídas como por ejemplo las Redes Neuronales Convolucionales (Apartado \ref{sub:cnns}) a usar nuevas tecnologías que las implementaban como Caffe (Apartado\ref{sub:caffe}) además del resto como puede ser OpenCV (Apartado\ref{sub:opencv}) mediante la realización de ejemplos para entenderlas de forma correcta. El prototipo I además no tenía una interfaz de usuario, se manejaba todo por línea de comandos y algunos scripts en shell bash.\\
 
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}} % Nuevo tipo de columna: Párrafo centrado.
 \begin{table}[h]
@@ -929,7 +927,7 @@ En esta ocasión y a diferencia del primer experimento, he intentado entrenar el
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.7\linewidth]{imagenes/segundoIntentoDA3}
-			\caption[Experimento 2 Rotaciones]{ Imágenes no rotodas a la izquierda. Rotaciones aleatorias a la derecha.}
+			\caption[Experimento 2 Rotaciones]{ Izquierda: Imágenes sin rotación; Derecha: Imágenes con rotaciones aleatorias.}
 			\label{fig:segundoIntentoDA3}
 		\end{figure}
 	
