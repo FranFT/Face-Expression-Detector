@@ -490,7 +490,7 @@ En esta sección enumeraremos los recursos que han sido utilizados para el desar
 	\item \textbf{Tutor A}: \myProf.
 	\item \textbf{Tutor B}: \myOtherProf.
 \end{itemize}
-\subsection{Recursos Hardware}
+\subsection{Recursos Hardware}\label{subsec:hardware}
 Para el desarrollo de este trabajo he empleado mi ordenador personal cuyas especificaciones principales son:
 \begin{description}
 	\item [CPU] - AMD Phenom(tm) II X4 975
@@ -550,7 +550,7 @@ En la Figura \ref{fig:integracion} se puede ver una visión esquemática de la i
 \end{figure}
 
 
-\section{Especificación de requisitos}
+\section{Especificación de requisitos}\label{sec:requisitos}
 
 %Decir que se partió de una especificación inicial de requisitos que a medida que se fueron implementando los prototipos se fue refinando posteriormente. Se puede poner la inicial y la final o solo la final indicando que se están poniendo los requisitos que finalmente tiene que tener el sistema.
 %Los requisitos se pueden referir a las necesidades del usuario del sistema (requisitos del usuario), a lo que tiene que hacer la aplicación (requisito funcional) o a cómo tiene que hacerlo (requisito no funcional). Ejemplo:
@@ -617,8 +617,8 @@ En este proyecto se partió de una especificación inicial de requisitos que se 
 \end{itemize}
 \subsection{Requisitos no funcionales}
 \begin{itemize}
-	\item [RNF1:] El tiempo de respuesta de la aplicación debe ser bajo..
-	\item [RNF2:] La aplicación debe ser fácil de usar con una interfaz amigable e intuitiva.	
+	\item [RNF1:] La aplicación debe ser fácil de usar con una interfaz amigable e intuitiva.
+	\item [RNF2:] El tiempo de respuesta de la aplicación debe ser bajo.	
 \end{itemize}
 
 \section{Planificación}
@@ -1256,18 +1256,57 @@ Una vez tenemos el clasificador entrenado la aplicación final está completa ya
 \end{figure}
 
 \section{Pruebas}
-
-
 %Las pruebas se realizan para comprobar la verificación y validación del producto software. La verificación consiste es comprobar que el producto realiza lo que está programado, es decir la programación no tiene errores y funciona en todos los casos cumpliendo los requisitos. La validación tiene que ver con que cumpla con lo que espera el usuario.
 
 %Verificación y Validación: Conjunto de procesos de comprobación y
 %análisis que aseguran que el software que se desarrolla está acorde a su
 %especificación y cumple las necesidades de los clientes.
-
+En esta sección vamos a verificar y validar si el producto software final cumple los requisitos y si tiene errores de programación mediante una serie de mediciones y pruebas. 
 %Verificación:
 %¿Estamos construyendo el producto correctamente?
 %Se comprueba que el software cumple los requisitos funcionales y no funcionales
 %de su especificación.
+\subsection{Verificación}
+¿Cumple con los requisitos que se especificaron en el Apartado \ref{sec:requisitos}?\\
+\subsubsection{Comprobación de requisitos funcionales}
+En este caso y por cómo se ha desarrollado la aplicación se cumplen el RF1, RF3, RF4, RF5, RF6 y RF8. Para cumplir con el RF2, internamente se analiza el \textit{path} del fichero proporcionado por el usuario para aceptar solo las extensiones de archivo correctas. En el caso de que se seleccione con el gestor de archivos predeterminado por el sistema operativo se han aplicado ciertos filtros de búsqueda para llevar a cabo este cometido, tal y como se ve en la Figura \ref{fig:filters}.\\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/filters}
+\caption[Filtros]{Filtrado de ficheros válidos mediante el gestor de ficheros por defecto del S.O.}
+\label{fig:filters}
+\end{figure}
+
+Para cumplir con el RF7 se ha habilitado una ventana emergente que aparece por un tiempo determinado cuando sucede un error controlado. En la Figura podemos ver como se cumplen RF7.1, RF7.2 y RF7.3.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\linewidth]{imagenes/RF7}
+\caption[RF7]{De izquierda a derecha: RF7.1, RF7.2, RF7.3}
+\label{fig:RF7}
+\end{figure}
+
+\subsubsection{Comprobación de requisitos no funcionales}
+Teniendo en cuenta el RNF1 la interfaz es amigable e intuitiva. Consta de una ventana principal para la selección de fichero y una de análisis para mostrar los resultados. Como la que se observa en la Figura \ref{fig:UI01} la interfaz es muy limpia. La ventana principal cuenta con dos métodos para la selección de ficheros. La ventana de análisis muestra cada etiqueta en un color diferente junto a la imagen que ha sido clasificada marcada con un rectángulo rojo.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/UI01}
+	\caption[Interfaz de usuario]{Izquierda: Ventana principal. Derecha: Ventana de análisis.}
+	\label{fig:UI01}
+\end{figure}
+
+Para ver si se cumple el RNF2 he tomado una serie de mediciones en mi máquina (Apartado \ref{subsec:hardware}) con imágenes de distinta resolución y con una o más de una cara en ellas. El tiempo medio de detección y generación de las imágenes intermedias que serán clasificadas, consume poco más de un segundo más concretamente 1155ms, mientras que el tiempo medio de clasificación ha sido de 1795ms. Lo que más ha influido en las pruebas en esta medición ha sido la resolución de la imagen en la fase de detección, no tanto el número de caras presentes en ella.\\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/loading}
+\caption[Indicador de carga]{Izquierda: Indicador de carga. Derecha: Resultados.}
+\label{fig:loading}
+\end{figure}
+
+Para que sea más intuitiva la interfaz de cara al usuario, se ha añadido un indicador (Figura \ref{fig:loading}) de que la imagen está siendo clasificada durante los 1,7 segundos que se tarda en clasificar.\\
+Aunque siempre es deseable que los tiempos de ejecución fueran lo más rápido posible, en este caso y tras las mencionadas pruebas podemos decir que se cumplen los requisitos no funcionales establecidos.\\
+
+
 
 %Validación:
 %¿Estamos construyendo el producto correcto?
@@ -1284,6 +1323,7 @@ Una vez tenemos el clasificador entrenado la aplicación final está completa ya
 %Las pruebas de caja negra son aquellas que se centran en las salidas y entradas de los módulos, sin atender a su comportamiento interno (comprobando mediante las pruebas de caja blanca). Las pruebas de caja negra garantizan la interconectividad entre los diferentes módulos de la aplicación, así como su correcto funcionamiento final.
 
 %Poner algunos casos de prueba de caja negra.
+\subsection{Validación}
 
 \chapter{Conclusiones y trabajo futuro}
 
