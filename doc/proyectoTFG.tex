@@ -1266,7 +1266,7 @@ En esta sección vamos a verificar y validar si el producto software final cumpl
 %¿Estamos construyendo el producto correctamente?
 %Se comprueba que el software cumple los requisitos funcionales y no funcionales
 %de su especificación.
-\subsection{Verificación}
+\subsection{Verificación}\label{subsec:verificacion}
 ¿Cumple con los requisitos que se especificaron en el Apartado \ref{sec:requisitos}?\\
 \subsubsection{Comprobación de requisitos funcionales}
 En este caso y por cómo se ha desarrollado la aplicación se cumplen el RF1, RF3, RF4, RF5, RF6 y RF8. Para cumplir con el RF2, internamente se analiza el \textit{path} del fichero proporcionado por el usuario para aceptar solo las extensiones de archivo correctas. En el caso de que se seleccione con el gestor de archivos predeterminado por el sistema operativo se han aplicado ciertos filtros de búsqueda para llevar a cabo este cometido, tal y como se ve en la Figura \ref{fig:filters}.\\
@@ -1324,6 +1324,51 @@ Aunque siempre es deseable que los tiempos de ejecución fueran lo más rápido 
 
 %Poner algunos casos de prueba de caja negra.
 \subsection{Validación}
+Para validar la estructura interna del programa y que los datos se comportan de forma correcta se han llevado a cabo pruebas de caja blanca sobre los distintos métodos que forman los módulos de la aplicación. Se han recogido los casos en los que las entradas pueden no ser las esperadas para evitar los posibles errores futuros aunque hay que mencionar que es difícil garantizar que una aplicación esté 100\% libre de errores.\\
+
+Una vez realizadas las pruebas de caja blanca estamos preparados para realizar pruebas de caja negra. Para ello y como su propio nombre indica, trataremos cada módulo de los que se compone la aplicación como una caja negra en la que tendremos en cuenta solamente las salidas a determinadas entradas, entendiendo cual es el objetivo de dichos módulos. Para verificar el correcto funcionamiento de los mismos de cara al usuario final, se ha utilizado la interfaz de usuario para proporcionar las distintas entradas. A continuación se muestran algunos ejemplos.
+\subsubsection{Entrada de un fichero que no es imagen}
+Para realizar esta prueba he proporcionado como entrada los archivos de la Figura \ref{fig:archivosValidacion}.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/archivosValidacion}
+\caption[Archivos originales]{Archivos empleados durante las pruebas de caja negra}
+\label{fig:archivosValidacion}
+\end{figure}
+
+Como ya vimos en la fase de verificación (Apartado \ref{subsec:verificacion}), el filtrado realizado por la aplicación solo permite \textit{paths} de archivos con extensión \textit{jpg, jpeg} y \textit{png}. Pero, ¿Qué ocurre cuando cambiamos de forma intencionada la extensión de un fichero que no es una imagen para que sea aceptado por la aplicación?\\
+Para responder a esta pregunta se tienen los ficheros de la Figura \ref{fig:archivosValidacion}. Ahora cambiaré de forma manual las extensiones de ambos para que la aplicación los interprete como si fuesen imágenes tal y como se ve en la Figura \ref{fig:archivosValidacion01}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.9\linewidth]{imagenes/archivosValidacion01}
+	\caption[Archivos de validacion]{Archivos empleados durante las pruebas de caja negra}
+	\label{fig:archivosValidacion01}
+\end{figure}
+
+La salida de la aplicación tras proporcionarle estos ficheros se muestra en la Figura \ref{fig:validation02} en la que se puede ver que a pesar de aceptarlos como ficheros válidos, nos notifica como error que no ha sido posible abrirlos, por lo que podemos dar como superada la prueba.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/validation02}
+\caption[Salida prueba caja negra.]{Salida prueba caja negra.}
+\label{fig:validation02}
+\end{figure}
+
+\subsubsection{Múltiples entradas}
+Como ya he mencionado en este artículo, hay dos maneras de proporcionar la entrada a la aplicación, mediante el gestor de archivos y arrastrándolo directamente al a ventana principal, pero ¿Es posible usar ambas opciones a la vez? Como se observa en la Figura \ref{fig:validacion03} cada vez que abrimos el gestor de ficheros predeterminado del S.O. se bloquea la ventana principal, por lo que no sería posible. Esto no es estrictamente una prueba de caja negra, pero la he considerado válida como una forma de validación de la aplicación.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/validacion03}
+\caption[Segunda prueba de validación]{Segunda prueba de validación}
+\label{fig:validacion03}
+\end{figure}
+
+
+
+
+
 
 \chapter{Conclusiones y trabajo futuro}
 
