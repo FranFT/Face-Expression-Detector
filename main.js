@@ -130,6 +130,7 @@ function isImage( filePath, callback ){
     }
   }
   else{
+    main_window.webContents.send( 'enableUI', [] );
     showLogMsg( 'File: "' + filePath + '" is not an image.' );
   }
 }
@@ -159,6 +160,7 @@ function findFace( filePath ){
   const child = execFile( findFacePath, [ filePath ],
     function( error, stdout, stderr ) {
       if ( stderr ){
+        main_window.webContents.send( 'enableUI', [] );
         showLogMsg( stderr );
       }
       else{
@@ -221,6 +223,7 @@ ipcMain.on( 'openFile', (event, _path) => {
     { name: 'JPEG (*.jpeg)', extensions: [ 'jpeg' ] }
   ]}, function (fileNames){
     if ( fileNames === undefined ) {
+      main_window.webContents.send( 'enableUI', [] );
       showLogMsg( 'No file selected' );
     }
     else{

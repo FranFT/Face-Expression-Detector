@@ -201,6 +201,10 @@ document.ondrop = (e) => {
 dropImageArea.ondrop = (e) => {
   e.preventDefault();
 
+  // Blocking start screen to avoid selecting multiple files.
+  if(!startScreen.classList.contains('disabled'))
+    startScreen.classList.add('disabled');
+
   ipcRenderer.send(
     'receiveDroppedImagePath', // Channel.
     [ e.dataTransfer.files[0].path ] // Arguments.
@@ -268,6 +272,9 @@ logWindow.addEventListener( 'animationend', () => {
 // Method which sends an 'openFile' event to the main process when the select
 // image button is pressed by the user.
 document.getElementById( 'selectImageButton' ).addEventListener( 'click', () => {
+  // Blocking start screen to avoid selecting multiple files.
+  if(!startScreen.classList.contains('disabled'))
+    startScreen.classList.add('disabled');
   ipcRenderer.send( 'openFile', () => {
     console.log( 'Select-image event sent.' );
   });
@@ -313,3 +320,8 @@ ipcRenderer.on('logMsg', (event, message) => {
   logWindow.classList.toggle('hidden');
   logWindow.style.webkitAnimationPlayState = "running";
 });
+
+ipcRenderer.on('enableUI',(event, message) => {
+  if(startScreen.classList.contains('disabled'))
+    startScreen.classList.remove('disabled');
+})
