@@ -26,7 +26,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  main_window.webContents.openDevTools()
+  //main_window.webContents.openDevTools()
 
   /*** Main window events ***/
   // Emitted when window is close.
