@@ -633,7 +633,6 @@ Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto 
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}} % Nuevo tipo de columna: Párrafo centrado.
 \begin{table}[h]
 	\centering
-	\label{tab:planificacion}
 	\begin{tabular}{lc|P{2cm}|P{2cm}|P{2cm}|}
 		\cline{3-5}
 		\multicolumn{2}{l}{}                                  				& \multicolumn{3}{|c|}{\textbf{T. empleado} por prototipo} \\ \hline
@@ -642,11 +641,11 @@ Como se puede observar, el prototipo I es el que más tiempo ha consumido. Esto 
 		\multicolumn{1}{|p{3cm}|}{\textbf{Entrenamiento del clasificador}}	& \(\sim 2\) meses & \(\sim 3\) meses & \(\sim 1\) mes & \(\sim 7\) días \\ \hline
 		\multicolumn{1}{|p{3cm}|}{\textbf{Desarrollo de la interfaz}}		& \(\sim 2\) meses & - & \(\sim 1\) mes & - \\ \hline
 	\end{tabular}
-	\caption{Planificación de tiempos sub-objetivos. Nota:\textit I, II y III equivale al número de prototipo. }
+	\caption{Planificación de tiempos sub-objetivos. Nota:\textit I, II y III equivale al número de prototipo.}		\label{tab:planificacion}
 \end{table}
 
-En el prototipo II, ya tenía asentados los conocimientos aprendidos mediante la implementación del primer prototipo, lo que agilizó el desarrollo del segundo prototipo. Este se basó en mejorar los resultados del entrenamiento de la Red Neuronal Convolucional mediante nuevas técnicas de pre-procesado sobre las imágenes y haciendo test con distintos parámetros de entrenamiento, pero se reutilizaban muchas de las herramientas implementadas en el prototipo I. El descubrimiento de NVIDIA DIGITS (Apartado \ref{sub:digits}) también ayudó en gran medida a la reducción de este tiempo gracias al aprovechamiento de la GPU para la fase de entrenamiento. En este prototipo además implementé la interfaz, que llevó menos tiempo del esperado debido a la sencillez que aporta Electron (Apartado \ref{sub:electron}) para el desarrollo de interfaces.\\
-En el último prototipo es una versión mejorada del segundo en el que se mejora la precisión del clasificador dejando la interfaz intacta.
+En el prototipo II, ya tenía asentados los conocimientos aprendidos mediante la implementación del primer prototipo, lo que agilizó el desarrollo del segundo prototipo. Este se basó en mejorar los resultados del entrenamiento de la Red Neuronal Convolucional mediante nuevas técnicas de pre-procesado sobre las imágenes y haciendo test con distintos parámetros de entrenamiento, pero se reutilizaban muchas de las herramientas implementadas en el prototipo I. El descubrimiento de NVIDIA DIGITS (Apartado \ref{sub:digits}) también ayudó en gran medida a la reducción de este tiempo gracias al aprovechamiento de la GPU para la fase de entrenamiento. En este prototipo además implementé la interfaz, que llevó menos tiempo del esperado debido a la sencillez que aporta Electron (Apartado \ref{sub:electron}) para el desarrollo de interfaces. El último prototipo es una versión mejorada del segundo en el que se mejora la precisión del clasificador dejando la interfaz intacta.\\
+El \textbf{tiempo total empleado} en cada sub-objetivo será la suma de los tiempos empleados en cada uno de los prototipos del a Tabla \ref{tab:planificacion}. Por ejemplo para la Preparación de la información, se estimaba un mes y se ha empleado 2 meses y dos semanas aproximadamente.
 
 \section{Análisis funcional}
 % A partir de aquí nos referimos solamente al prototipo final que da lugar a la aplicación final.
@@ -1244,7 +1243,8 @@ Al clasificar el conjunto de test obtenemos un 54,29\% de precisión en el acier
 	\label{tab:entrenamiento5MC}
 \end{table}
 
-Pese a todos los experimentos, no he conseguido aumentar la precisión en expresiones como Angry y Sad, por lo que estoy pensando que quizás, las imágenes de estas dos clases de la base de datos no sean demasiado representativas de las imágenes de la misma clase en el conjunto de test.
+Pese a todos los experimentos, no he conseguido aumentar la precisión en expresiones como Angry y Sad, por lo que estoy pensando que quizás, las imágenes de estas dos clases de la base de datos no sean demasiado representativas de las imágenes de la misma clase en el conjunto de test.\\
+Otro de los motivos que me hacen pensar que no se está aumentando el rendimiento es que estamos usando unas 2940 imágenes en un problema de Deep Learning, donde la base fundamental para que funcione la técnica es tener una gran cantidad de estas. Pese a que el aumento de imágenes de forma artificial ha aumentado considerablemente el rendimiento, el número de imágenes originales no es suficiente.
 \clearpage
 
 Una vez tenemos el clasificador entrenado la aplicación final está completa ya que podemos mandar el recorte a este, clasificarlo con una de las herramientas que incluye Caffe y recoger los resultados para mostrarlos en la interfaz. Continuando con el esquema de la aplicación mostrado en la Figura \ref{fig:moduloClasificacion}, el gráfico final sería entonces el de la Figura \ref{fig:entrenamientoClasificador}.
@@ -1372,20 +1372,44 @@ Como ya he mencionado en este artículo, hay dos maneras de proporcionar la entr
 
 
 \chapter{Conclusiones y trabajo futuro}
-
 %Decir lo que se ha conseguido realizar comentando sus puntos fuertes y débiles.
+A lo largo de este documento he ido ilustrando todo lo referente al desarrollo de una aplicación de escritorio que fuese capaz de resolver el problema de reconocimiento de expresiones faciales. El software aquí desarrollado presenta puntos fuertes y puntos débiles.
+\subsubsection{Puntos fuertes}
+\begin{enumerate}
+	\item Es una aplicación simple e intuitiva que cualquier usuario es capaz de usar sin mucho esfuerzo.
+	\item Es capaz de reconocer hasta siete expresiones faciales distintas.
+	\item Funciona con imágenes que contienen uno o más rostros ofreciendo resultados para cada uno de ellos.
+	\item Es rápida en la detección y clasificación.
+	\item Gracias a Electron\cite{electron} puede ejecutarse en sistemas operativos Windows, Linux y Mac.
+	\item Gracias a su interfaz desarrollada en \textit{HTML} y \textit{JavaScript} sería relativamente sencillo poder adaptarla para su uso en la Web.
+	\item Desarrollada únicamente con tecnologías \textit{open source}.
+\end{enumerate}
+\subsubsection{Puntos débiles}
+\begin{enumerate}
+	\item El rendimiento del clasificador no es el idóneo y puede confundir ciertas expresiones faciales en determinadas imágenes. Este es uno de los mayores impedimentos que he encontrado durante la realización del trabajo y es obtener datos con los que entrenar el clasificador.
+	\item La aplicación no cuenta con detección en tiempo real.
+\end{enumerate}
 %Decir si se han alcanzado los objetivos específicos y el general propuesto y en qué grado.
-
+Tras los puntos fuertes y débiles puedo decir que se ha cumplido el objetivo principal en un grado del 7 sobre 10, ya que, por un lado tenemos una aplicación que resuelve el problema del reconocimiento de expresiones faciales, pero por otro lado, y como he mencionado en los puntos débiles, el rendimiento del clasificador no es el idóneo aunque considero que es suficiente.\\
 %Indicar las asignaturas del grado más relacionadas con la ejecución del TFG y cómo el TFG ha ayudado a afianzar los conocimientos adquiridos en el Grado.
-
+Elegí hacer este TFG porque he cursado asignaturas como Aprendizaje Automático y Visión por Computador. Estas me han parecido de las más interesantes del Grado y ví este trabajo como una posibilidad de extender y afianzar mis conocimientos en estas áreas. Por otra parte afronté el desarrollo de este trabajo como un reto porque en Aprendizaje automático no se estudia nada acerca de las Redes neuronales convolucionales y tenía curiosidad sobre su potencial en esta clase de problemas.\\
 %Valoración personal si se quiere.
+Teniendo todo esto en cuenta, mi valoración personal de este trabajo es en general positiva, porque aunque este tipo de trabajos de investigación frustran de forma puntual porque pasa el tiempo y no ves los resultados, o tienes que dar varios pasos hacia atrás, a la vez es satisfactorio cuando ves que las técnicas funcionan y comprendes los errores que no te hacían avanzar.\\
 
 
 %Avanzar algunas líneas de trabajo futuro para solucionar las debilidades detectadas o para conseguir nuevas funcionalidades interesantes.
+\subsubsection{Líneas de trabajo futuro}
+Posibles líneas de trabajo futuro:
+\begin{enumerate}
+	\item Mejorar el rendimiento del clasificador con más recursos, es decir, más bases de datos de imágenes.
+	\item Implementar la clasificación en tiempo real, es decir, usando una cámara de video.
+	\item Adaptar el clasificador a un robot que reaccione en función de nuestra expresión facial.
+\end{enumerate}
 
 \chapter{Bibliografía}
 %% Poner las citas bibliográficas, direcciones de internet, etc.
 \begin{thebibliography}{99}
+	 \addcontentsline{toc}{chapter}{Bibliography}
 	\section{Artículos científicos}
 	%%%%%%%%%%%%%%%%%%
 	%%%%% Papers %%%%%
@@ -1547,6 +1571,15 @@ Como ya he mencionado en este artículo, hay dos maneras de proporcionar la entr
 	\bibitem{electron}
 	\textit{Electron}, 
 	URL: \url{https://electron.atom.io/}.
+	
+	\subsection{Otras Herramientas}
+	\bibitem{texstudio}
+	\textit{TeXstudio}, 
+	URL: \url{http://www.texstudio.org/}.
+	
+	\bibitem{yed}
+	\textit{yEd Graph Editor}, 
+	URL: \url{http://www.yworks.com/}.
 	
 	\section{Bases de datos}
 	%%%%%%%%%%%%%%%%%%%%%
